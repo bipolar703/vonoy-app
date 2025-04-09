@@ -1,0 +1,191 @@
+.section {
+  position: relative;
+  background-color: white;
+  padding: 6rem 0;
+  overflow: hidden;
+}
+
+.sectionBg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.grid {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.05) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.3;
+}
+
+.glow {
+  position: absolute;
+  top: -50%;
+  left: 20%;
+  width: 60%;
+  height: 100%;
+  background: radial-gradient(
+    circle,
+    rgba(61, 213, 152, 0.1) 0%,
+    rgba(10, 109, 194, 0.05) 50%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  filter: blur(60px);
+  transform: rotate(-15deg);
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  position: relative;
+  z-index: 10;
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.sectionTitle {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #102a43;
+  position: relative;
+  display: inline-block;
+}
+
+.highlight {
+  position: relative;
+  display: inline-block;
+  z-index: 1;
+}
+
+.highlight::after {
+  content: "";
+  position: absolute;
+  bottom: 0.1em;
+  left: -0.25em;
+  right: -0.25em;
+  height: 0.3em;
+  background-color: rgba(61, 213, 152, 0.2);
+  z-index: -1;
+  transform: rotate(-1deg);
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 2rem;
+}
+
+@media (min-width: 640px) {
+  .featuresGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .featuresGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.featureCard {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03), 0 1px 8px rgba(0, 0, 0, 0.06);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  z-index: 1;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.featureCard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+    to bottom right,
+    rgba(61, 213, 152, 0.05),
+    rgba(10, 109, 194, 0.05)
+  );
+  border-radius: 1rem;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.featureCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.04);
+}
+
+.featureCard:hover::before {
+  opacity: 1;
+}
+
+.featureIconContainer {
+  position: relative;
+  margin-bottom: 1.25rem;
+  width: 4rem;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.featureIcon {
+  width: 2.5rem;
+  height: 2.5rem;
+  color: #3dd598;
+  position: relative;
+  z-index: 1;
+}
+
+.iconRing {
+  position: absolute;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 180deg at 50% 50%,
+    #3dd598 0deg,
+    rgba(61, 213, 152, 0.2) 90deg,
+    rgba(10, 109, 194, 0.2) 180deg,
+    rgba(10, 109, 194, 0.7) 270deg,
+    #3dd598 360deg
+  );
+  opacity: 0.15;
+  transition: all 0.3s ease;
+}
+
+.featureCard:hover .iconRing {
+  transform: scale(1.1) rotate(90deg);
+  opacity: 0.3;
+}
+
+.featureTitle {
+  color: #102a43;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.featureDescription {
+  color: #486581;
+  line-height: 1.5;
+}

@@ -1,0 +1,624 @@
+.animationContainer {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.lightBulb {
+  position: relative;
+  color: #4c4f5a;
+  transition: all 0.5s ease;
+  transform-origin: center;
+  transform: translateY(20px);
+  z-index: 5;
+}
+
+.animate {
+  color: #3dd598;
+  transform: translateY(0);
+}
+
+.bulbGlass {
+  opacity: 0.9;
+  transition: all 0.5s ease;
+}
+
+.bulbBase {
+  opacity: 0.7;
+  transition: all 0.5s ease;
+}
+
+.filament {
+  opacity: 0;
+  transition: all 0.5s ease 0.3s;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+}
+
+.animate .filament {
+  opacity: 1;
+  stroke-dashoffset: 0;
+}
+
+.glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80px;
+  height: 80px;
+  background: radial-gradient(
+    circle,
+    rgba(61, 213, 152, 0.3) 0%,
+    rgba(61, 213, 152, 0.1) 60%,
+    rgba(61, 213, 152, 0) 80%
+  );
+  border-radius: 50%;
+  transform: translate(-50%, -70%);
+  opacity: 0;
+  transition: all 0.5s ease;
+  z-index: -1;
+}
+
+.animateGlow {
+  opacity: 0.8;
+  animation: pulse 3s infinite alternate ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    transform: translate(-50%, -70%) scale(0.9);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translate(-50%, -70%) scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+/* Circuit animation styles */
+.circuitContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.circuit {
+  position: absolute;
+}
+
+.circuitLine {
+  position: absolute;
+  background-color: #4c4f5a;
+  height: 2px;
+  transform-origin: center;
+  transition: all 0.7s ease;
+  opacity: 0;
+}
+
+.circuitNode {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: #4c4f5a;
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.5s ease 0.5s;
+}
+
+.circuitPulse {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background-color: rgba(61, 213, 152, 0.8);
+  border-radius: 50%;
+  opacity: 0;
+}
+
+/* Top circuit */
+.circuitTop {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.circuitTop .circuitLine {
+  top: 15px;
+  left: 0;
+  width: 2px;
+  height: 50px;
+  transform: scaleY(0);
+}
+
+.circuitTop .circuitNode {
+  top: 10px;
+  left: -4px;
+}
+
+.circuitTop .circuitPulse {
+  top: 40px;
+  left: -2.5px;
+}
+
+.animateCircuitTop .circuitLine {
+  background-color: #3dd598;
+  transform: scaleY(1);
+  opacity: 1;
+  box-shadow: 0 0 5px rgba(61, 213, 152, 0.4);
+}
+
+.animateCircuitTop .circuitNode {
+  background-color: #3dd598;
+  opacity: 1;
+  transform: scale(1);
+  box-shadow: 0 0 10px rgba(61, 213, 152, 0.7);
+}
+
+.animateCircuitTop .circuitPulse {
+  animation: pulseTopAnimation 4s infinite linear;
+  animation-delay: 1.2s;
+}
+
+@keyframes pulseTopAnimation {
+  0% {
+    opacity: 0;
+    top: 10px;
+  }
+  5% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+    top: 60px;
+  }
+  100% {
+    opacity: 0;
+    top: 10px;
+  }
+}
+
+/* Right circuit */
+.circuitRight {
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+}
+
+.circuitRight .circuitLine {
+  top: 0;
+  right: 15px;
+  width: 60px;
+  height: 2px;
+  transform: scaleX(0);
+}
+
+.circuitRight .circuitNode {
+  top: -4px;
+  right: 10px;
+}
+
+.circuitRight .circuitPulse {
+  top: -2.5px;
+  right: 40px;
+}
+
+.animateCircuitRight .circuitLine {
+  background-color: #3dd598;
+  transform: scaleX(1);
+  opacity: 1;
+  box-shadow: 0 0 5px rgba(61, 213, 152, 0.4);
+}
+
+.animateCircuitRight .circuitNode {
+  background-color: #3dd598;
+  opacity: 1;
+  transform: scale(1);
+  box-shadow: 0 0 10px rgba(61, 213, 152, 0.7);
+}
+
+.animateCircuitRight .circuitPulse {
+  animation: pulseRightAnimation 4s infinite linear;
+  animation-delay: 1.8s;
+}
+
+@keyframes pulseRightAnimation {
+  0% {
+    opacity: 0;
+    right: 10px;
+  }
+  5% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+    right: 70px;
+  }
+  100% {
+    opacity: 0;
+    right: 10px;
+  }
+}
+
+/* Bottom circuit */
+.circuitBottom {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.circuitBottom .circuitLine {
+  bottom: 15px;
+  left: 0;
+  width: 2px;
+  height: 55px;
+  transform: scaleY(0);
+}
+
+.circuitBottom .circuitNode {
+  bottom: 10px;
+  left: -4px;
+}
+
+.circuitBottom .circuitPulse {
+  bottom: 40px;
+  left: -2.5px;
+}
+
+.animateCircuitBottom .circuitLine {
+  background-color: #3dd598;
+  transform: scaleY(1);
+  opacity: 1;
+  box-shadow: 0 0 5px rgba(61, 213, 152, 0.4);
+}
+
+.animateCircuitBottom .circuitNode {
+  background-color: #3dd598;
+  opacity: 1;
+  transform: scale(1);
+  box-shadow: 0 0 10px rgba(61, 213, 152, 0.7);
+}
+
+.animateCircuitBottom .circuitPulse {
+  animation: pulseBottomAnimation 4s infinite linear;
+  animation-delay: 1.5s;
+}
+
+@keyframes pulseBottomAnimation {
+  0% {
+    opacity: 0;
+    bottom: 10px;
+  }
+  5% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+    bottom: 65px;
+  }
+  100% {
+    opacity: 0;
+    bottom: 10px;
+  }
+}
+
+/* Left circuit */
+.circuitLeft {
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+.circuitLeft .circuitLine {
+  top: 0;
+  left: 15px;
+  width: 60px;
+  height: 2px;
+  transform: scaleX(0);
+}
+
+.circuitLeft .circuitNode {
+  top: -4px;
+  left: 10px;
+}
+
+.circuitLeft .circuitPulse {
+  top: -2.5px;
+  left: 40px;
+}
+
+.animateCircuitLeft .circuitLine {
+  background-color: #3dd598;
+  transform: scaleX(1);
+  opacity: 1;
+  box-shadow: 0 0 5px rgba(61, 213, 152, 0.4);
+}
+
+.animateCircuitLeft .circuitNode {
+  background-color: #3dd598;
+  opacity: 1;
+  transform: scale(1);
+  box-shadow: 0 0 10px rgba(61, 213, 152, 0.7);
+}
+
+.animateCircuitLeft .circuitPulse {
+  animation: pulseLeftAnimation 4s infinite linear;
+  animation-delay: 2s;
+}
+
+@keyframes pulseLeftAnimation {
+  0% {
+    opacity: 0;
+    left: 10px;
+  }
+  5% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+    left: 70px;
+  }
+  100% {
+    opacity: 0;
+    left: 10px;
+  }
+}
+
+/* Original wires styling */
+.wiresContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.wire {
+  position: absolute;
+  background-color: #4c4f5a;
+  height: 2px;
+  transform-origin: left center;
+  transition: all 0.8s ease;
+}
+
+.wireLeft {
+  top: 50%;
+  left: 10%;
+  width: 40%;
+  transform: scaleX(0) translateY(-50px);
+}
+
+.wireRight {
+  top: 50%;
+  right: 10%;
+  width: 40%;
+  transform-origin: right center;
+  transform: scaleX(0) translateY(-50px);
+}
+
+.wireBottom {
+  bottom: 20%;
+  left: 50%;
+  width: 60%;
+  transform: translateX(-50%) scaleX(0);
+}
+
+.animateWireLeft {
+  background-color: #3dd598;
+  transform: scaleX(1) translateY(-50px);
+  box-shadow: 0 0 5px rgba(61, 213, 152, 0.4);
+}
+
+.animateWireRight {
+  background-color: #3dd598;
+  transform: scaleX(1) translateY(-50px);
+  box-shadow: 0 0 5px rgba(61, 213, 152, 0.4);
+}
+
+.animateWireBottom {
+  background-color: #3dd598;
+  transform: translateX(-50%) scaleX(1);
+  box-shadow: 0 0 5px rgba(61, 213, 152, 0.4);
+}
+
+.wireNode {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: #4c4f5a;
+  border-radius: 50%;
+  transition: all 0.5s ease;
+  opacity: 0;
+  transform: scale(0);
+}
+
+.wireNodeLeft {
+  top: calc(50% - 4px);
+  left: 10%;
+  transform-origin: center;
+  transition-delay: 0.6s;
+  transform: translateY(-50px) scale(0);
+}
+
+.wireNodeRight {
+  top: calc(50% - 4px);
+  right: 10%;
+  transform-origin: center;
+  transition-delay: 0.6s;
+  transform: translateY(-50px) scale(0);
+}
+
+.wireNodeBottom {
+  bottom: calc(20% - 4px);
+  left: 50%;
+  transform: translateX(-50%) scale(0);
+  transition-delay: 0.6s;
+}
+
+.animateNodeLeft,
+.animateNodeRight,
+.animateNodeBottom {
+  background-color: #3dd598;
+  opacity: 1;
+  transform: scale(1);
+  box-shadow: 0 0 10px rgba(61, 213, 152, 0.7);
+}
+
+.animateNodeLeft {
+  transform: translateY(-50px) scale(1);
+}
+
+.animateNodeRight {
+  transform: translateY(-50px) scale(1);
+}
+
+.pulse {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background-color: rgba(61, 213, 152, 0.8);
+  border-radius: 50%;
+  opacity: 0;
+}
+
+.pulseLeft {
+  top: calc(50% - 2px);
+  left: 10%;
+  transform: translateY(-50px);
+}
+
+.pulseRight {
+  top: calc(50% - 2px);
+  right: 10%;
+  transform: translateY(-50px);
+}
+
+.pulseBottom {
+  bottom: calc(20% - 2px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.animatePulseLeft {
+  animation: pulseLeftWireAnimation 4s infinite linear;
+  animation-delay: 1s;
+}
+
+.animatePulseRight {
+  animation: pulseRightWireAnimation 4s infinite linear;
+  animation-delay: 1.5s;
+}
+
+.animatePulseBottom {
+  animation: pulseBottomWireAnimation 4s infinite linear;
+  animation-delay: 2s;
+}
+
+@keyframes pulseLeftWireAnimation {
+  0% {
+    opacity: 0;
+    left: 10%;
+  }
+  5% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+    left: 50%;
+    transform: translateY(-50px) translateX(-50%);
+  }
+  100% {
+    opacity: 0;
+    left: 10%;
+  }
+}
+
+@keyframes pulseRightWireAnimation {
+  0% {
+    opacity: 0;
+    right: 10%;
+  }
+  5% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+    right: 50%;
+    transform: translateY(-50px) translateX(50%);
+  }
+  100% {
+    opacity: 0;
+    right: 10%;
+  }
+}
+
+@keyframes pulseBottomWireAnimation {
+  0% {
+    opacity: 0;
+    bottom: 20%;
+  }
+  5% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+    bottom: 50%;
+    transform: translateX(-50%);
+  }
+  100% {
+    opacity: 0;
+    bottom: 20%;
+  }
+}
+
+@media (max-width: 768px) {
+  .animationContainer {
+    height: 250px;
+  }
+
+  .wireLeft,
+  .wireRight {
+    width: 30%;
+  }
+
+  .wireBottom {
+    width: 50%;
+  }
+
+  .circuitLeft .circuitLine,
+  .circuitRight .circuitLine {
+    width: 40px;
+  }
+
+  .circuitTop .circuitLine,
+  .circuitBottom .circuitLine {
+    height: 40px;
+  }
+}

@@ -1,0 +1,320 @@
+.section {
+  position: relative;
+  padding: 6rem 0;
+  background-color: rgb(12, 29, 44);
+  color: white;
+  overflow: hidden;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  position: relative;
+  z-index: 5;
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.sectionTitle {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  background: linear-gradient(to right, #ffffff, #d1d5db);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+}
+
+.sectionDescription {
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.7);
+  max-width: 32rem;
+  margin: 0 auto;
+}
+
+.videoContainer {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  margin-bottom: 4rem;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.videoOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(2px);
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.playButton {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  background-color: rgba(61, 213, 152, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+  box-shadow: 0 0 20px rgba(61, 213, 152, 0.5);
+}
+
+.playButton:hover {
+  transform: scale(1.1);
+  background-color: #3dd598;
+  box-shadow: 0 0 30px rgba(61, 213, 152, 0.7);
+}
+
+.playIcon {
+  width: 2rem;
+  height: 2rem;
+  color: white;
+  margin-left: 0.25rem;
+}
+
+.overlayText {
+  font-weight: 500;
+  font-size: 1.25rem;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.duration {
+  font-size: 0.875rem;
+  opacity: 0.7;
+  margin-top: 0.25rem;
+}
+
+.videoPlaceholder {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+/* Gradient placeholder styling */
+.gradientPlaceholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #102a43, #1e3a5f);
+  border-radius: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.gradientPlaceholder::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at center,
+    rgba(61, 213, 152, 0.1) 0%,
+    rgba(61, 213, 152, 0) 70%
+  );
+  opacity: 0.4;
+}
+
+/* Mock interface styling */
+.mockInterface {
+  position: absolute;
+  inset: 5%;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mockHeader {
+  height: 10%;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mockContent {
+  flex: 1;
+  display: flex;
+  position: relative;
+}
+
+.mockMap {
+  flex: 3;
+  background: radial-gradient(
+      circle at 30% 40%,
+      rgba(61, 213, 152, 0.4) 0%,
+      rgba(61, 213, 152, 0) 20%
+    ),
+    radial-gradient(
+      circle at 70% 60%,
+      rgba(10, 109, 194, 0.4) 0%,
+      rgba(10, 109, 194, 0) 20%
+    );
+  position: relative;
+}
+
+.mockMap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0.1) 1px,
+      transparent 1px
+    ),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0.3;
+}
+
+.mockSidebar {
+  flex: 1;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.mockItem {
+  height: 3rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 0.25rem;
+}
+
+.mockItem:nth-child(2) {
+  height: 5rem;
+}
+
+.videoFrame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  z-index: 3;
+}
+
+.partnersContainer {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.partnersTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.partnersLogos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* Partner logo placeholder styling */
+.partnerLogoPlaceholder {
+  height: 2rem;
+  width: 8rem;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.2)
+  );
+  border-radius: 0.25rem;
+  opacity: 0.6;
+  transition: all 0.3s ease;
+}
+
+.partnerLogoPlaceholder:nth-child(odd) {
+  width: 6rem;
+}
+
+.partnerLogoPlaceholder:nth-child(3) {
+  width: 9rem;
+}
+
+.partnerLogoPlaceholder:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+  background: linear-gradient(
+    90deg,
+    rgba(61, 213, 152, 0.2),
+    rgba(10, 109, 194, 0.2)
+  );
+}
+
+/* Background decorations */
+.bgPattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.1) 1px,
+    transparent 1px
+  );
+  background-size: 20px 20px;
+  z-index: 1;
+}
+
+.bgGradient {
+  position: absolute;
+  top: -30%;
+  right: -20%;
+  width: 70%;
+  height: 100%;
+  background: radial-gradient(
+    circle,
+    rgba(61, 213, 152, 0.08) 0%,
+    rgba(61, 213, 152, 0) 70%
+  );
+  filter: blur(50px);
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .partnersLogos {
+    gap: 1.5rem;
+  }
+
+  .partnerLogoPlaceholder {
+    height: 1.5rem;
+    width: 5rem;
+  }
+
+  .partnerLogoPlaceholder:nth-child(odd) {
+    width: 4rem;
+  }
+
+  .partnerLogoPlaceholder:nth-child(3) {
+    width: 6rem;
+  }
+}
