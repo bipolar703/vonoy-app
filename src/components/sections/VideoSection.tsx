@@ -74,18 +74,7 @@ const VideoSection: React.FC = () => {
           )}
         </div>
 
-        {/* Partner logos */}
-        <div className={styles.partnersContainer}>
-          <div className={styles.partnersTitle}>Trusted By</div>
-          <div className={styles.partnersLogos}>
-            {/* Use simple colored rectangles instead of images */}
-            <div className={styles.partnerLogoPlaceholder}></div>
-            <div className={styles.partnerLogoPlaceholder}></div>
-            <div className={styles.partnerLogoPlaceholder}></div>
-            <div className={styles.partnerLogoPlaceholder}></div>
-            <div className={styles.partnerLogoPlaceholder}></div>
-          </div>
-        </div>
+
       </div>
 
       {/* Background decorations */}

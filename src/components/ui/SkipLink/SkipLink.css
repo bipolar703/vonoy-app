@@ -1,0 +1,28 @@
+/* SkipLink Component Styles */
+
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  padding: 8px 16px;
+  background-color: var(--color-primary);
+  color: white;
+  font-weight: var(--font-weight-medium);
+  z-index: 9999;
+  transition: top 0.2s ease-in-out;
+  text-decoration: none;
+  border-radius: 0 0 var(--border-radius-md) 0;
+  box-shadow: var(--shadow-md);
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: none;
+}
+
+/* High contrast mode */
+@media (forced-colors: active) {
+  .skip-link {
+    border: 2px solid ButtonText;
+  }
+}

@@ -98,7 +98,15 @@ const Navbar: React.FC = () => {
       <div className="container mx-auto px-4 flex justify-between items-center">
         <div className="flex items-center">
           <a href="/">
-            <img src="/logo.svg" alt="Vonoy" className="h-10" />
+            <img
+              src="/logo.svg"
+              alt="Vonoy"
+              className="h-10"
+              width="120"
+              height="40"
+              fetchPriority="high"
+              loading="lazy"
+            />
           </a>
         </div>
 
@@ -167,47 +175,20 @@ const Navbar: React.FC = () => {
           >
             Features
           </a>
-          <a
-            href="/contact"
-            className="text-white hover:text-secondary transition-colors"
-          >
-            Contact Us
-          </a>
-          <div className="relative group">
-            <a
-              href="#"
-              className="text-white hover:text-secondary transition-colors flex items-center"
-            >
-              More
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 ml-1"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </a>
-          </div>
+          {/* Contact Us and More buttons removed */}
         </div>
 
-        {/* Language Switcher & Contact Button */}
+        {/* Language Switcher & Book a Demo Button */}
         <div className="hidden md:flex items-center space-x-4">
-          <div className="relative">
+          <div className="relative flex items-center">
             <button
               onClick={toggleLangMenu}
-              className="text-white hover:text-secondary px-3 py-1.5 rounded-md flex items-center text-sm font-medium border border-white/20 hover:border-white/40 transition-colors"
+              className="text-white hover:text-white px-4 py-2 rounded-md flex items-center text-sm font-medium border border-white/30 hover:border-white/50 transition-all duration-300 bg-white/15 hover:bg-white/25 backdrop-blur-md shadow-md hover:shadow-lg"
             >
-              {language === "en" ? "English" : "العربية"}
+              <span className="text-white font-medium">{language === "en" ? "English" : "العربية"}</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className={`h-4 w-4 ml-1 transition-transform duration-200 ${
+                className={`h-4 w-4 ml-2 text-white transition-transform duration-200 ${
                   isLangMenuOpen ? "rotate-180" : ""
                 }`}
                 fill="none"
@@ -223,44 +204,43 @@ const Navbar: React.FC = () => {
               </svg>
             </button>
 
+            {/* Book a Demo Button */}
+            <a href="/contact" className="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#00a79d] hover:bg-[#008f86] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00a79d] transition-colors">
+              <span className="text-white">Book a Demo</span>
+            </a>
+
+            {/* Glass Effect Button removed */}
+
             {/* Language Dropdown */}
             {isLangMenuOpen && (
-              <div className="absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
+              <div className="absolute left-0 top-full mt-2 w-40 rounded-md shadow-lg bg-white/90 backdrop-blur-md border border-white/30 focus:outline-none z-10">
                 <div className="py-1" role="menu" aria-orientation="vertical">
                   <button
                     onClick={() => switchLanguage("en")}
-                    className={`block w-full text-left px-4 py-2 text-sm ${
-                      language === "en"
-                        ? "bg-gray-100 text-gray-900"
-                        : "text-gray-700 hover:bg-gray-50"
-                    }`}
+                    className="block w-full text-left px-4 py-2 text-sm font-medium hover:bg-white/50 flex items-center"
                     role="menuitem"
                   >
-                    English
+                    {language === "en" && (
+                      <span className="w-2 h-2 rounded-full bg-[#00a79d] mr-2"></span>
+                    )}
+                    <span className="text-[#00a79d] font-semibold drop-shadow-sm">English</span>
                   </button>
                   <button
                     onClick={() => switchLanguage("ar")}
-                    className={`block w-full text-left px-4 py-2 text-sm ${
-                      language === "ar"
-                        ? "bg-gray-100 text-gray-900"
-                        : "text-gray-700 hover:bg-gray-50"
-                    }`}
+                    className="block w-full text-left px-4 py-2 text-sm font-medium hover:bg-white/50 flex items-center"
                     role="menuitem"
                   >
-                    العربية
+                    {language === "ar" && (
+                      <span className="w-2 h-2 rounded-full bg-[#00a79d] mr-2"></span>
+                    )}
+                    <span className="text-[#00a79d] font-semibold drop-shadow-sm">العربية</span>
                   </button>
                 </div>
               </div>
             )}
           </div>
 
-          {/* Green Contact Button */}
-          <a
-            href="/contact"
-            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md font-medium transition-colors"
-          >
-            Contact Us
-          </a>
+          {/* Contact Us button removed */}
         </div>
 
         {/* Mobile Menu Button */}
@@ -369,53 +349,57 @@ const Navbar: React.FC = () => {
             >
               Features
             </a>
-            <a
-              href="/contact"
-              className="block text-white hover:text-secondary py-2 text-lg mobile-menu-item rounded px-3"
-            >
-              Contact Us
-            </a>
-            <a
-              href="#"
-              className="block text-white hover:text-secondary py-2 text-lg mobile-menu-item rounded px-3"
-            >
-              More
-            </a>
+            {/* Contact Us button removed */}
+            {/* More button removed */}
 
             {/* Mobile Language Switcher */}
-            <div className="flex flex-col space-y-2 pt-2 border-t border-white/10">
-              <span className="text-gray-400 text-sm">Language</span>
-              <div className="flex space-x-2">
+            <div className="flex flex-col space-y-2 pt-4 border-t border-white/10">
+              <span className="text-[#00a79d] text-sm font-medium">Language</span>
+              <div className="flex space-x-3">
                 <button
                   onClick={() => switchLanguage("en")}
-                  className={`px-3 py-1 rounded mobile-menu-item ${
+                  className={`px-4 py-2 rounded-md text-sm font-medium border border-white/30 transition-all duration-300 ${
                     language === "en"
-                      ? "bg-white/20 text-white"
-                      : "text-gray-300 hover:bg-white/10"
+                      ? "bg-[#00a79d] text-white border-[#00a79d]"
+                      : "bg-white/15 text-[#00a79d] hover:bg-white/25 backdrop-blur-md"
                   }`}
                 >
-                  English
+                  <span className={language === "en" ? "text-white" : "text-[#00a79d]"}>English</span>
                 </button>
                 <button
                   onClick={() => switchLanguage("ar")}
-                  className={`px-3 py-1 rounded mobile-menu-item ${
+                  className={`px-4 py-2 rounded-md text-sm font-medium border border-white/30 transition-all duration-300 ${
                     language === "ar"
-                      ? "bg-white/20 text-white"
-                      : "text-gray-300 hover:bg-white/10"
+                      ? "bg-[#00a79d] text-white border-[#00a79d]"
+                      : "bg-white/15 text-[#00a79d] hover:bg-white/25 backdrop-blur-md"
                   }`}
                 >
-                  العربية
+                  <span className={language === "ar" ? "text-white" : "text-[#00a79d]"}>العربية</span>
                 </button>
               </div>
             </div>
 
-            {/* Mobile Contact Button */}
+            {/* Mobile Book a Demo Button */}
             <a
               href="/contact"
-              className="block w-full bg-green-500 hover:bg-green-600 text-white py-3 px-4 rounded-md text-center font-medium transition-colors mt-4"
+              className="block w-full bg-secondary hover:bg-secondary/90 text-white py-3 px-4 rounded-md text-center font-medium transition-all duration-300 ease-in-out transform hover:shadow-lg mt-4 flex items-center justify-center gap-2 group"
             >
-              Contact Us
+              <span className="text-white">Book a Demo</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
             </a>
+
+            {/* Mobile Glass Effect Button removed */}
           </div>
         </div>
       )}

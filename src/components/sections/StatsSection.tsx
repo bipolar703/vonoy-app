@@ -1,5 +1,5 @@
 import React from "react";
-import StatsAnimation from "./StatsAnimation";
+import BulbAnimation from "./BulbAnimation";
 import styles from "./StatsSection.module.css";
 
 /**
@@ -40,8 +40,6 @@ const StatsSection: React.FC = () => {
             <div className={styles.header}>
               <h2 className={styles.headerTitle}>
                 Vonoy in Numbers
-                {/* Modern design elements: animated underline */}
-                <div className={styles.headerUnderline}></div>
               </h2>
               <p className={styles.headerDescription}>
                 We plan to intensify our efforts to become pioneers in local and
@@ -52,11 +50,8 @@ const StatsSection: React.FC = () => {
 
             <div className={styles.statsGrid}>
               {/* Stat Card - Cost Reduction */}
-              <div>
+              <div className={styles.statCardWrapper}>
                 <div className={styles.statCard}>
-                  {/* Modern design element: Corner accent */}
-                  <div className={styles.cornerAccent}></div>
-
                   <div className={styles.iconContainer}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -79,11 +74,8 @@ const StatsSection: React.FC = () => {
               </div>
 
               {/* Stat Card - Fewer Vehicles */}
-              <div>
+              <div className={styles.statCardWrapper}>
                 <div className={styles.statCard}>
-                  {/* Modern design element: Corner accent */}
-                  <div className={styles.cornerAccent}></div>
-
                   <div className={styles.iconContainer}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -106,11 +98,8 @@ const StatsSection: React.FC = () => {
               </div>
 
               {/* Stat Card - Efficiency */}
-              <div>
+              <div className={styles.statCardWrapper}>
                 <div className={styles.statCard}>
-                  {/* Modern design element: Corner accent */}
-                  <div className={styles.cornerAccent}></div>
-
                   <div className={styles.iconContainer}>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -137,30 +126,12 @@ const StatsSection: React.FC = () => {
           </div>
 
           {/* Light Bulb Animation */}
-          <div className={styles.animationContainer}>
-            <StatsAnimation />
+          <div className={styles.statsAnimationContainer} id="stats-animation">
+            <BulbAnimation />
           </div>
         </div>
 
-        {/* Modern design element: CTA section with accent gradient */}
-        <div className={styles.ctaSection}>
-          <div className={styles.ctaAccent}></div>
-          <a href="/case-studies" className={styles.ctaButton}>
-            View Case Studies
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className={styles.ctaButtonIcon}
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </a>
-        </div>
+        {/* CTA section removed as requested */}
       </div>
     </section>
   );

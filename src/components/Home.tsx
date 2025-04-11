@@ -7,7 +7,14 @@ const Navbar: React.FC = () => {
       <div className="container mx-auto px-4 flex justify-between items-center">
         <div className="flex items-center">
           <a href="/">
-            <img src="/logo.svg" alt="Vonoy" className="h-10" />
+            <img
+              src="/logo.svg"
+              alt="Vonoy"
+              className="h-10"
+              width="120"
+              height="40"
+              fetchpriority="high"
+            />
           </a>
         </div>
 

@@ -1,0 +1,126 @@
+/* Card Component Styles */
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--border-radius-lg);
+  background-color: var(--color-surface);
+  overflow: hidden;
+  transition: all var(--transition-normal) var(--transition-timing-default);
+}
+
+/* Card Variants */
+.card-default {
+  box-shadow: var(--shadow-sm);
+}
+
+.card-elevated {
+  box-shadow: var(--shadow-lg);
+}
+
+.card-outlined {
+  border: 1px solid var(--color-gray-200);
+  box-shadow: none;
+}
+
+.card-interactive {
+  cursor: pointer;
+}
+
+/* Card States */
+.card-hoverable:hover,
+.card-interactive:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+}
+
+.card-interactive:active {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Card Parts */
+.card-header {
+  padding: var(--space-4) var(--space-4) var(--space-2);
+  border-bottom: 1px solid var(--color-gray-100);
+}
+
+.card-body {
+  padding: var(--space-4);
+  flex: 1 1 auto;
+}
+
+.card-footer {
+  padding: var(--space-2) var(--space-4) var(--space-4);
+  border-top: 1px solid var(--color-gray-100);
+}
+
+/* Card Image */
+.card-image {
+  width: 100%;
+  overflow: hidden;
+}
+
+.card-image img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  transition: transform var(--transition-normal) var(--transition-timing-default);
+}
+
+.card-hoverable:hover .card-image img,
+.card-interactive:hover .card-image img {
+  transform: scale(1.05);
+}
+
+.card-image-top {
+  order: -1;
+}
+
+.card-image-bottom {
+  order: 999;
+}
+
+/* Focus State */
+.card-interactive:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-primary);
+}
+
+/* Dark Mode Adjustments */
+@media (prefers-color-scheme: dark) {
+  .card-outlined {
+    border-color: var(--color-gray-700);
+  }
+  
+  .card-header {
+    border-bottom-color: var(--color-gray-700);
+  }
+  
+  .card-footer {
+    border-top-color: var(--color-gray-700);
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+  
+  .card-hoverable:hover,
+  .card-interactive:hover,
+  .card-interactive:active {
+    transform: none;
+  }
+  
+  .card-image img {
+    transition: none;
+  }
+  
+  .card-hoverable:hover .card-image img,
+  .card-interactive:hover .card-image img {
+    transform: none;
+  }
+}

@@ -1,15 +1,19 @@
-import "./App.css";
+import { lazy, Suspense } from "react";
 
-// Import modular components
-import Footer from "./components/layout/Footer";
+// Import critical components directly
 import Navbar from "./components/layout/Navbar";
-import BenefitSection from "./components/sections/BenefitSection";
-import CustomizationSection from "./components/sections/CustomizationSection";
-import FeaturesSection from "./components/sections/FeaturesSection";
 import HeroSection from "./components/sections/HeroSection";
-import StatsSection from "./components/sections/StatsSection";
-import VideoSection from "./components/sections/VideoSection";
-import WhyVonoySection from "./components/sections/WhyVonoySection";
+import LogoLoader from "./components/ui/LogoLoader";
+import Preload from "./components/ui/Preload";
+import "./components/ui/LogoLoader.css";
+
+// Lazy load non-critical components
+const Footer = lazy(() => import("./components/layout/Footer"));
+const WhyVonoySection = lazy(() => import("./components/sections/WhyVonoySection"));
+const StatsSection = lazy(() => import("./components/sections/StatsSection"));
+const CustomizationSection = lazy(() => import("./components/sections/CustomizationSection"));
+const BenefitSection = lazy(() => import("./components/sections/BenefitSection"));
+const VideoSection = lazy(() => import("./components/sections/VideoSection"));
 
 /**
  * Main App component
@@ -19,33 +23,62 @@ import WhyVonoySection from "./components/sections/WhyVonoySection";
  *
  * @returns {JSX.Element} The rendered application
  */
+/**
+ * Loading component for suspense fallback
+ * Uses the custom LogoLoader component for a branded loading experience
+ */
+// Use RouteTransition for full-page transitions and SectionLoader for in-page section loading
+const SectionLoader = () => (
+  <div className="flex justify-center items-center py-16">
+    <LogoLoader />
+  </div>
+);
+
+/**
+ * Main App component
+ *
+ * Implements code splitting and lazy loading for better performance
+ * Only critical components (Navbar, Hero) are loaded immediately
+ * Other sections are loaded as the user scrolls down
+ */
 function App() {
   return (
     <div className="min-h-screen flex flex-col">
+      {/* Preload critical resources */}
+      <Preload
+        resources={[
+          { href: '/hero-bg.webp', as: 'image', importance: 'high' },
+          { href: '/logo.svg', as: 'image', importance: 'high' }
+        ]}
+      />
+
       <Navbar />
       <main className="flex-grow">
-        {/* Section 1: Hero */}
+        {/* Section 1: Hero - Critical, load immediately */}
         <HeroSection />
 
-        {/* Section 2: Why Choose Vonoy? */}
-        <WhyVonoySection />
+        {/* Lazy load all non-critical sections */}
+        <Suspense fallback={<SectionLoader />}>
+          {/* Section 2: Why Choose Vonoy? */}
+          <WhyVonoySection />
 
-        {/* Section 3: Vonoy in Numbers */}
-        <StatsSection />
+          {/* Section 3: Vonoy in Numbers */}
+          <StatsSection />
 
-        {/* Section 4: Customization */}
-        <CustomizationSection />
+          {/* Section 4: Customization */}
+          <CustomizationSection />
 
-        {/* Section 5: Who Can Benefit */}
-        <BenefitSection />
+          {/* Section 5: Who Can Benefit */}
+          <BenefitSection />
 
-        {/* Section 6: See Vonoy In Action */}
-        <VideoSection />
-
-        {/* Additional Features Section */}
-        <FeaturesSection />
+          {/* Section 6: See Vonoy In Action */}
+          <VideoSection />
+        </Suspense>
       </main>
-      <Footer />
+
+      <Suspense fallback={<SectionLoader />}>
+        <Footer />
+      </Suspense>
     </div>
   );
 }

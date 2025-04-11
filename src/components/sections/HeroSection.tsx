@@ -1,5 +1,6 @@
 import React from "react";
 import HeroAnimation from "./HeroAnimation";
+import OptimizedImage from "../ui/OptimizedImage";
 import styles from "./HeroSection.module.css";
 
 /**
@@ -13,12 +14,12 @@ import styles from "./HeroSection.module.css";
  */
 const HeroSection: React.FC = () => {
   return (
-    <section className={styles.heroSection}>
+    <section className={styles.heroSection} id="hero-section">
       {/*
        * CRITICAL: Do not modify the hero section background styling without reviewing the animation
        * impact. The gradient and animation are carefully calibrated to work together.
        */}
-      <div className="heroContainer pt-24">
+      <div className={`${styles.heroContainer} pt-24`}>
         <div className={styles.container}>
           <div className={styles.content}>
             <h1 className={styles.heading}>
@@ -78,7 +79,7 @@ const HeroSection: React.FC = () => {
           <h3 className={styles.solutionsPanelTitle}>Our Solutions</h3>
           <div className={styles.solutionsList}>
             {/* Solution 1: Fleet & Resource Management */}
-            <a href="/solutions" className={styles.solutionItem}>
+            <a href="/solutions" className={`${styles.solutionItem} ${styles.staggerItem}`}>
               <div className={styles.solutionIconContainer}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -113,7 +114,7 @@ const HeroSection: React.FC = () => {
             </a>
 
             {/* Solution 2: Order Processing & Delivery Optimization */}
-            <a href="/solutions" className={styles.solutionItem}>
+            <a href="/solutions" className={`${styles.solutionItem} ${styles.staggerItem}`}>
               <div className={styles.solutionIconContainer}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -148,7 +149,7 @@ const HeroSection: React.FC = () => {
             </a>
 
             {/* Solution 3: Real-Time Tracking & Communication */}
-            <a href="/solutions" className={styles.solutionItem}>
+            <a href="/solutions" className={`${styles.solutionItem} ${styles.staggerItem}`}>
               <div className={styles.solutionIconContainer}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -183,7 +184,7 @@ const HeroSection: React.FC = () => {
             </a>
 
             {/* Solution 4: Data-Driven Decision Making & Analytics */}
-            <a href="/solutions" className={styles.solutionItem}>
+            <a href="/solutions" className={`${styles.solutionItem} ${styles.staggerItem}`}>
               <div className={styles.solutionIconContainer}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -218,7 +219,7 @@ const HeroSection: React.FC = () => {
             </a>
 
             {/* Solution 5: Driver Mobile Application */}
-            <a href="/solutions" className={styles.solutionItem}>
+            <a href="/solutions" className={`${styles.solutionItem} ${styles.staggerItem}`}>
               <div className={styles.solutionIconContainer}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

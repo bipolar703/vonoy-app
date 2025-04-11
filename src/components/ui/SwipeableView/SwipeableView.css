@@ -1,0 +1,19 @@
+/* SwipeableView Component Styles */
+
+.swipeable-view {
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  will-change: transform;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .swipeable-view {
+    transition: none !important;
+    transform: none !important;
+  }
+}

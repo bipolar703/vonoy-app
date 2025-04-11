@@ -1,0 +1,76 @@
+{
+  "name": "Vonoy - AI-Powered Fleet Operations Management",
+  "short_name": "Vonoy",
+  "description": "Optimize fleet utilization, reduce costs, and enhance delivery efficiency with data-driven, AI-powered solutions.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#121F2F",
+  "theme_color": "#00a79d",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/desktop.webp",
+      "sizes": "1280x800",
+      "type": "image/webp",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/screenshots/mobile.webp",
+      "sizes": "750x1334",
+      "type": "image/webp",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Book a Demo",
+      "short_name": "Demo",
+      "description": "Book a demo of Vonoy",
+      "url": "/contact?action=demo",
+      "icons": [{ "src": "/shortcuts/demo.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Features",
+      "short_name": "Features",
+      "description": "Explore Vonoy features",
+      "url": "/features",
+      "icons": [{ "src": "/shortcuts/features.png", "sizes": "96x96" }]
+    }
+  ],
+  "categories": ["business", "logistics", "productivity", "utilities"],
+  "dir": "ltr",
+  "lang": "en",
+  "prefer_related_applications": false
+}

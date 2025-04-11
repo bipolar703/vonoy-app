@@ -2,18 +2,92 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Vonoy - AI-Powered Fleet Operations Management Platform. Optimize fleet utilization, reduce costs, and enhance delivery efficiency with data-driven solutions."
-    />
-    <title>
-      Vonoy | Transform Your Fleet Operations with AI-Powered Efficiency
-    </title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" sizes="any" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Vonoy - AI-Powered Fleet Operations Management Platform. Optimize fleet utilization, reduce costs, and enhance delivery efficiency with data-driven solutions." />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+    <!-- SEO Meta Tags -->
+    <meta name="keywords" content="fleet management, AI logistics, route optimization, delivery efficiency, transportation management" />
+    <meta name="author" content="Vonoy" />
+    <meta property="og:title" content="Vonoy | Transform Your Fleet Operations with AI-Powered Efficiency" />
+    <meta property="og:description" content="Optimize fleet utilization, reduce costs, and enhance delivery efficiency with data-driven, AI-powered solutions." />
+    <meta property="og:image" content="/og-image.jpg" />
+    <meta property="og:url" content="https://vonoy.com" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Performance optimizations - Updated for 2025 web standards -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <meta name="render-mode" content="critical-blocking" />
+    <meta name="priority-hints" content="high" />
+    <meta http-equiv="Cache-Control" content="max-age=86400" />
+    <meta name="resource-hints" content="preload prefetch preconnect" />
+
+    <!-- Preload critical assets - Optimized for performance -->
+    <link rel="preload" href="/logo.svg" as="image" type="image/svg+xml" fetchPriority="high" />
+    <link rel="preload" href="/hero-bg.webp" as="image" fetchPriority="high" />
+    <link rel="preload" href="/footer-lines.svg" as="image" type="image/svg+xml" fetchPriority="low" />
+    <link rel="preload" href="/fonts/Satoshi-Regular.otf" as="font" type="font/otf" crossorigin />
+    <link rel="preload" href="/fonts/Satoshi-Bold.otf" as="font" type="font/otf" crossorigin />
+
+    <!-- Prefetch non-critical assets that will be needed soon -->
+    <link rel="prefetch" href="/assets/stats-bg.webp" as="image" />
+    <link rel="prefetch" href="/assets/feature-icons.svg" as="image" />
+
+    <!-- Modern browser features - 2025 web standards -->
+    <meta name="view-transition" content="same-origin" />
+    <meta name="supported-color-schemes" content="light dark" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#00a79d" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#008c84" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="Vonoy" />
+    <meta name="apple-mobile-web-app-title" content="Vonoy" />
+    <meta name="msapplication-TileColor" content="#00a79d" />
+    <meta name="msapplication-config" content="/browserconfig.xml" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <title>Vonoy | Transform Your Fleet Operations with AI-Powered Efficiency</title>
   </head>
   <body>
-    <div id="root"></div>
+    <!-- Initial loading state that will be replaced by React -->
+    <div id="root">
+      <div class="initial-loading">
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+          <img src="/logo.svg" alt="Vonoy" width="80" height="80" style="margin-bottom: 1rem;" />
+          <div style="display: flex; gap: 0.5rem;">
+            <div class="circle" style="width: 10px; height: 10px; border-radius: 50%; background-color: #00a79d; animation: pulse 1.5s infinite ease-in-out;"></div>
+            <div class="circle" style="width: 10px; height: 10px; border-radius: 50%; background-color: #00a79d; animation: pulse 1.5s infinite ease-in-out 0.2s;"></div>
+            <div class="circle" style="width: 10px; height: 10px; border-radius: 50%; background-color: #00a79d; animation: pulse 1.5s infinite ease-in-out 0.4s;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inline critical CSS for faster initial render -->
+    <style>
+      @keyframes pulse {
+        0%, 100% { transform: scale(0.8); opacity: 0.7; }
+        50% { transform: scale(1); opacity: 1; }
+      }
+      .initial-loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100%;
+        background-color: #121F2F;
+        color: white;
+      }
+    </style>
+
+    <!-- Main application script -->
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Preconnect to API endpoints -->
+    <link rel="preconnect" href="https://api.vonoy.com" crossorigin />
   </body>
 </html>

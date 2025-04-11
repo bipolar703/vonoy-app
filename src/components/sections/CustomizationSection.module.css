@@ -27,17 +27,7 @@
   display: inline-block;
 }
 
-.sectionTitle::after {
-  content: "";
-  position: absolute;
-  bottom: -0.75rem;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 4px;
-  background: linear-gradient(to right, #3dd598, #0a6dc2);
-  border-radius: 4px;
-}
+
 
 .sectionDescription {
   font-size: 1.25rem;

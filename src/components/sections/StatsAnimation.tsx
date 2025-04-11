@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
-import styles from "./StatsAnimation.module.css";
+import React, { useEffect } from "react";
 
 /**
  * StatsAnimation Component
@@ -8,187 +7,290 @@ import styles from "./StatsAnimation.module.css";
  * creating a high-end visual effect for the Stats section.
  */
 const StatsAnimation: React.FC = () => {
-  const [animate, setAnimate] = useState(false);
-  const animationRef = useRef<HTMLDivElement>(null);
-
+  // Add animation styles directly to the document head
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const [entry] = entries;
-        if (entry.isIntersecting) {
-          setAnimate(true);
-          observer.disconnect();
-        }
-      },
-      {
-        root: null,
-        threshold: 0.3,
+    // Create a style element
+    const styleEl = document.createElement('style');
+    styleEl.id = 'bulb-animation-styles';
+
+    // Define all the animations
+    styleEl.innerHTML = `
+      @keyframes bulbFloat {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        25% { transform: translateY(-10px) rotate(-2deg); }
+        50% { transform: translateY(0) rotate(0deg); }
+        75% { transform: translateY(-10px) rotate(2deg); }
       }
-    );
 
-    if (animationRef.current) {
-      observer.observe(animationRef.current);
-    }
+      @keyframes glowPulse {
+        0% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+        100% { opacity: 1; transform: translate(-50%, -50%) scale(1.5); }
+      }
 
+      @keyframes rotateRays {
+        0% { transform: translate(-50%, -50%) rotate(0deg); }
+        100% { transform: translate(-50%, -50%) rotate(360deg); }
+      }
+
+      @keyframes flickerFilament {
+        0% { opacity: 0.7; }
+        100% { opacity: 1; }
+      }
+
+      @keyframes pulsePath {
+        0% { opacity: 0.7; box-shadow: 0 0 10px rgba(61, 213, 152, 0.5); }
+        100% { opacity: 1; box-shadow: 0 0 20px rgba(61, 213, 152, 0.9); }
+      }
+
+      @keyframes nodePulse {
+        0% { transform: scale(1); box-shadow: 0 0 15px rgba(61, 213, 152, 0.8); }
+        100% { transform: scale(1.2); box-shadow: 0 0 20px rgba(61, 213, 152, 1); }
+      }
+
+      .bulb-container {
+        position: relative;
+        width: 100%;
+        height: 300px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+      }
+
+      .light-bulb {
+        position: relative;
+        z-index: 5;
+        animation: bulbFloat 4s ease-in-out infinite;
+      }
+
+      .glow {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        background: radial-gradient(circle, rgba(61, 213, 152, 0.6) 0%, rgba(61, 213, 152, 0.2) 50%, rgba(61, 213, 152, 0) 70%);
+        box-shadow: 0 0 30px rgba(61, 213, 152, 0.5);
+        animation: glowPulse 3s infinite alternate;
+        z-index: -1;
+      }
+
+      .rays {
+        position: absolute;
+        top: 45%;
+        left: 50%;
+        width: 150px;
+        height: 150px;
+        transform: translate(-50%, -50%);
+        z-index: -2;
+        opacity: 0.7;
+        background-image: repeating-conic-gradient(
+          transparent 0deg,
+          transparent 9deg,
+          rgba(61, 213, 152, 0.15) 10deg,
+          transparent 11deg,
+          transparent 19deg,
+          rgba(61, 213, 152, 0.1) 20deg
+        );
+        animation: rotateRays 15s linear infinite;
+        box-shadow: 0 0 30px rgba(61, 213, 152, 0.2);
+      }
+
+      .filament {
+        opacity: 1;
+        animation: flickerFilament 0.5s ease-in-out infinite alternate;
+      }
+
+      .circuit-path {
+        position: absolute;
+        background-color: rgba(61, 213, 152, 0.8);
+        box-shadow: 0 0 15px rgba(61, 213, 152, 0.7);
+        animation: pulsePath 2s infinite alternate;
+      }
+
+      .path-top {
+        top: 0;
+        left: 50%;
+        width: 3px;
+        height: 70px;
+        transform: translateX(-50%);
+      }
+
+      .path-right {
+        top: 50%;
+        right: 0;
+        width: 70px;
+        height: 3px;
+        transform: translateY(-50%);
+        animation-delay: 0.5s;
+      }
+
+      .path-bottom {
+        bottom: 0;
+        left: 50%;
+        width: 3px;
+        height: 70px;
+        transform: translateX(-50%);
+        animation-delay: 1s;
+      }
+
+      .path-left {
+        top: 50%;
+        left: 0;
+        width: 70px;
+        height: 3px;
+        transform: translateY(-50%);
+        animation-delay: 1.5s;
+      }
+
+      .circuit-node {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: rgba(61, 213, 152, 1);
+        border-radius: 50%;
+        box-shadow: 0 0 15px rgba(61, 213, 152, 0.8), 0 0 5px rgba(255, 255, 255, 0.8) inset;
+        animation: nodePulse 2s infinite alternate;
+        z-index: 2;
+      }
+
+      .node-top-left {
+        top: 0;
+        left: 0;
+      }
+
+      .node-top-right {
+        top: 0;
+        right: 0;
+        animation-delay: 0.5s;
+      }
+
+      .node-bottom-left {
+        bottom: 0;
+        left: 0;
+        animation-delay: 1s;
+      }
+
+      .node-bottom-right {
+        bottom: 0;
+        right: 0;
+        animation-delay: 1.5s;
+      }
+    `;
+
+    // Add the style element to the document head
+    document.head.appendChild(styleEl);
+
+    // Clean up on component unmount
     return () => {
-      if (animationRef.current) {
-        observer.unobserve(animationRef.current);
+      const existingStyle = document.getElementById('bulb-animation-styles');
+      if (existingStyle) {
+        document.head.removeChild(existingStyle);
       }
     };
   }, []);
 
   return (
-    <div ref={animationRef} className={styles.animationContainer}>
-      <div className={`${styles.lightBulb} ${animate ? styles.animate : ""}`}>
+    <div className="bulb-container">
+      {/* Circuit container with dynamic connections */}
+      <div style={{ position: 'absolute', width: '260px', height: '260px', zIndex: 1 }}>
+        {/* Main circuit paths */}
+        <div className="circuit-path path-top"></div>
+        <div className="circuit-path path-right"></div>
+        <div className="circuit-path path-bottom"></div>
+        <div className="circuit-path path-left"></div>
+
+        {/* Connection nodes with pulsing effect */}
+        <div className="circuit-node node-top-left"></div>
+        <div className="circuit-node node-top-right"></div>
+        <div className="circuit-node node-bottom-left"></div>
+        <div className="circuit-node node-bottom-right"></div>
+      </div>
+
+      {/* Premium high-tech light bulb */}
+      <div className="light-bulb">
+        {/* Glow effect */}
+        <div className="glow"></div>
+
+        {/* Rays effect */}
+        <div className="rays"></div>
+
+        {/* Main bulb SVG with enhanced design */}
         <svg
-          width="100"
-          height="160"
-          viewBox="0 0 100 160"
+          width="90"
+          height="130"
+          viewBox="0 0 90 130"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          style={{ filter: 'drop-shadow(0 0 15px rgba(61, 213, 152, 0.7))' }}
         >
+          {/* Define gradients */}
+          <defs>
+            <linearGradient id="bulbGradient" x1="25" y1="15" x2="65" y2="85" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stopColor="#4eebc0" />
+              <stop offset="1" stopColor="#2bb78f" />
+            </linearGradient>
+
+            <radialGradient id="bulbFill" cx="45" cy="45" r="30" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stopColor="#4eebc0" stopOpacity="0.3" />
+              <stop offset="1" stopColor="#2bb78f" stopOpacity="0.05" />
+            </radialGradient>
+
+            <linearGradient id="baseGradient" x1="32" y1="81" x2="58" y2="97" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stopColor="#4eebc0" />
+              <stop offset="1" stopColor="#2bb78f" />
+            </linearGradient>
+
+            <linearGradient id="filamentGradient" x1="40" y1="50" x2="50" y2="70" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stopColor="#ffcc80" />
+              <stop offset="1" stopColor="#ff9100" />
+            </linearGradient>
+          </defs>
+
+          {/* Premium glass bulb with gradient */}
           <path
-            className={styles.bulbGlass}
-            d="M74 60C74 76.9 60.3 90.6 50 105C40.1 90.6 26 77 26 60C26 42.9 39.9 29 50 29C60.3 29 74 42.9 74 60Z"
-            stroke="currentColor"
+            d="M65 45C65 62 50 75 45 85C40 75 25 62 25 45C25 28 33.5 15 45 15C56.5 15 65 28 65 45Z"
+            stroke="url(#bulbGradient)"
             strokeWidth="2"
+            fill="url(#bulbFill)"
+          />
+
+          {/* Metallic base with premium finish */}
+          <path
+            d="M55 90H35C33.3 90 32 88.7 32 87V84C32 82.3 33.3 81 35 81H55C56.7 81 58 82.3 58 84V87C58 88.7 56.7 90 55 90Z"
+            fill="url(#baseGradient)"
           />
           <path
-            className={styles.bulbBase}
-            d="M59 110H41C39.9 110 39 109.1 39 108V105C39 103.9 39.9 103 41 103H59C60.1 103 61 103.9 61 105V108C61 109.1 60.1 110 59 110Z"
-            fill="currentColor"
+            d="M52 97H38C36.3 97 35 95.7 35 94V90C35 88.3 36.3 87 38 87H52C53.7 87 55 88.3 55 90V94C55 95.7 53.7 97 52 97Z"
+            fill="url(#baseGradient)"
           />
+
+          {/* Advanced filament design */}
           <path
-            className={styles.bulbBase}
-            d="M56 117H44C42.9 117 42 116.1 42 115V110C42 108.9 42.9 108 44 108H56C57.1 108 58 108.9 58 110V115C58 116.1 57.1 117 56 117Z"
-            fill="currentColor"
-          />
-          <path
-            className={styles.filament}
-            d="M50 65V95"
-            stroke="currentColor"
-            strokeWidth="2"
+            d="M45 50C45 50 40 55 45 65C50 75 45 70 45 70"
+            stroke="url(#filamentGradient)"
+            strokeWidth="1.5"
             strokeLinecap="round"
+            className="filament"
           />
           <path
-            className={styles.filament}
-            d="M42 72H58"
-            stroke="currentColor"
-            strokeWidth="2"
+            d="M45 50C45 50 50 55 45 65C40 75 45 70 45 70"
+            stroke="url(#filamentGradient)"
+            strokeWidth="1.5"
             strokeLinecap="round"
+            className="filament"
           />
+
+          {/* Reflective highlights */}
           <path
-            className={styles.filament}
-            d="M45 83L55 83"
-            stroke="currentColor"
-            strokeWidth="2"
+            d="M35 40C35 40 40 35 45 40C50 45 55 40 55 40"
+            stroke="rgba(255, 255, 255, 0.7)"
+            strokeWidth="1"
             strokeLinecap="round"
           />
         </svg>
-
-        <div
-          className={`${styles.glow} ${animate ? styles.animateGlow : ""}`}
-        ></div>
-      </div>
-
-      {/* Circuit wires container */}
-      <div className={styles.circuitContainer}>
-        {/* Top circuit */}
-        <div
-          className={`${styles.circuit} ${styles.circuitTop} ${
-            animate ? styles.animateCircuitTop : ""
-          }`}
-        >
-          <div className={styles.circuitLine}></div>
-          <div className={styles.circuitNode}></div>
-          <div className={styles.circuitPulse}></div>
-        </div>
-
-        {/* Right circuit */}
-        <div
-          className={`${styles.circuit} ${styles.circuitRight} ${
-            animate ? styles.animateCircuitRight : ""
-          }`}
-        >
-          <div className={styles.circuitLine}></div>
-          <div className={styles.circuitNode}></div>
-          <div className={styles.circuitPulse}></div>
-        </div>
-
-        {/* Bottom circuit */}
-        <div
-          className={`${styles.circuit} ${styles.circuitBottom} ${
-            animate ? styles.animateCircuitBottom : ""
-          }`}
-        >
-          <div className={styles.circuitLine}></div>
-          <div className={styles.circuitNode}></div>
-          <div className={styles.circuitPulse}></div>
-        </div>
-
-        {/* Left circuit */}
-        <div
-          className={`${styles.circuit} ${styles.circuitLeft} ${
-            animate ? styles.animateCircuitLeft : ""
-          }`}
-        >
-          <div className={styles.circuitLine}></div>
-          <div className={styles.circuitNode}></div>
-          <div className={styles.circuitPulse}></div>
-        </div>
-      </div>
-
-      {/* Original wires */}
-      <div className={styles.wiresContainer}>
-        <div
-          className={`${styles.wire} ${styles.wireLeft} ${
-            animate ? styles.animateWireLeft : ""
-          }`}
-        ></div>
-        <div
-          className={`${styles.wire} ${styles.wireRight} ${
-            animate ? styles.animateWireRight : ""
-          }`}
-        ></div>
-        <div
-          className={`${styles.wire} ${styles.wireBottom} ${
-            animate ? styles.animateWireBottom : ""
-          }`}
-        ></div>
-
-        {/* Wire Nodes */}
-        <div
-          className={`${styles.wireNode} ${styles.wireNodeLeft} ${
-            animate ? styles.animateNodeLeft : ""
-          }`}
-        ></div>
-        <div
-          className={`${styles.wireNode} ${styles.wireNodeRight} ${
-            animate ? styles.animateNodeRight : ""
-          }`}
-        ></div>
-        <div
-          className={`${styles.wireNode} ${styles.wireNodeBottom} ${
-            animate ? styles.animateNodeBottom : ""
-          }`}
-        ></div>
-
-        {/* Pulse animations */}
-        <div
-          className={`${styles.pulse} ${styles.pulseLeft} ${
-            animate ? styles.animatePulseLeft : ""
-          }`}
-        ></div>
-        <div
-          className={`${styles.pulse} ${styles.pulseRight} ${
-            animate ? styles.animatePulseRight : ""
-          }`}
-        ></div>
-        <div
-          className={`${styles.pulse} ${styles.pulseBottom} ${
-            animate ? styles.animatePulseBottom : ""
-          }`}
-        ></div>
       </div>
     </div>
   );

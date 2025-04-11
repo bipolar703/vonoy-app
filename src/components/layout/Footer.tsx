@@ -29,7 +29,13 @@ const Footer: React.FC = () => {
 
       {/* Footer lines SVG background */}
       <div className={styles.footerLinesContainer}>
-        <img src="/footer-lines.svg" alt="" className={styles.footerLines} />
+        <img
+          src="/footer-lines.svg"
+          alt=""
+          className={styles.footerLines}
+          loading="lazy"
+          fetchpriority="low"
+        />
       </div>
 
       {/* Modern design element: Top border gradient */}
@@ -43,7 +49,15 @@ const Footer: React.FC = () => {
             {/* Modern design element: Floating accent */}
             <div className={styles.floatingAccent}></div>
 
-            <img src="/logo.svg" alt="Vonoy" className={styles.logo} />
+            <img
+              src="/logo.svg"
+              alt="Vonoy"
+              className={styles.logo}
+              width="120"
+              height="40"
+              loading="lazy"
+              fetchpriority="high"
+            />
             <p className={styles.description}>
               AI-powered fleet operations management platform that helps
               businesses optimize resources, reduce costs, and enhance delivery
@@ -258,17 +272,6 @@ const Footer: React.FC = () => {
           <p className={styles.copyright}>
             © {new Date().getFullYear()} Vonoy. All rights reserved.
           </p>
-          <div className={styles.legalLinks}>
-            <a href="#" className={styles.legalLink}>
-              Privacy Policy
-            </a>
-            <a href="#" className={styles.legalLink}>
-              Terms of Service
-            </a>
-            <a href="#" className={styles.legalLink}>
-              Cookie Policy
-            </a>
-          </div>
         </div>
       </div>
     </footer>

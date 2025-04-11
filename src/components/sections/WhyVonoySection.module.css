@@ -68,17 +68,7 @@
   z-index: 1;
 }
 
-.highlight::after {
-  content: "";
-  position: absolute;
-  bottom: 0.1em;
-  left: -0.25em;
-  right: -0.25em;
-  height: 0.3em;
-  background-color: rgba(61, 213, 152, 0.2);
-  z-index: -1;
-  transform: rotate(-1deg);
-}
+
 
 .featuresGrid {
   display: grid;

@@ -163,8 +163,6 @@ const FeaturesSection: React.FC = () => {
         <div className={styles.header}>
           <h2 className={styles.headerTitle}>
             Powerful Features to <Highlight>Optimize</Highlight> Your Fleet
-            {/* Modern design element: decorative underline effect */}
-            <div className={styles.headerUnderline}></div>
           </h2>
           <p className={styles.headerDescription}>
             Our platform combines advanced AI technology with user-friendly
