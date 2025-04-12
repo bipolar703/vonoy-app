@@ -387,6 +387,8 @@
   font-size: 0.875rem;
   line-height: 1.25rem;
   transition: color 0.3s;
+  text-align: center;
+  width: 100%;
 }
 
 .copyright:hover {

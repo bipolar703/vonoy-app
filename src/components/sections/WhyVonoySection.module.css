@@ -79,50 +79,9 @@
 }
 
 .featureCard {
-  background-color: rgba(255, 255, 255, 0.8);
-  border-radius: 1rem;
-  padding: 1.5rem; /* Reduced padding for more compact design */
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03), 0 1px 8px rgba(0, 0, 0, 0.06);
-  transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
-  position: relative;
-  z-index: 1;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 0, 0, 0.04);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  cursor: pointer; /* Indicate interactivity */
-}
-
-.featureCard::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: linear-gradient(
-    to bottom right,
-    rgba(61, 213, 152, 0.05),
-    rgba(10, 109, 194, 0.05)
-  );
-  border-radius: 1rem;
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-/* Hover effects now handled by Anime.js */
-.featureCard:hover::before {
-  opacity: 1;
-}
-
-.featureIconContainer {
-  position: relative;
-  margin-bottom: 1.25rem;
-  width: 4rem;
-  height: 4rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  /* Styles will be inherited from ExpandableCard component */
+  /* Just add any custom styles specific to this section */
+  margin-bottom: 1rem;
 }
 
 .featureIcon {
@@ -133,80 +92,4 @@
   z-index: 1;
 }
 
-.iconRing {
-  position: absolute;
-  width: 4rem;
-  height: 4rem;
-  border-radius: 50%;
-  background: conic-gradient(
-    from 180deg at 50% 50%,
-    #3dd598 0deg,
-    rgba(61, 213, 152, 0.2) 90deg,
-    rgba(10, 109, 194, 0.2) 180deg,
-    rgba(10, 109, 194, 0.7) 270deg,
-    #3dd598 360deg
-  );
-  opacity: 0.15;
-  transition: all 0.3s ease;
-}
-
-.featureCard:hover .iconRing {
-  transform: scale(1.1) rotate(90deg);
-  opacity: 0.3;
-}
-
-.featureTitle {
-  color: #102a43;
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin-bottom: 0.75rem;
-}
-
-/* New collapsible description styles */
-.featureDescriptionWrapper {
-  position: relative;
-  overflow: hidden;
-  max-height: 4.8rem; /* Show only 3 lines initially */
-  transition: max-height 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
-}
-
-.featureDescriptionWrapper:hover,
-.featureDescriptionWrapper:focus-within {
-  max-height: 20rem; /* Expand on hover/focus */
-}
-
-.featureDescription {
-  color: #486581;
-  line-height: 1.6;
-  font-size: 0.95rem;
-  margin-bottom: 1.5rem; /* Space for the button */
-}
-
-.readMoreButton {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: rgba(255, 255, 255, 0.8);
-  border-radius: 9999px;
-  width: 1.5rem;
-  height: 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.readMoreIcon {
-  width: 1rem;
-  height: 1rem;
-  color: #3dd598;
-  transition: transform 0.3s ease;
-}
-
-.featureDescriptionWrapper:hover .readMoreButton,
-.featureDescriptionWrapper:focus-within .readMoreButton {
-  transform: translateX(-50%) rotate(180deg);
-}
+/* All styles for title, description, and expand/collapse are now handled by the ExpandableCard component */

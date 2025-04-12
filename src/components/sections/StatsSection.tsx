@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from "react";
-import BulbAnimation from "./BulbAnimation";
 import styles from "./StatsSection.module.css";
 import { scrollReveal, staggerAnimation, pulseAnimation } from "../../utils/animations";
 
@@ -141,9 +140,23 @@ const StatsSection: React.FC = () => {
             </div>
           </div>
 
-          {/* Light Bulb Animation */}
+          {/* Modern stats visualization */}
           <div className={styles.statsAnimationContainer} id="stats-animation">
-            <BulbAnimation />
+            <div className={styles.statsVisualization}>
+              <div className={styles.visualizationCircle}></div>
+              <div className={styles.visualizationLines}>
+                <div className={styles.visualizationLine}></div>
+                <div className={styles.visualizationLine}></div>
+                <div className={styles.visualizationLine}></div>
+              </div>
+              <div className={styles.visualizationDots}>
+                <div className={styles.visualizationDot}></div>
+                <div className={styles.visualizationDot}></div>
+                <div className={styles.visualizationDot}></div>
+                <div className={styles.visualizationDot}></div>
+                <div className={styles.visualizationDot}></div>
+              </div>
+            </div>
           </div>
         </div>
 

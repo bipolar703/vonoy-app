@@ -1,36 +1,65 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./WhyVonoySection.module.css";
-import { scrollReveal, hoverAnimation } from "../../utils/animations";
+import { scrollReveal } from "../../utils/animations";
+import ExpandableCard from "../../components/ui/ExpandableCard";
 
 /**
  * Why Choose Vonoy Section
  *
  * Displays the key benefits of the Vonoy platform with modern design elements
- * and icons. Implements interactive animations and compact design.
+ * and icons. Implements interactive animations and expandable cards.
  *
  * Features:
  * - Scroll-triggered animations
- * - Interactive hover effects
- * - Collapsible content for mobile
- * - Compact, modern design
+ * - Interactive expandable cards with click-to-expand functionality
+ * - Only one card expanded at a time for cleaner UX
+ * - Premium, subtle animations
+ * - Modern glass morphism design
  */
+
+// Card component with independent expansion
+const FeatureCards: React.FC<{ features: any[] }> = ({ features }) => {
+  // Track which cards are expanded with local state instead of context
+  const [expandedCards, setExpandedCards] = useState<Record<string, boolean>>({});
+
+  // Handle card toggle with animation - each card expands independently
+  const handleCardToggle = (id: string, isOpen: boolean) => {
+    setExpandedCards(prev => ({
+      ...prev,
+      [id]: isOpen
+    }));
+  };
+
+  return (
+    <div className={styles.featuresGrid}>
+      {features.map((feature, index) => {
+        const cardId = `feature-${index}`;
+        const isOpen = !!expandedCards[cardId];
+
+        return (
+          <ExpandableCard
+            key={index}
+            title={feature.title}
+            description={feature.description}
+            icon={feature.icon}
+            className={styles.featureCard}
+            isOpen={isOpen}
+            onToggle={(open) => handleCardToggle(cardId, open)}
+          />
+        );
+      })}
+    </div>
+  );
+};
+
 const WhyVonoySection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
 
   // Initialize animations when component mounts
   useEffect(() => {
-    if (sectionRef.current && cardsRef.current) {
+    if (sectionRef.current) {
       // Scroll reveal animation for the section
       scrollReveal(sectionRef.current, 0.1);
-
-      // Hover animations for feature cards
-      const cards = cardsRef.current.querySelectorAll(`.${styles.featureCard}`);
-      hoverAnimation(
-        cards,
-        { translateY: -10, boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)' },
-        { translateY: 0, boxShadow: '0 10px 30px rgba(0, 0, 0, 0.05)' }
-      );
     }
   }, []);
   // Features data - Updated based on vonoy-edits.md
@@ -183,7 +212,6 @@ const WhyVonoySection: React.FC = () => {
   return (
     <section ref={sectionRef} className={styles.section}>
       <div className={styles.sectionBg}>
-        {/* Grid effect removed as requested */}
         <div className={styles.glow}></div>
       </div>
       <div className={styles.container}>
@@ -193,27 +221,8 @@ const WhyVonoySection: React.FC = () => {
           </h2>
         </div>
 
-        <div ref={cardsRef} className={styles.featuresGrid}>
-          {features.map((feature, index) => (
-            <div key={index} className={styles.featureCard}>
-              <div className={styles.featureIconContainer}>
-                {feature.icon}
-                <div className={styles.iconRing}></div>
-              </div>
-              <h3 className={styles.featureTitle}>{feature.title}</h3>
-
-              {/* Collapsible description for more compact UI */}
-              <div className={styles.featureDescriptionWrapper}>
-                <p className={styles.featureDescription}>{feature.description}</p>
-                <button className={styles.readMoreButton} aria-label="Toggle description">
-                  <svg xmlns="http://www.w3.org/2000/svg" className={styles.readMoreIcon} viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+        {/* Cards now expand independently */}
+        <FeatureCards features={features} />
       </div>
     </section>
   );

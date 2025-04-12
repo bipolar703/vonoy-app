@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import OptimizedImage from "../ui/OptimizedImage";
 
 /**
@@ -12,6 +12,7 @@ import OptimizedImage from "../ui/OptimizedImage";
  * @returns {JSX.Element} The rendered Navbar component
  */
 const Navbar: React.FC = () => {
+  const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
@@ -19,6 +20,14 @@ const Navbar: React.FC = () => {
   const [isMobileSubmenuOpen, setIsMobileSubmenuOpen] = useState(false);
   const [language, setLanguage] = useState<"en" | "ar">("en");
   const [isLoading, setIsLoading] = useState(false);
+
+  // Check if the current path matches the link
+  const isActive = (path: string) => {
+    if (path === '/') {
+      return location.pathname === path;
+    }
+    return location.pathname.startsWith(path);
+  };
 
   // Handle window resize to close mobile menu
   useEffect(() => {
@@ -117,16 +126,21 @@ const Navbar: React.FC = () => {
         <div className="hidden md:flex space-x-6 items-center">
           <Link
             to="/"
-            className="text-white hover:text-secondary transition-colors"
+            className={`relative transition-colors ${isActive('/')
+              ? 'text-secondary font-medium nav-active'
+              : 'text-white hover:text-secondary'}`}
           >
             Home
+            {isActive('/') && <span className="nav-indicator"></span>}
           </Link>
 
           {/* Solutions Dropdown */}
           <div className="relative group">
             <button
               onClick={toggleSolutionsMenu}
-              className="text-white hover:text-secondary transition-colors flex items-center"
+              className={`relative flex items-center transition-colors ${isActive('/solutions')
+                ? 'text-secondary font-medium nav-active'
+                : 'text-white hover:text-secondary'}`}
             >
               Solutions
               <svg
@@ -145,21 +159,25 @@ const Navbar: React.FC = () => {
                   d="M19 9l-7 7-7-7"
                 />
               </svg>
+              {isActive('/solutions') && <span className="nav-indicator"></span>}
             </button>
 
             {/* Solutions Dropdown Menu */}
             {isSolutionsMenuOpen && (
-              <div className="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
+              <div className="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white/90 backdrop-blur-md ring-1 ring-black/5 focus:outline-none z-10 border border-white/10">
                 <div className="py-1" role="menu" aria-orientation="vertical">
                   {solutionsItems.map((item) => (
-                    <a
+                    <Link
                       key={item.name}
-                      href={item.href}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      to={item.href}
+                      className={`block px-4 py-2 text-sm hover:bg-white/50 ${isActive(item.href)
+                        ? 'text-green-700 font-medium'
+                        : 'text-gray-700'}`}
                       role="menuitem"
                     >
                       {item.name}
-                    </a>
+                      {isActive(item.href) && <span className="ml-2 w-1.5 h-1.5 rounded-full bg-green-500 inline-block"></span>}
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -168,21 +186,30 @@ const Navbar: React.FC = () => {
 
           <Link
             to="/why-vonoy"
-            className="text-white hover:text-secondary transition-colors"
+            className={`relative transition-colors ${isActive('/why-vonoy')
+              ? 'text-secondary font-medium nav-active'
+              : 'text-white hover:text-secondary'}`}
           >
             Why Vonoy?
+            {isActive('/why-vonoy') && <span className="nav-indicator"></span>}
           </Link>
           <Link
             to="/features"
-            className="text-white hover:text-secondary transition-colors"
+            className={`relative transition-colors ${isActive('/features')
+              ? 'text-secondary font-medium nav-active'
+              : 'text-white hover:text-secondary'}`}
           >
             Features
+            {isActive('/features') && <span className="nav-indicator"></span>}
           </Link>
           <Link
             to="/about"
-            className="text-white hover:text-secondary transition-colors"
+            className={`relative transition-colors ${isActive('/about')
+              ? 'text-secondary font-medium nav-active'
+              : 'text-white hover:text-secondary'}`}
           >
             About Us
+            {isActive('/about') && <span className="nav-indicator"></span>}
           </Link>
         </div>
 
@@ -299,16 +326,21 @@ const Navbar: React.FC = () => {
           <div className="px-4 py-3 space-y-4">
             <Link
               to="/"
-              className="block text-white hover:text-secondary py-2 text-lg mobile-menu-item rounded px-3"
+              className={`block py-2 text-lg mobile-menu-item rounded px-3 ${isActive('/')
+                ? 'text-secondary font-medium bg-white/10'
+                : 'text-white hover:text-secondary'}`}
             >
               Home
+              {isActive('/') && <span className="mobile-nav-indicator"></span>}
             </Link>
 
             {/* Mobile Solutions Dropdown */}
             <div>
               <button
                 onClick={toggleMobileSubmenu}
-                className="flex justify-between items-center w-full text-white hover:text-secondary py-2 text-lg mobile-menu-item rounded px-3"
+                className={`flex justify-between items-center w-full py-2 text-lg mobile-menu-item rounded px-3 ${isActive('/solutions')
+                  ? 'text-secondary font-medium bg-white/10'
+                  : 'text-white hover:text-secondary'}`}
               >
                 Solutions
                 <svg
@@ -328,17 +360,21 @@ const Navbar: React.FC = () => {
                   />
                 </svg>
               </button>
+              {isActive('/solutions') && <span className="mobile-nav-indicator"></span>}
 
               {/* Mobile Solutions Submenu */}
               {isMobileSubmenuOpen && (
-                <div className="pl-4 space-y-2 mt-2 mobile-submenu p-2 mx-2">
+                <div className="pl-4 space-y-2 mt-2 mobile-submenu p-2 mx-2 bg-white/5 rounded-md">
                   {solutionsItems.map((item) => (
                     <Link
                       key={item.name}
                       to={item.href}
-                      className="block text-white hover:text-secondary py-1 mobile-menu-item px-3 rounded"
+                      className={`block py-1 mobile-menu-item px-3 rounded ${isActive(item.href)
+                        ? 'text-secondary font-medium bg-white/10'
+                        : 'text-white hover:text-secondary'}`}
                     >
                       {item.name}
+                      {isActive(item.href) && <span className="ml-2 w-1.5 h-1.5 rounded-full bg-secondary inline-block"></span>}
                     </Link>
                   ))}
                 </div>
@@ -347,21 +383,30 @@ const Navbar: React.FC = () => {
 
             <Link
               to="/why-vonoy"
-              className="block text-white hover:text-secondary py-2 text-lg mobile-menu-item rounded px-3"
+              className={`block py-2 text-lg mobile-menu-item rounded px-3 ${isActive('/why-vonoy')
+                ? 'text-secondary font-medium bg-white/10'
+                : 'text-white hover:text-secondary'}`}
             >
               Why Vonoy?
+              {isActive('/why-vonoy') && <span className="mobile-nav-indicator"></span>}
             </Link>
             <Link
               to="/features"
-              className="block text-white hover:text-secondary py-2 text-lg mobile-menu-item rounded px-3"
+              className={`block py-2 text-lg mobile-menu-item rounded px-3 ${isActive('/features')
+                ? 'text-secondary font-medium bg-white/10'
+                : 'text-white hover:text-secondary'}`}
             >
               Features
+              {isActive('/features') && <span className="mobile-nav-indicator"></span>}
             </Link>
             <Link
               to="/about"
-              className="block text-white hover:text-secondary py-2 text-lg mobile-menu-item rounded px-3"
+              className={`block py-2 text-lg mobile-menu-item rounded px-3 ${isActive('/about')
+                ? 'text-secondary font-medium bg-white/10'
+                : 'text-white hover:text-secondary'}`}
             >
               About Us
+              {isActive('/about') && <span className="mobile-nav-indicator"></span>}
             </Link>
 
             {/* Mobile Language Switcher */}

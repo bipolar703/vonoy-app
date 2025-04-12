@@ -29,19 +29,6 @@ const HeroAnimation: React.FC = () => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Resize handler to make canvas responsive
-    const handleResize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight * 0.7; // 70% of viewport height for more compact design
-
-      // Redraw particles when resizing
-      initParticles();
-    };
-
-    // Initial sizing
-    handleResize();
-    window.addEventListener("resize", handleResize);
-
     // Enhanced particle type with more properties
     type Particle = {
       x: number;
@@ -93,8 +80,19 @@ const HeroAnimation: React.FC = () => {
       return particles;
     };
 
-    // Initialize particles
-    const particles = initParticles();
+    // Resize handler to make canvas responsive
+    const handleResize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight * 0.7; // 70% of viewport height for more compact design
+
+      // Redraw particles when resizing
+      const particles = initParticles();
+      return particles;
+    };
+
+    // Initial sizing
+    const particles = handleResize();
+    window.addEventListener("resize", handleResize);
 
     // Enhanced connection drawing with gradient and flow effect
     const drawConnections = (p1: Particle, p2: Particle, distance: number) => {

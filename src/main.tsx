@@ -4,9 +4,11 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ErrorFallback from './components/ui/ErrorFallback';
 import RouteTransition from './components/ui/RouteTransition';
+import PageTransition from './components/layout/PageTransition';
 import { initializePerformanceOptimizations, measureRenderTime } from './utils/performance';
 import { reportWebVitalsToConsole } from './hooks/useWebVitals';
 import './index.css';
+import './styles/navbar.css';
 
 // Preload critical assets
 const preloadAssets = () => {
@@ -41,7 +43,7 @@ const preloadAssets = () => {
 const HomePage = lazy(() => import('./App'));
 const AboutUsPage = lazy(() => import('./components/pages/AboutUs'));
 const BookDemoPage = lazy(() => import('./components/pages/BookDemo'));
-const NotFoundPage = lazy(() => import('./components/pages/NotFound'));
+const UnderDevelopmentPage = lazy(() => import('./components/pages/UnderDevelopment'));
 const GenericPage = lazy(() => import('./components/pages/GenericPage'));
 
 // Get the root element
@@ -75,15 +77,17 @@ startTransition(() => {
       >
         <Suspense fallback={<RouteTransition />}>
           <Router>
+            <PageTransition />
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/about" element={<AboutUsPage />} />
               <Route path="/demo" element={<BookDemoPage />} />
               {/* Catch-all route for pages under development */}
-              <Route path="/solutions/*" element={<GenericPage />} />
-              <Route path="/features/*" element={<GenericPage />} />
+              <Route path="/solutions/*" element={<UnderDevelopmentPage />} />
+              <Route path="/features/*" element={<UnderDevelopmentPage />} />
+              <Route path="/why-vonoy" element={<UnderDevelopmentPage />} />
               {/* 404 page for any unmatched routes */}
-              <Route path="*" element={<NotFoundPage />} />
+              <Route path="*" element={<UnderDevelopmentPage />} />
             </Routes>
           </Router>
         </Suspense>
