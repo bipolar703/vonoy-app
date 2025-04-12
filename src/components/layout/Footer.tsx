@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import OptimizedImage from "../ui/OptimizedImage";
 import styles from "./Footer.module.css";
 
 /**
@@ -29,12 +30,12 @@ const Footer: React.FC = () => {
 
       {/* Footer lines SVG background */}
       <div className={styles.footerLinesContainer}>
-        <img
+        <OptimizedImage
           src="/footer-lines.svg"
           alt=""
           className={styles.footerLines}
           loading="lazy"
-          fetchpriority="low"
+          fetchPriority="low"
         />
       </div>
 
@@ -49,14 +50,14 @@ const Footer: React.FC = () => {
             {/* Modern design element: Floating accent */}
             <div className={styles.floatingAccent}></div>
 
-            <img
+            <OptimizedImage
               src="/logo.svg"
               alt="Vonoy"
               className={styles.logo}
-              width="120"
-              height="40"
+              width={120}
+              height={40}
               loading="lazy"
-              fetchpriority="high"
+              fetchPriority="high"
             />
             <p className={styles.description}>
               AI-powered fleet operations management platform that helps

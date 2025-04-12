@@ -1,18 +1,43 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import styles from "./WhyVonoySection.module.css";
+import { scrollReveal, hoverAnimation } from "../../utils/animations";
 
 /**
  * Why Choose Vonoy Section
  *
  * Displays the key benefits of the Vonoy platform with modern design elements
- * and icons.
+ * and icons. Implements interactive animations and compact design.
+ *
+ * Features:
+ * - Scroll-triggered animations
+ * - Interactive hover effects
+ * - Collapsible content for mobile
+ * - Compact, modern design
  */
 const WhyVonoySection: React.FC = () => {
-  // Features data
+  const sectionRef = useRef<HTMLElement>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
+
+  // Initialize animations when component mounts
+  useEffect(() => {
+    if (sectionRef.current && cardsRef.current) {
+      // Scroll reveal animation for the section
+      scrollReveal(sectionRef.current, 0.1);
+
+      // Hover animations for feature cards
+      const cards = cardsRef.current.querySelectorAll(`.${styles.featureCard}`);
+      hoverAnimation(
+        cards,
+        { translateY: -10, boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)' },
+        { translateY: 0, boxShadow: '0 10px 30px rgba(0, 0, 0, 0.05)' }
+      );
+    }
+  }, []);
+  // Features data - Updated based on vonoy-edits.md
   const features = [
     {
-      title: "AI-Powered Optimization",
-      description: "Smart routing and cost savings",
+      title: "Built on Science",
+      description: "Our solutions are grounded in advanced operations research and real-world logistics modeling—designed by experts who've solved these problems at scale.",
       icon: (
         <svg
           className={styles.featureIcon}
@@ -45,8 +70,8 @@ const WhyVonoySection: React.FC = () => {
       ),
     },
     {
-      title: "Up to 31% Cost Reduction",
-      description: "Proven efficiency gains",
+      title: "Customized for Your Operation",
+      description: "We don't offer one-size-fits-all tools. Every algorithm, interface, and deployment is tailored to your exact business rules, constraints, and goals.",
       icon: (
         <svg
           className={styles.featureIcon}
@@ -72,8 +97,8 @@ const WhyVonoySection: React.FC = () => {
       ),
     },
     {
-      title: "19.8% Fewer Vehicles Needed",
-      description: "Optimize fleet utilization",
+      title: "Technology + Strategy Combined",
+      description: "We deliver both the technical infrastructure (APIs, TMS, apps) and the strategic insight (network design, capacity planning) to help you transform your operations.",
       icon: (
         <svg
           className={styles.featureIcon}
@@ -120,8 +145,8 @@ const WhyVonoySection: React.FC = () => {
       ),
     },
     {
-      title: "Advanced Data Analytics",
-      description: "Gain deeper operational insights",
+      title: "Proven Track Record",
+      description: "Led by former Amazon logistics experts and academic researchers, we've delivered measurable savings and operational improvements for enterprise clients across Europe, Middle East and North Africa.",
       icon: (
         <svg
           className={styles.featureIcon}
@@ -156,9 +181,9 @@ const WhyVonoySection: React.FC = () => {
   ];
 
   return (
-    <section className={styles.section}>
+    <section ref={sectionRef} className={styles.section}>
       <div className={styles.sectionBg}>
-        <div className={styles.grid}></div>
+        {/* Grid effect removed as requested */}
         <div className={styles.glow}></div>
       </div>
       <div className={styles.container}>
@@ -168,7 +193,7 @@ const WhyVonoySection: React.FC = () => {
           </h2>
         </div>
 
-        <div className={styles.featuresGrid}>
+        <div ref={cardsRef} className={styles.featuresGrid}>
           {features.map((feature, index) => (
             <div key={index} className={styles.featureCard}>
               <div className={styles.featureIconContainer}>
@@ -176,7 +201,16 @@ const WhyVonoySection: React.FC = () => {
                 <div className={styles.iconRing}></div>
               </div>
               <h3 className={styles.featureTitle}>{feature.title}</h3>
-              <p className={styles.featureDescription}>{feature.description}</p>
+
+              {/* Collapsible description for more compact UI */}
+              <div className={styles.featureDescriptionWrapper}>
+                <p className={styles.featureDescription}>{feature.description}</p>
+                <button className={styles.readMoreButton} aria-label="Toggle description">
+                  <svg xmlns="http://www.w3.org/2000/svg" className={styles.readMoreIcon} viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </div>
             </div>
           ))}
         </div>

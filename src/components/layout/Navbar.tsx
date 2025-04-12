@@ -1,5 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import OptimizedImage from "../ui/OptimizedImage";
 
 /**
  * Navbar Component
@@ -48,12 +50,13 @@ const Navbar: React.FC = () => {
     };
   }, []);
 
-  // Solutions dropdown items
+  // Solutions dropdown items - Updated based on vonoy-edits.md
   const solutionsItems = [
-    { name: "Fleet Management", href: "/solutions/fleet-management" },
-    { name: "Route Optimization", href: "/solutions/route-optimization" },
-    { name: "Analytics", href: "/solutions/analytics" },
-    { name: "Integrations", href: "/solutions/integrations" },
+    { name: "Solver APIs", href: "/solutions/solver-apis" },
+    { name: "Transportation Management Platform", href: "/solutions/transportation-management" },
+    { name: "Routing Capabilities", href: "/solutions/routing-capabilities" },
+    { name: "Consulting Services", href: "/solutions/consulting-services" },
+    { name: "Industries we serve", href: "/solutions/industries" },
   ];
 
   // Toggle functions
@@ -98,12 +101,12 @@ const Navbar: React.FC = () => {
       <div className="container mx-auto px-4 flex justify-between items-center">
         <div className="flex items-center">
           <a href="/">
-            <img
+            <OptimizedImage
               src="/logo.svg"
               alt="Vonoy"
               className="h-10"
-              width="120"
-              height="40"
+              width={120}
+              height={40}
               fetchPriority="high"
               loading="lazy"
             />
@@ -112,12 +115,12 @@ const Navbar: React.FC = () => {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex space-x-6 items-center">
-          <a
-            href="/"
+          <Link
+            to="/"
             className="text-white hover:text-secondary transition-colors"
           >
             Home
-          </a>
+          </Link>
 
           {/* Solutions Dropdown */}
           <div className="relative group">
@@ -163,22 +166,27 @@ const Navbar: React.FC = () => {
             )}
           </div>
 
-          <a
-            href="/why-vonoy"
+          <Link
+            to="/why-vonoy"
             className="text-white hover:text-secondary transition-colors"
           >
             Why Vonoy?
-          </a>
-          <a
-            href="/features"
+          </Link>
+          <Link
+            to="/features"
             className="text-white hover:text-secondary transition-colors"
           >
             Features
-          </a>
-          {/* Contact Us and More buttons removed */}
+          </Link>
+          <Link
+            to="/about"
+            className="text-white hover:text-secondary transition-colors"
+          >
+            About Us
+          </Link>
         </div>
 
-        {/* Language Switcher & Book a Demo Button */}
+        {/* Language Switcher & Book a Demo Button - Only two buttons as specified */}
         <div className="hidden md:flex items-center space-x-4">
           <div className="relative flex items-center">
             <button
@@ -205,9 +213,9 @@ const Navbar: React.FC = () => {
             </button>
 
             {/* Book a Demo Button */}
-            <a href="/contact" className="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#00a79d] hover:bg-[#008f86] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00a79d] transition-colors">
+            <Link to="/demo" className="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#00a79d] hover:bg-[#008f86] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00a79d] transition-colors">
               <span className="text-white">Book a Demo</span>
-            </a>
+            </Link>
 
             {/* Glass Effect Button removed */}
 
@@ -223,7 +231,7 @@ const Navbar: React.FC = () => {
                     {language === "en" && (
                       <span className="w-2 h-2 rounded-full bg-[#00a79d] mr-2"></span>
                     )}
-                    <span className="text-[#00a79d] font-semibold drop-shadow-sm">English</span>
+                    <span className="text-green-700 font-semibold drop-shadow-sm">English</span>
                   </button>
                   <button
                     onClick={() => switchLanguage("ar")}
@@ -233,7 +241,7 @@ const Navbar: React.FC = () => {
                     {language === "ar" && (
                       <span className="w-2 h-2 rounded-full bg-[#00a79d] mr-2"></span>
                     )}
-                    <span className="text-[#00a79d] font-semibold drop-shadow-sm">العربية</span>
+                    <span className="text-green-700 font-semibold drop-shadow-sm">العربية</span>
                   </button>
                 </div>
               </div>
@@ -289,12 +297,12 @@ const Navbar: React.FC = () => {
       {isMenuOpen && (
         <div className="absolute top-full left-0 w-full mobile-menu shadow-lg md:hidden z-50 max-h-[calc(100vh-4rem)] overflow-auto">
           <div className="px-4 py-3 space-y-4">
-            <a
-              href="/"
+            <Link
+              to="/"
               className="block text-white hover:text-secondary py-2 text-lg mobile-menu-item rounded px-3"
             >
               Home
-            </a>
+            </Link>
 
             {/* Mobile Solutions Dropdown */}
             <div>
@@ -325,32 +333,36 @@ const Navbar: React.FC = () => {
               {isMobileSubmenuOpen && (
                 <div className="pl-4 space-y-2 mt-2 mobile-submenu p-2 mx-2">
                   {solutionsItems.map((item) => (
-                    <a
+                    <Link
                       key={item.name}
-                      href={item.href}
+                      to={item.href}
                       className="block text-white hover:text-secondary py-1 mobile-menu-item px-3 rounded"
                     >
                       {item.name}
-                    </a>
+                    </Link>
                   ))}
                 </div>
               )}
             </div>
 
-            <a
-              href="/why-vonoy"
+            <Link
+              to="/why-vonoy"
               className="block text-white hover:text-secondary py-2 text-lg mobile-menu-item rounded px-3"
             >
               Why Vonoy?
-            </a>
-            <a
-              href="/features"
+            </Link>
+            <Link
+              to="/features"
               className="block text-white hover:text-secondary py-2 text-lg mobile-menu-item rounded px-3"
             >
               Features
-            </a>
-            {/* Contact Us button removed */}
-            {/* More button removed */}
+            </Link>
+            <Link
+              to="/about"
+              className="block text-white hover:text-secondary py-2 text-lg mobile-menu-item rounded px-3"
+            >
+              About Us
+            </Link>
 
             {/* Mobile Language Switcher */}
             <div className="flex flex-col space-y-2 pt-4 border-t border-white/10">
@@ -380,8 +392,8 @@ const Navbar: React.FC = () => {
             </div>
 
             {/* Mobile Book a Demo Button */}
-            <a
-              href="/contact"
+            <Link
+              to="/demo"
               className="block w-full bg-secondary hover:bg-secondary/90 text-white py-3 px-4 rounded-md text-center font-medium transition-all duration-300 ease-in-out transform hover:shadow-lg mt-4 flex items-center justify-center gap-2 group"
             >
               <span className="text-white">Book a Demo</span>
@@ -397,7 +409,7 @@ const Navbar: React.FC = () => {
                   clipRule="evenodd"
                 />
               </svg>
-            </a>
+            </Link>
 
             {/* Mobile Glass Effect Button removed */}
           </div>

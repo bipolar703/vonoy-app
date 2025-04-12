@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import BulbAnimation from "./BulbAnimation";
 import styles from "./StatsSection.module.css";
+import { scrollReveal, staggerAnimation, pulseAnimation } from "../../utils/animations";
 
 /**
  * StatsSection Component
@@ -9,25 +10,40 @@ import styles from "./StatsSection.module.css";
  * Uses the specified background color: rgb(32 60 91)
  * Incorporates modern 2025 web design trends with subtle animations and effects.
  *
+ * Features:
+ * - Removed grid effects as requested
+ * - More compact and interactive UI
+ * - Anime.js animations for statistics
+ * - Scroll-triggered animations
+ *
  * @returns {JSX.Element} The rendered StatsSection component
  */
 const StatsSection: React.FC = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const statsGridRef = useRef<HTMLDivElement>(null);
+
+  // Initialize animations when component mounts
+  useEffect(() => {
+    if (sectionRef.current && statsGridRef.current) {
+      // Scroll reveal animation for the section
+      scrollReveal(sectionRef.current, 0.1);
+
+      // Staggered animation for stat cards
+      const statCards = statsGridRef.current.querySelectorAll(`.${styles.statCard}`);
+      staggerAnimation(statCards, {
+        translateY: [20, 0],
+        opacity: [0, 1],
+        duration: 800
+      }, 100);
+
+      // Pulse animation for stat values
+      const statValues = statsGridRef.current.querySelectorAll(`.${styles.statValue}`);
+      pulseAnimation(statValues, 1.05, 2000);
+    }
+  }, []);
   return (
-    <section className={styles.statsSection}>
-      {/* Modern design elements: Decorative grid lines */}
-      <div className={styles.gridLines}>
-        <div className={styles.gridLinesInner}>
-          {Array.from({ length: 10 }).map((_, i) => (
-            <div
-              key={i}
-              className={styles.gridLine}
-              style={{
-                top: `${i * 10}%`,
-              }}
-            ></div>
-          ))}
-        </div>
-      </div>
+    <section ref={sectionRef} className={styles.statsSection}>
+      {/* Grid lines removed as requested */}
 
       {/* Modern design elements: Floating accent circles */}
       <div className={styles.accentCircle1}></div>
@@ -48,7 +64,7 @@ const StatsSection: React.FC = () => {
               </p>
             </div>
 
-            <div className={styles.statsGrid}>
+            <div ref={statsGridRef} className={styles.statsGrid}>
               {/* Stat Card - Cost Reduction */}
               <div className={styles.statCardWrapper}>
                 <div className={styles.statCard}>

@@ -13,7 +13,7 @@ const Navbar: React.FC = () => {
               className="h-10"
               width="120"
               height="40"
-              fetchpriority="high"
+              fetchPriority="high"
             />
           </a>
         </div>

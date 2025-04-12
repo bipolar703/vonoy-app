@@ -5,7 +5,7 @@ interface OptimizedImageProps extends React.ImgHTMLAttributes<HTMLImageElement> 
   alt: string;
   width?: number;
   height?: number;
-  priority?: boolean;
+  priority?: boolean | 'high' | 'low' | 'auto';
   loading?: 'lazy' | 'eager';
   decoding?: 'async' | 'sync' | 'auto';
 }
@@ -17,7 +17,7 @@ interface OptimizedImageProps extends React.ImgHTMLAttributes<HTMLImageElement> 
  * - Proper width and height attributes to prevent layout shifts
  * - Lazy loading for images below the fold
  * - Priority loading for critical images
- * - Proper fetchpriority attribute
+ * - Proper fetchPriority attribute
  * - Proper decoding attribute
  */
 const OptimizedImage: React.FC<OptimizedImageProps> = ({
@@ -25,7 +25,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   alt,
   width,
   height,
-  priority = false,
+  priority,
   loading = 'lazy',
   decoding = 'async',
   ...props
@@ -34,7 +34,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   const loadingStrategy = priority ? 'eager' : loading;
   
   // Determine proper fetch priority
-  const fetchPriority = priority ? 'high' : 'auto';
+  const fetchPriority = priority || 'auto';
   
   return (
     <img
@@ -44,7 +44,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
       height={height}
       loading={loadingStrategy}
       decoding={decoding}
-      fetchPriority={fetchPriority as any}
+      fetchPriority={fetchPriority}
       {...props}
     />
   );

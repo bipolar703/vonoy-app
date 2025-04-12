@@ -1,0 +1,119 @@
+.heroSection {
+  background-color: rgb(6 4 31);
+  color: white;
+  padding: 4rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.heroSection::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: linear-gradient(
+    to right,
+    rgba(6, 4, 31, 0.9),
+    rgba(6, 4, 31, 0.7)
+  );
+  z-index: 1;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+.pageTitle {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  position: relative;
+  display: inline-block;
+}
+
+.pageTitle::after {
+  content: "";
+  position: absolute;
+  bottom: -0.5rem;
+  left: 0;
+  width: 60%;
+  height: 0.25rem;
+  background: linear-gradient(to right, #3dd598, #0a6dc2);
+  border-radius: 9999px;
+}
+
+.contentSection {
+  padding: 4rem 0;
+  background-color: white;
+}
+
+.aboutContent {
+  max-width: 48rem;
+  margin: 0 auto 4rem;
+}
+
+.paragraph {
+  margin-bottom: 1.5rem;
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: #374151;
+}
+
+.missionVision {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .missionVision {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.missionBox,
+.visionBox {
+  padding: 2rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  background-color: #f9fafb;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.missionBox:hover,
+.visionBox:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #111827;
+  position: relative;
+  display: inline-block;
+}
+
+.sectionTitle::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.5rem;
+  width: 2rem;
+  height: 0.125rem;
+  background-color: #3dd598;
+}
+
+.missionText,
+.visionText {
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: #4b5563;
+}

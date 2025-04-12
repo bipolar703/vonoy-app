@@ -1,10 +1,11 @@
 .heroSection {
   background-color: rgb(6 4 31);
   color: white;
-  padding-top: 7rem;
-  padding-bottom: 8rem;
+  padding-top: 6rem; /* Reduced padding for more compact design */
+  padding-bottom: 6rem; /* Reduced padding for more compact design */
   position: relative;
   overflow: hidden;
+  will-change: opacity; /* Performance optimization */
 }
 
 .container {
@@ -20,22 +21,25 @@
 }
 
 .heading {
-  font-size: 3rem;
+  font-size: 2.75rem; /* Slightly smaller for more compact design */
   font-weight: 700;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem; /* Reduced margin for more compact design */
   line-height: 1.2;
+  will-change: contents; /* Performance optimization for typing animation */
 }
 
 @media (min-width: 768px) {
   .heading {
-    font-size: 3.75rem;
+    font-size: 3.5rem; /* Slightly smaller for more compact design */
   }
 }
 
 .description {
-  font-size: 1.25rem;
-  margin-bottom: 2rem;
+  font-size: 1.125rem; /* Slightly smaller for more compact design */
+  margin-bottom: 1.5rem; /* Reduced margin for more compact design */
   line-height: 1.6;
+  opacity: 0; /* Start hidden for fade-in animation */
+  will-change: transform, opacity; /* Performance optimization */
 }
 
 .button {

@@ -1,30 +1,13 @@
 .statsSection {
   background-color: rgb(23 45 70);
   color: white;
-  padding: 5rem 0;
+  padding: 4rem 0; /* Reduced padding for more compact design */
   position: relative;
   overflow: hidden;
+  opacity: 0; /* Start hidden for scroll reveal animation */
 }
 
-.gridLines {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-}
-
-.gridLinesInner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.gridLine {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background-color: rgba(255, 255, 255, 0.05);
-}
+/* Grid lines removed as requested */
 
 .accentCircle1 {
   position: absolute;
@@ -149,8 +132,8 @@
 .statsGrid {
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 3rem;
+  gap: 1rem; /* Reduced gap for more compact design */
+  margin-bottom: 2rem; /* Reduced margin for more compact design */
 }
 
 @media (min-width: 640px) {
@@ -176,19 +159,20 @@
 
 .statCard {
   background-color: rgb(32, 60, 91);
-  padding: 1.5rem;
+  padding: 1.25rem; /* Reduced padding for more compact design */
   text-align: center;
   position: relative;
   height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: transform 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  opacity: 0; /* Start hidden for stagger animation */
+  transform: translateY(20px); /* Start position for animation */
+  cursor: pointer; /* Indicate interactivity */
 }
 
-.statCard:hover {
-  transform: translateY(-5px);
-}
+/* Hover effects now handled by Anime.js */
 
 .iconContainer {
   background-color: rgba(61, 213, 152, 0.1);
@@ -217,7 +201,13 @@
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
-  color: white;
+  background: linear-gradient(to right, #3dd598, #0a6dc2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  display: inline-block; /* For animation */
+  will-change: transform, opacity; /* Performance optimization */
 }
 
 .statLabel {

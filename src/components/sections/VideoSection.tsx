@@ -1,21 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styles from "./VideoSection.module.css";
+import { useInView } from "../hooks/useInView";
 
 /**
  * VideoSection Component
  *
  * Displays a demo video explaining how Vonoy works
  * with modern design elements and play controls.
+ * Implements performance optimizations:
+ * - Lazy loading of YouTube iframe
+ * - Intersection Observer to load video only when in viewport
+ * - Thumbnail preloading
+ * - Reduced layout shifts
  */
 const VideoSection: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+  const isInView = useInView(sectionRef, { threshold: 0.1, once: true });
+
+  // Preload the YouTube thumbnail when section comes into view
+  useEffect(() => {
+    if (isInView && !isVideoLoaded) {
+      const img = new Image();
+      img.src = "https://img.youtube.com/vi/hxm2rdVl7Y0/maxresdefault.jpg";
+      img.onload = () => setIsVideoLoaded(true);
+    }
+  }, [isInView, isVideoLoaded]);
 
   const handlePlayClick = () => {
     setIsPlaying(true);
+    // Track video play event for analytics
+    if (typeof window !== 'undefined' && 'gtag' in window) {
+      // @ts-ignore
+      window.gtag?.('event', 'play_video', {
+        'event_category': 'engagement',
+        'event_label': 'Vonoy Demo Video'
+      });
+    }
   };
 
   return (
-    <section className={styles.section}>
+    <section ref={sectionRef} className={styles.section}>
       <div className={styles.container}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>See Vonoy in Action</h2>
@@ -49,27 +75,39 @@ const VideoSection: React.FC = () => {
           {isPlaying ? (
             <iframe
               className={styles.videoFrame}
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
+              src="https://www.youtube.com/embed/hxm2rdVl7Y0?autoplay=1&rel=0&modestbranding=1"
               title="Vonoy Demo Video"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
+              loading="lazy"
+              fetchpriority="low"
             ></iframe>
           ) : (
             <div className={styles.videoPlaceholder}>
-              {/* Gradient placeholder instead of image */}
-              <div className={styles.gradientPlaceholder}>
-                <div className={styles.mockInterface}>
-                  <div className={styles.mockHeader}></div>
-                  <div className={styles.mockContent}>
-                    <div className={styles.mockMap}></div>
-                    <div className={styles.mockSidebar}>
-                      <div className={styles.mockItem}></div>
-                      <div className={styles.mockItem}></div>
-                      <div className={styles.mockItem}></div>
+              {isVideoLoaded ? (
+                <div
+                  className={styles.thumbnailContainer}
+                  style={{
+                    backgroundImage: `url(https://img.youtube.com/vi/hxm2rdVl7Y0/maxresdefault.jpg)`
+                  }}
+                >
+                  <div className={styles.thumbnailOverlay}></div>
+                </div>
+              ) : (
+                <div className={styles.gradientPlaceholder}>
+                  <div className={styles.mockInterface}>
+                    <div className={styles.mockHeader}></div>
+                    <div className={styles.mockContent}>
+                      <div className={styles.mockMap}></div>
+                      <div className={styles.mockSidebar}>
+                        <div className={styles.mockItem}></div>
+                        <div className={styles.mockItem}></div>
+                        <div className={styles.mockItem}></div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           )}
         </div>

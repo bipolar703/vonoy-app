@@ -1,8 +1,9 @@
 .section {
   position: relative;
   background-color: white;
-  padding: 6rem 0;
+  padding: 4rem 0; /* Reduced padding for more compact design */
   overflow: hidden;
+  opacity: 0; /* Start hidden for scroll reveal animation */
 }
 
 .sectionBg {
@@ -11,18 +12,7 @@
   overflow: hidden;
 }
 
-.grid {
-  position: absolute;
-  inset: 0;
-  background-image: linear-gradient(
-      to right,
-      rgba(0, 0, 0, 0.05) 1px,
-      transparent 1px
-    ),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
-  background-size: 40px 40px;
-  opacity: 0.3;
-}
+/* Grid removed as requested */
 
 .glow {
   position: absolute;
@@ -50,7 +40,7 @@
 
 .sectionHeader {
   text-align: center;
-  margin-bottom: 4rem;
+  margin-bottom: 3rem; /* Reduced margin for more compact design */
 }
 
 .sectionTitle {
@@ -73,7 +63,7 @@
 .featuresGrid {
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: 2rem;
+  gap: 1.5rem; /* Reduced gap for more compact design */
 }
 
 @media (min-width: 640px) {
@@ -91,9 +81,9 @@
 .featureCard {
   background-color: rgba(255, 255, 255, 0.8);
   border-radius: 1rem;
-  padding: 2rem;
+  padding: 1.5rem; /* Reduced padding for more compact design */
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03), 0 1px 8px rgba(0, 0, 0, 0.06);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
   position: relative;
   z-index: 1;
   backdrop-filter: blur(10px);
@@ -102,6 +92,7 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
+  cursor: pointer; /* Indicate interactivity */
 }
 
 .featureCard::before {
@@ -119,11 +110,7 @@
   transition: opacity 0.3s ease;
 }
 
-.featureCard:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.04);
-}
-
+/* Hover effects now handled by Anime.js */
 .featureCard:hover::before {
   opacity: 1;
 }
@@ -175,7 +162,51 @@
   margin-bottom: 0.75rem;
 }
 
+/* New collapsible description styles */
+.featureDescriptionWrapper {
+  position: relative;
+  overflow: hidden;
+  max-height: 4.8rem; /* Show only 3 lines initially */
+  transition: max-height 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.featureDescriptionWrapper:hover,
+.featureDescriptionWrapper:focus-within {
+  max-height: 20rem; /* Expand on hover/focus */
+}
+
 .featureDescription {
   color: #486581;
-  line-height: 1.5;
+  line-height: 1.6;
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem; /* Space for the button */
+}
+
+.readMoreButton {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 9999px;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.readMoreIcon {
+  width: 1rem;
+  height: 1rem;
+  color: #3dd598;
+  transition: transform 0.3s ease;
+}
+
+.featureDescriptionWrapper:hover .readMoreButton,
+.featureDescriptionWrapper:focus-within .readMoreButton {
+  transform: translateX(-50%) rotate(180deg);
 }
