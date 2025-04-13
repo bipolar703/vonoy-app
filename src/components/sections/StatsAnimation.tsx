@@ -1,12 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 /**
  * StatsAnimation Component
  *
  * An animated light bulb with connected wires that illuminate progressively,
  * creating a high-end visual effect for the Stats section.
+ * Implements proper cleanup to prevent memory leaks.
  */
 const StatsAnimation: React.FC = () => {
+  // Reference to store animation elements for proper cleanup
+  const animationElementsRef = useRef<HTMLElement[]>([]);
+
   // Add animation styles directly to the document head
   useEffect(() => {
     // Create a style element
@@ -192,30 +196,59 @@ const StatsAnimation: React.FC = () => {
     };
   }, []);
 
+  // Track and clean up DOM elements created by the animation
+  useEffect(() => {
+    // Function to collect all animation elements for cleanup
+    const collectAnimationElements = () => {
+      const container = document.querySelector('.bulb-container');
+      if (!container) return;
+
+      // Find all animation elements within the container
+      const elements = container.querySelectorAll('.circuit-path, .circuit-node, .light-bulb, .glow, .rays');
+      animationElementsRef.current = Array.from(elements) as HTMLElement[];
+    };
+
+    // Collect elements after a short delay to ensure they're in the DOM
+    const timerId = setTimeout(collectAnimationElements, 100);
+
+    // Clean up function to remove styles and reset animations
+    return () => {
+      clearTimeout(timerId);
+
+      // Reset all animation elements
+      animationElementsRef.current.forEach(element => {
+        if (element && element.style) {
+          element.style.animation = 'none';
+          element.style.opacity = '0';
+        }
+      });
+    };
+  }, []);
+
   return (
-    <div className="bulb-container">
+    <div className="bulb-container opt__force-animation">
       {/* Circuit container with dynamic connections */}
       <div style={{ position: 'absolute', width: '260px', height: '260px', zIndex: 1 }}>
         {/* Main circuit paths */}
-        <div className="circuit-path path-top"></div>
-        <div className="circuit-path path-right"></div>
-        <div className="circuit-path path-bottom"></div>
-        <div className="circuit-path path-left"></div>
+        <div className="circuit-path path-top opt__animated"></div>
+        <div className="circuit-path path-right opt__animated"></div>
+        <div className="circuit-path path-bottom opt__animated"></div>
+        <div className="circuit-path path-left opt__animated"></div>
 
         {/* Connection nodes with pulsing effect */}
-        <div className="circuit-node node-top-left"></div>
-        <div className="circuit-node node-top-right"></div>
-        <div className="circuit-node node-bottom-left"></div>
-        <div className="circuit-node node-bottom-right"></div>
+        <div className="circuit-node node-top-left opt__animated"></div>
+        <div className="circuit-node node-top-right opt__animated"></div>
+        <div className="circuit-node node-bottom-left opt__animated"></div>
+        <div className="circuit-node node-bottom-right opt__animated"></div>
       </div>
 
       {/* Premium high-tech light bulb */}
-      <div className="light-bulb">
+      <div className="light-bulb opt__animated">
         {/* Glow effect */}
-        <div className="glow"></div>
+        <div className="glow opt__animated"></div>
 
         {/* Rays effect */}
-        <div className="rays"></div>
+        <div className="rays opt__animated"></div>
 
         {/* Main bulb SVG with enhanced design */}
         <svg

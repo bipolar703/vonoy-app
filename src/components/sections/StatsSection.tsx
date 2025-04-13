@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import anime from 'animejs';
 import styles from "./StatsSection.module.css";
-import { scrollReveal, staggerAnimation, pulseAnimation } from "../../utils/animations";
+import { scrollReveal, staggerAnimation } from "../../utils/animations";
 
 /**
  * StatsSection Component
@@ -21,6 +22,34 @@ const StatsSection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const statsGridRef = useRef<HTMLDivElement>(null);
 
+  // State to track if counting animation has started
+  const [countingStarted, setCountingStarted] = useState(false);
+  const countingRef = useRef<{ [key: string]: any }>({});
+
+  // Function to animate counting from 0 to target value
+  const animateCountUp = (element: HTMLElement, targetValue: number) => {
+    // Extract the numeric value (remove % sign if present)
+    const isPercentage = element.textContent?.includes('%');
+    const target = isPercentage ? targetValue : targetValue;
+
+    // Create the counting animation
+    const countAnimation = anime({
+      targets: { value: 0 },
+      value: target,
+      duration: 2000,
+      easing: 'cubicBezier(0.25, 0.1, 0.25, 1)',
+      round: 1, // Round to nearest integer
+      update: function(anim) {
+        const currentValue = Math.round(anim.animations[0].currentValue);
+        element.textContent = isPercentage ? `${currentValue}%` : `${currentValue}`;
+      }
+    });
+
+    // Store the animation for cleanup
+    const id = element.getAttribute('data-stat-id') || 'default';
+    countingRef.current[id] = countAnimation;
+  };
+
   // Initialize animations when component mounts
   useEffect(() => {
     if (sectionRef.current && statsGridRef.current) {
@@ -35,11 +64,51 @@ const StatsSection: React.FC = () => {
         duration: 800
       }, 100);
 
-      // Pulse animation for stat values
-      const statValues = statsGridRef.current.querySelectorAll(`.${styles.statValue}`);
-      pulseAnimation(statValues, 1.05, 2000);
+      // Set up intersection observer to trigger counting animation when in view
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !countingStarted) {
+            setCountingStarted(true);
+
+            // Start counting animations
+            const statValues = statsGridRef.current?.querySelectorAll(`.${styles.statValue}`);
+            if (statValues) {
+              statValues.forEach((element, index) => {
+                const el = element as HTMLElement;
+                // Extract the target value from the element's text content
+                const targetText = el.textContent || '';
+                const targetValue = parseInt(targetText.replace('%', ''));
+                // Set initial value to 0
+                el.textContent = targetText.includes('%') ? '0%' : '0';
+                // Set a data attribute for reference in cleanup
+                el.setAttribute('data-stat-id', `stat-${index}`);
+                // Start the animation with a slight delay for each stat
+                setTimeout(() => {
+                  animateCountUp(el, targetValue);
+                }, index * 200);
+              });
+            }
+
+            // Once triggered, disconnect the observer
+            observer.disconnect();
+          }
+        });
+      }, { threshold: 0.5 });
+
+      // Observe the stats section
+      observer.observe(sectionRef.current);
+
+      return () => {
+        // Clean up observer and animations
+        observer.disconnect();
+        Object.values(countingRef.current).forEach(animation => {
+          if (animation && typeof animation.pause === 'function') {
+            animation.pause();
+          }
+        });
+      };
     }
-  }, []);
+  }, [countingStarted]);
   return (
     <section ref={sectionRef} className={styles.statsSection}>
       {/* Grid lines removed as requested */}

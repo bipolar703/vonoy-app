@@ -9,42 +9,45 @@ import { initializePerformanceOptimizations, measureRenderTime } from './utils/p
 import { reportWebVitalsToConsole } from './hooks/useWebVitals';
 import './index.css';
 import './styles/navbar.css';
-import './styles/text-quality.css';
-import './styles/mcp-optimization.css'; // MCP server optimizations
+// text-quality.css and mcp-optimization.css are now consolidated in unified-optimizations.css
+// which is imported in index.css
 
 // Preload critical assets - optimized for MCP servers
 const preloadAssets = () => {
   if (typeof document === 'undefined') return;
 
-  // Preload the logo for the loader - used immediately
-  const logoLink = document.createElement('link');
-  logoLink.rel = 'preload';
-  logoLink.as = 'image';
-  logoLink.href = '/logo.svg';
-  logoLink.fetchPriority = 'high';
-  document.head.appendChild(logoLink);
+  // Create and append all resource hints in a single document fragment for better performance
+  const fragment = document.createDocumentFragment();
 
-  // Use prefetch for non-immediate resources to avoid warnings
-  // Prefetch critical fonts - will be used soon but not immediately
-  const fontLink = document.createElement('link');
-  fontLink.rel = 'prefetch'; // Changed from preload to prefetch
-  fontLink.href = '/fonts/inter-var.woff2';
-  fontLink.type = 'font/woff2';
-  fontLink.crossOrigin = 'anonymous';
-  document.head.appendChild(fontLink);
+  // Create resource hints
+  const resources = [
+    // Preload the logo for the loader - used immediately
+    { rel: 'preload', as: 'image', href: '/logo.svg', fetchPriority: 'high' },
 
-  // Use preconnect for YouTube domain - better than preload for external resources
-  const ytDomain = document.createElement('link');
-  ytDomain.rel = 'preconnect';
-  ytDomain.href = 'https://img.youtube.com';
-  ytDomain.crossOrigin = 'anonymous';
-  document.head.appendChild(ytDomain);
+    // Prefetch critical fonts - will be used soon but not immediately
+    { rel: 'prefetch', href: '/fonts/inter-var.woff2', type: 'font/woff2', crossOrigin: 'anonymous' },
 
-  // Add DNS prefetch as well for even faster resolution
-  const ytDNS = document.createElement('link');
-  ytDNS.rel = 'dns-prefetch';
-  ytDNS.href = 'https://img.youtube.com';
-  document.head.appendChild(ytDNS);
+    // Use preconnect for YouTube domain - better than preload for external resources
+    { rel: 'preconnect', href: 'https://img.youtube.com', crossOrigin: 'anonymous' },
+
+    // Add DNS prefetch as well for even faster resolution
+    { rel: 'dns-prefetch', href: 'https://img.youtube.com' }
+  ];
+
+  // Create and append all link elements
+  resources.forEach(resource => {
+    const link = document.createElement('link');
+    Object.entries(resource).forEach(([key, value]) => {
+      if (value !== undefined) {
+        // @ts-ignore - TypeScript doesn't know about all possible attributes
+        link[key] = value;
+      }
+    });
+    fragment.appendChild(link);
+  });
+
+  // Append all links at once for better performance
+  document.head.appendChild(fragment);
 };
 
 // Use dynamic import for better code splitting
@@ -90,10 +93,25 @@ startTransition(() => {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/about" element={<AboutUsPage />} />
                 <Route path="/demo" element={<BookDemoPage />} />
-                {/* Catch-all route for pages under development */}
+
+                {/* Solutions routes */}
                 <Route path="/solutions/*" element={<UnderDevelopmentPage />} />
+
+                {/* Industries routes */}
+                <Route path="/industries/*" element={<UnderDevelopmentPage />} />
+
+                {/* Resources routes */}
+                <Route path="/resources/*" element={<UnderDevelopmentPage />} />
+
+                {/* More dropdown routes */}
+                <Route path="/careers" element={<UnderDevelopmentPage />} />
+                <Route path="/contact" element={<UnderDevelopmentPage />} />
+                <Route path="/faq" element={<UnderDevelopmentPage />} />
+
+                {/* Legacy routes */}
                 <Route path="/features/*" element={<UnderDevelopmentPage />} />
                 <Route path="/why-vonoy" element={<UnderDevelopmentPage />} />
+
                 {/* 404 page for any unmatched routes */}
                 <Route path="*" element={<UnderDevelopmentPage />} />
               </>

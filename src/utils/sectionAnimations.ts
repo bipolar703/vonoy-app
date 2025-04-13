@@ -1,4 +1,5 @@
 import anime from 'animejs';
+import { createAnimation, createTimeline } from './animationSystem';
 
 /**
  * Section Animations Utility
@@ -22,18 +23,19 @@ export const isInViewport = (element: HTMLElement, offset = 0): boolean => {
 
 // Base animation for all sections
 export const baseScrollReveal = (element: HTMLElement, delay = 0): anime.AnimeInstance => {
-  return anime({
+  // Set initial styles
+  element.style.opacity = '0';
+  element.style.transform = 'translateY(30px)';
+  element.style.visibility = 'visible';
+
+  // Use the enhanced createAnimation function from animationSystem
+  return createAnimation({
     targets: element,
     opacity: [0, 1],
     translateY: [30, 0],
     easing: 'cubicBezier(0.25, 0.1, 0.25, 1)',
     duration: 800,
-    delay,
-    begin: () => {
-      element.style.opacity = '0';
-      element.style.transform = 'translateY(30px)';
-      element.style.visibility = 'visible';
-    }
+    delay
   });
 };
 
@@ -45,53 +47,67 @@ export const heroSectionAnimation = (element: HTMLElement): void => {
   const cta = element.querySelector('.hero-cta');
   const image = element.querySelector('.hero-image');
 
-  const timeline = anime.timeline({
-    easing: 'cubicBezier(0.25, 0.1, 0.25, 1)',
-    duration: 800
-  });
+  // Use the enhanced createTimeline function from animationSystem
+  const animations = [];
 
+  // Add animations to the array
   if (title) {
-    timeline.add({
+    animations.push({
       targets: title,
-      opacity: [0, 1],
-      translateY: [30, 0],
-      duration: 800
+      properties: {
+        opacity: [0, 1],
+        translateY: [30, 0]
+      },
+      offset: 0
     });
   }
 
   if (subtitle) {
-    timeline.add({
+    animations.push({
       targets: subtitle,
-      opacity: [0, 1],
-      translateY: [20, 0],
-      duration: 800
-    }, '-=600');
+      properties: {
+        opacity: [0, 1],
+        translateY: [20, 0]
+      },
+      offset: '-=600'
+    });
   }
 
   if (cta) {
-    timeline.add({
+    animations.push({
       targets: cta,
-      opacity: [0, 1],
-      translateY: [20, 0],
-      duration: 800
-    }, '-=600');
+      properties: {
+        opacity: [0, 1],
+        translateY: [20, 0]
+      },
+      offset: '-=600'
+    });
   }
 
   if (image) {
-    timeline.add({
+    animations.push({
       targets: image,
-      opacity: [0, 1],
-      translateX: [30, 0],
-      duration: 1000
-    }, '-=800');
+      properties: {
+        opacity: [0, 1],
+        translateX: [30, 0]
+      },
+      offset: '-=800'
+    });
   }
+
+  // Create the timeline with proper cleanup
+  createTimeline(animations, {
+    duration: 800,
+    easing: 'cubicBezier(0.25, 0.1, 0.25, 1)'
+  });
 };
 
 // Features section animation with floating effect
 export const featuresSectionAnimation = (element: HTMLElement): void => {
   const items = element.querySelectorAll('.feature-item');
 
-  anime({
+  // Use the enhanced createAnimation function for initial animation
+  const initialAnimation = createAnimation({
     targets: items,
     opacity: [0, 1],
     translateY: [40, 0],
@@ -100,7 +116,8 @@ export const featuresSectionAnimation = (element: HTMLElement): void => {
     easing: 'cubicBezier(0.25, 0.1, 0.25, 1)',
     complete: () => {
       // Add subtle floating animation after items appear
-      anime({
+      // This is a continuous animation, so we'll use createAnimation for proper cleanup
+      createAnimation({
         targets: items,
         translateY: [0, -10, 0],
         duration: 3000,
@@ -118,26 +135,35 @@ export const whyVonoySectionAnimation = (element: HTMLElement): void => {
   const title = element.querySelector('.section-title');
   const cards = element.querySelectorAll('.card-container');
 
-  const timeline = anime.timeline({
-    easing: 'cubicBezier(0.25, 0.1, 0.25, 1)'
-  });
+  // Use the enhanced createTimeline function from animationSystem
+  const animations = [];
 
   if (title) {
-    timeline.add({
+    animations.push({
       targets: title,
-      opacity: [0, 1],
-      translateY: [20, 0],
-      duration: 800
+      properties: {
+        opacity: [0, 1],
+        translateY: [20, 0]
+      },
+      offset: 0
     });
   }
 
-  timeline.add({
+  animations.push({
     targets: cards,
-    opacity: [0, 1],
-    translateY: [30, 0],
-    delay: anime.stagger(150),
-    duration: 800
-  }, '-=400');
+    properties: {
+      opacity: [0, 1],
+      translateY: [30, 0],
+      delay: anime.stagger(150)
+    },
+    offset: '-=400'
+  });
+
+  // Create the timeline with proper cleanup
+  createTimeline(animations, {
+    duration: 800,
+    easing: 'cubicBezier(0.25, 0.1, 0.25, 1)'
+  });
 };
 
 // Stats section animation with counting effect
@@ -145,8 +171,8 @@ export const statsSectionAnimation = (element: HTMLElement): void => {
   const items = element.querySelectorAll('.stat-item');
   const numbers = element.querySelectorAll('.stat-number');
 
-  // Reveal items with stagger
-  anime({
+  // Reveal items with stagger using enhanced createAnimation
+  createAnimation({
     targets: items,
     opacity: [0, 1],
     translateY: [30, 0],
@@ -160,7 +186,7 @@ export const statsSectionAnimation = (element: HTMLElement): void => {
     const target = number as HTMLElement;
     const value = parseInt(target.dataset.value || '0', 10);
 
-    anime({
+    createAnimation({
       targets: target,
       innerHTML: [0, value],
       round: 1,
@@ -175,7 +201,8 @@ export const statsSectionAnimation = (element: HTMLElement): void => {
 export const testimonialsSectionAnimation = (element: HTMLElement): void => {
   const testimonials = element.querySelectorAll('.testimonial-item');
 
-  anime({
+  // Use enhanced createAnimation for proper cleanup
+  createAnimation({
     targets: testimonials,
     opacity: [0, 1],
     translateX: [50, 0],
@@ -190,41 +217,54 @@ export const ctaSectionAnimation = (element: HTMLElement): void => {
   const content = element.querySelector('.cta-content');
   const button = element.querySelector('.cta-button');
 
-  const timeline = anime.timeline({
-    easing: 'cubicBezier(0.25, 0.1, 0.25, 1)'
-  });
+  // Use the enhanced createTimeline function from animationSystem
+  const animations = [];
 
   if (content) {
-    timeline.add({
+    animations.push({
       targets: content,
-      opacity: [0, 1],
-      translateY: [30, 0],
-      duration: 800
+      properties: {
+        opacity: [0, 1],
+        translateY: [30, 0]
+      },
+      offset: 0
     });
   }
 
   if (button) {
-    timeline.add({
+    animations.push({
       targets: button,
-      opacity: [0, 1],
-      translateY: [20, 0],
-      duration: 600,
-      complete: () => {
-        // Add subtle pulse animation to button
-        anime({
-          targets: button,
-          scale: [1, 1.05, 1],
-          boxShadow: [
-            '0 4px 10px rgba(61, 213, 152, 0.2)',
-            '0 7px 20px rgba(61, 213, 152, 0.4)',
-            '0 4px 10px rgba(61, 213, 152, 0.2)'
-          ],
-          duration: 2000,
-          loop: true,
-          easing: 'easeInOutSine'
-        });
-      }
-    }, '-=400');
+      properties: {
+        opacity: [0, 1],
+        translateY: [20, 0]
+      },
+      offset: '-=400'
+    });
+  }
+
+  // Create the timeline with proper cleanup
+  const timeline = createTimeline(animations, {
+    duration: 800,
+    easing: 'cubicBezier(0.25, 0.1, 0.25, 1)'
+  });
+
+  // Add pulse animation to button after the timeline completes
+  if (button) {
+    timeline.finished.then(() => {
+      // Add subtle pulse animation to button
+      createAnimation({
+        targets: button,
+        scale: [1, 1.05, 1],
+        boxShadow: [
+          '0 4px 10px rgba(61, 213, 152, 0.2)',
+          '0 7px 20px rgba(61, 213, 152, 0.4)',
+          '0 4px 10px rgba(61, 213, 152, 0.2)'
+        ],
+        duration: 2000,
+        loop: true,
+        easing: 'easeInOutSine'
+      });
+    });
   }
 };
 
@@ -285,8 +325,8 @@ export const initSectionAnimations = (): void => {
     observers.push(createSectionObserver('testimonials-section', testimonialsSectionAnimation));
     observers.push(createSectionObserver('cta-section', ctaSectionAnimation));
     observers.push(createSectionObserver('video-section', (el) => {
-      // Custom animation for video section
-      anime({
+      // Custom animation for video section using enhanced createAnimation
+      createAnimation({
         targets: el.querySelectorAll('.video-content'),
         opacity: [0, 1],
         translateY: [30, 0],

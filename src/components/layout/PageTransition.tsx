@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import anime from 'animejs';
+import { createAnimation } from '../../utils/animationSystem';
 import OptimizedImage from '../ui/OptimizedImage';
 
 /**
@@ -45,13 +46,13 @@ const PageTransition: React.FC = () => {
   // Clean up animations safely
   const cleanupAnimations = () => {
     if (animationsRef.current.dots) {
-      animationsRef.current.dots.pause();
+      animationsRef.current.dots.remove();
     }
     if (animationsRef.current.logo) {
-      animationsRef.current.logo.pause();
+      animationsRef.current.logo.remove();
     }
     if (animationsRef.current.progress) {
-      animationsRef.current.progress.pause();
+      animationsRef.current.progress.remove();
     }
   };
 
@@ -73,36 +74,32 @@ const PageTransition: React.FC = () => {
       // Generate random loading time between 1.75 and 4 seconds
       const loadingTime = getRandomLoadingTime(1.75, 4);
 
-      // Animate dots using Anime.js with Web Animation API considerations
-      animationsRef.current.dots = anime({
+      // Animate dots using enhanced createAnimation for proper cleanup
+      animationsRef.current.dots = createAnimation({
         targets: '.loading-dot',
         scale: [0.8, 1.2, 0.8],
         opacity: [0.5, 1, 0.5],
-        // Using Web Animation API differences from Anime.js documentation
-        // https://animejs.com/documentation/web-animation-api/api-differences-with-native-waapi/iterations
         loop: true,
         easing: 'cubicBezier(0.455, 0.03, 0.515, 0.955)', // Improved easing for smoother animation
         duration: 1500,
-        delay: anime.stagger(200),
-        // Use hardware acceleration for better performance
-        willChange: 'opacity, transform'
+        delay: anime.stagger(200)
+        // willChange is automatically applied by createAnimation
       });
 
-      // Animate logo using Anime.js
-      animationsRef.current.logo = anime({
+      // Animate logo using enhanced createAnimation for proper cleanup
+      animationsRef.current.logo = createAnimation({
         targets: '.page-transition-logo',
         scale: [0.98, 1.02],
         opacity: [0.7, 1],
         loop: true,
         direction: 'alternate',
         easing: 'cubicBezier(0.445, 0.05, 0.55, 0.95)', // Improved easing
-        duration: 2000,
-        // Use hardware acceleration
-        willChange: 'opacity, transform'
+        duration: 2000
+        // willChange is automatically applied by createAnimation
       });
 
-      // Animate progress bar
-      animationsRef.current.progress = anime({
+      // Animate progress bar using enhanced createAnimation for proper cleanup
+      animationsRef.current.progress = createAnimation({
         targets: '.loading-progress-bar-inner',
         width: ['0%', '100%'],
         easing: 'cubicBezier(0.25, 0.1, 0.25, 1)',
@@ -123,8 +120,8 @@ const PageTransition: React.FC = () => {
 
       // Hide transition after the random loading time
       const timer = setTimeout(() => {
-        // Fade out animation
-        anime({
+        // Fade out animation using enhanced createAnimation for proper cleanup
+        createAnimation({
           targets: '.page-transition-loader',
           opacity: [1, 0],
           duration: 400,

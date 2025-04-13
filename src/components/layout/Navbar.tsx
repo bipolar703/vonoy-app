@@ -1,7 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 import OptimizedImage from "../ui/OptimizedImage";
+import { motion, AnimatePresence } from "framer-motion";
 
 /**
  * Navbar Component
@@ -16,24 +17,88 @@ const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
-  const [isSolutionsMenuOpen, setIsSolutionsMenuOpen] = useState(false);
-  const [isMobileSubmenuOpen, setIsMobileSubmenuOpen] = useState(false);
   const [language, setLanguage] = useState<"en" | "ar">("en");
   const [isLoading, setIsLoading] = useState(false);
+
+  // Dropdown states
+  const [isSolutionsMenuOpen, setIsSolutionsMenuOpen] = useState(false);
+  const [isIndustriesMenuOpen, setIsIndustriesMenuOpen] = useState(false);
+  const [isResourcesMenuOpen, setIsResourcesMenuOpen] = useState(false);
+  const [isMoreMenuOpen, setIsMoreMenuOpen] = useState(false);
+
+  // Mobile submenu states
+  const [mobileSubmenuOpen, setMobileSubmenuOpen] = useState<string | null>(null);
+
+  // Refs for handling click outside
+  const navbarRef = useRef<HTMLDivElement>(null);
+  const solutionsRef = useRef<HTMLDivElement>(null);
+  const industriesRef = useRef<HTMLDivElement>(null);
+  const resourcesRef = useRef<HTMLDivElement>(null);
+  const moreRef = useRef<HTMLDivElement>(null);
+  const langRef = useRef<HTMLDivElement>(null);
 
   // Check if the current path matches the link
   const isActive = (path: string) => {
     if (path === '/') {
       return location.pathname === path;
     }
+
+    // Special case for the More dropdown items
+    if (path === '/about' || path === '/careers' || path === '/contact' || path === '/faq') {
+      return location.pathname === path;
+    }
+
+    // For other paths, check if the current path starts with the given path
     return location.pathname.startsWith(path);
   };
+
+  // Handle click outside to close dropdowns
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // Close Solutions dropdown if clicked outside
+      if (solutionsRef.current && !solutionsRef.current.contains(event.target as Node)) {
+        setIsSolutionsMenuOpen(false);
+      }
+
+      // Close Industries dropdown if clicked outside
+      if (industriesRef.current && !industriesRef.current.contains(event.target as Node)) {
+        setIsIndustriesMenuOpen(false);
+      }
+
+      // Close Resources dropdown if clicked outside
+      if (resourcesRef.current && !resourcesRef.current.contains(event.target as Node)) {
+        setIsResourcesMenuOpen(false);
+      }
+
+      // Close More dropdown if clicked outside
+      if (moreRef.current && !moreRef.current.contains(event.target as Node)) {
+        setIsMoreMenuOpen(false);
+      }
+
+      // Close Language dropdown if clicked outside
+      if (langRef.current && !langRef.current.contains(event.target as Node)) {
+        setIsLangMenuOpen(false);
+      }
+
+      // Close mobile menu if clicked outside
+      if (navbarRef.current && !navbarRef.current.contains(event.target as Node) && isMenuOpen) {
+        setIsMenuOpen(false);
+        setMobileSubmenuOpen(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMenuOpen]);
 
   // Handle window resize to close mobile menu
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) {
         setIsMenuOpen(false);
+        setMobileSubmenuOpen(null);
       }
     };
 
@@ -59,22 +124,165 @@ const Navbar: React.FC = () => {
     };
   }, []);
 
-  // Solutions dropdown items - Updated based on vonoy-edits.md
+  // Handle keyboard navigation for accessibility
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Close all dropdowns on Escape key
+      if (event.key === 'Escape') {
+        setIsSolutionsMenuOpen(false);
+        setIsIndustriesMenuOpen(false);
+        setIsResourcesMenuOpen(false);
+        setIsMoreMenuOpen(false);
+        setIsLangMenuOpen(false);
+        setMobileSubmenuOpen(null);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  // Dropdown menu items
   const solutionsItems = [
     { name: "Solver APIs", href: "/solutions/solver-apis" },
     { name: "Transportation Management Platform", href: "/solutions/transportation-management" },
     { name: "Routing Capabilities", href: "/solutions/routing-capabilities" },
     { name: "Consulting Services", href: "/solutions/consulting-services" },
-    { name: "Industries we serve", href: "/solutions/industries" },
   ];
 
-  // Toggle functions
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-  const toggleLangMenu = () => setIsLangMenuOpen(!isLangMenuOpen);
-  const toggleSolutionsMenu = () =>
+  const industriesItems = [
+    { name: "FMCG Distribution", href: "/industries/fmcg-distribution" },
+    { name: "Last-Mile Delivery", href: "/industries/last-mile-delivery" },
+    { name: "Cash Van Delivery", href: "/industries/cash-van-delivery" },
+    { name: "Postal & Courier", href: "/industries/postal-courier" },
+    { name: "Cold Chain & Pharma", href: "/industries/cold-chain-pharma" },
+    { name: "EV Fleet Operations", href: "/industries/ev-fleet-operations" },
+  ];
+
+  const resourcesItems = [
+    { name: "Blog", href: "/resources/blog" },
+    { name: "Case Studies", href: "/resources/case-studies" },
+    { name: "Whitepapers", href: "/resources/whitepapers" },
+    { name: "Documentation", href: "/resources/documentation" },
+  ];
+
+  const moreItems = [
+    { name: "About Us", href: "/about" },
+    { name: "Careers", href: "/careers" },
+    { name: "Contact", href: "/contact" },
+    { name: "FAQ", href: "/faq" },
+  ];
+
+  // Toggle functions for desktop dropdowns with improved accessibility
+  const toggleMenu = useCallback(() => {
+    setIsMenuOpen(!isMenuOpen);
+  }, [isMenuOpen]);
+
+  const toggleLangMenu = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsLangMenuOpen(!isLangMenuOpen);
+    // Close other dropdowns
+    setIsSolutionsMenuOpen(false);
+    setIsIndustriesMenuOpen(false);
+    setIsResourcesMenuOpen(false);
+    setIsMoreMenuOpen(false);
+  }, [isLangMenuOpen]);
+
+  const toggleSolutionsMenu = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
     setIsSolutionsMenuOpen(!isSolutionsMenuOpen);
-  const toggleMobileSubmenu = () =>
-    setIsMobileSubmenuOpen(!isMobileSubmenuOpen);
+    // Close other dropdowns
+    setIsLangMenuOpen(false);
+    setIsIndustriesMenuOpen(false);
+    setIsResourcesMenuOpen(false);
+    setIsMoreMenuOpen(false);
+  }, [isSolutionsMenuOpen]);
+
+  const toggleIndustriesMenu = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsIndustriesMenuOpen(!isIndustriesMenuOpen);
+    // Close other dropdowns
+    setIsLangMenuOpen(false);
+    setIsSolutionsMenuOpen(false);
+    setIsResourcesMenuOpen(false);
+    setIsMoreMenuOpen(false);
+  }, [isIndustriesMenuOpen]);
+
+  const toggleResourcesMenu = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsResourcesMenuOpen(!isResourcesMenuOpen);
+    // Close other dropdowns
+    setIsLangMenuOpen(false);
+    setIsSolutionsMenuOpen(false);
+    setIsIndustriesMenuOpen(false);
+    setIsMoreMenuOpen(false);
+  }, [isResourcesMenuOpen]);
+
+  const toggleMoreMenu = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsMoreMenuOpen(!isMoreMenuOpen);
+    // Close other dropdowns
+    setIsLangMenuOpen(false);
+    setIsSolutionsMenuOpen(false);
+    setIsIndustriesMenuOpen(false);
+    setIsResourcesMenuOpen(false);
+  }, [isMoreMenuOpen]);
+
+  // Toggle function for mobile submenu with improved accessibility
+  const toggleMobileSubmenu = useCallback((menu: string) => {
+    if (mobileSubmenuOpen === menu) {
+      setMobileSubmenuOpen(null);
+    } else {
+      setMobileSubmenuOpen(menu);
+    }
+  }, [mobileSubmenuOpen]);
+
+  // Animation variants for dropdowns
+  const dropdownVariants = {
+    hidden: { opacity: 0, y: -5, scale: 0.95 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 20,
+        duration: 0.2
+      }
+    },
+    exit: {
+      opacity: 0,
+      y: -5,
+      scale: 0.95,
+      transition: {
+        duration: 0.15
+      }
+    }
+  };
+
+  // Animation variants for mobile menu
+  const mobileMenuVariants = {
+    hidden: { opacity: 0, height: 0 },
+    visible: {
+      opacity: 1,
+      height: "auto",
+      transition: {
+        duration: 0.3,
+        ease: "easeInOut"
+      }
+    },
+    exit: {
+      opacity: 0,
+      height: 0,
+      transition: {
+        duration: 0.2,
+        ease: "easeInOut"
+      }
+    }
+  };
 
   const switchLanguage = (lang: "en" | "ar") => {
     setIsLoading(true);
@@ -89,11 +297,14 @@ const Navbar: React.FC = () => {
 
   return (
     <nav
+      ref={navbarRef}
       className={`fixed w-full z-50 transition-all duration-300 ${
         isScrolled
           ? "bg-primary/90 backdrop-blur-md py-2"
           : "bg-transparent py-4"
       }`}
+      role="navigation"
+      aria-label="Main Navigation"
     >
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-primary/80 backdrop-blur-sm">
@@ -135,12 +346,15 @@ const Navbar: React.FC = () => {
           </Link>
 
           {/* Solutions Dropdown */}
-          <div className="relative group">
+          <div className="relative group" ref={solutionsRef}>
             <button
               onClick={toggleSolutionsMenu}
               className={`relative flex items-center transition-colors ${isActive('/solutions')
                 ? 'text-secondary font-medium nav-active'
                 : 'text-white hover:text-secondary'}`}
+              aria-expanded={isSolutionsMenuOpen}
+              aria-haspopup="true"
+              aria-controls="solutions-dropdown"
             >
               Solutions
               <svg
@@ -151,6 +365,7 @@ const Navbar: React.FC = () => {
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -162,63 +377,242 @@ const Navbar: React.FC = () => {
               {isActive('/solutions') && <span className="nav-indicator"></span>}
             </button>
 
-            {/* Solutions Dropdown Menu */}
-            {isSolutionsMenuOpen && (
-              <div className="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white/90 backdrop-blur-md ring-1 ring-black/5 focus:outline-none z-10 border border-white/10">
-                <div className="py-1" role="menu" aria-orientation="vertical">
-                  {solutionsItems.map((item) => (
-                    <Link
-                      key={item.name}
-                      to={item.href}
-                      className={`block px-4 py-2 text-sm hover:bg-white/50 ${isActive(item.href)
-                        ? 'text-green-700 font-medium'
-                        : 'text-gray-700'}`}
-                      role="menuitem"
-                    >
-                      {item.name}
-                      {isActive(item.href) && <span className="ml-2 w-1.5 h-1.5 rounded-full bg-green-500 inline-block"></span>}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
+            {/* Solutions Dropdown Menu with Animation */}
+            <AnimatePresence>
+              {isSolutionsMenuOpen && (
+                <motion.div
+                  id="solutions-dropdown"
+                  className="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white/90 backdrop-blur-md ring-1 ring-black/5 focus:outline-none z-10 border border-white/10"
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={dropdownVariants}
+                >
+                  <div className="py-1" role="menu" aria-orientation="vertical">
+                    {solutionsItems.map((item) => (
+                      <Link
+                        key={item.name}
+                        to={item.href}
+                        className={`block px-4 py-2 text-sm hover:bg-white/50 ${isActive(item.href)
+                          ? 'text-green-700 font-medium'
+                          : 'text-gray-700'}`}
+                        role="menuitem"
+                        tabIndex={0}
+                      >
+                        {item.name}
+                        {isActive(item.href) && <span className="ml-2 w-1.5 h-1.5 rounded-full bg-green-500 inline-block" aria-hidden="true"></span>}
+                      </Link>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
-          <Link
-            to="/why-vonoy"
-            className={`relative transition-colors ${isActive('/why-vonoy')
-              ? 'text-secondary font-medium nav-active'
-              : 'text-white hover:text-secondary'}`}
-          >
-            Why Vonoy?
-            {isActive('/why-vonoy') && <span className="nav-indicator"></span>}
-          </Link>
-          <Link
-            to="/features"
-            className={`relative transition-colors ${isActive('/features')
-              ? 'text-secondary font-medium nav-active'
-              : 'text-white hover:text-secondary'}`}
-          >
-            Features
-            {isActive('/features') && <span className="nav-indicator"></span>}
-          </Link>
-          <Link
-            to="/about"
-            className={`relative transition-colors ${isActive('/about')
-              ? 'text-secondary font-medium nav-active'
-              : 'text-white hover:text-secondary'}`}
-          >
-            About Us
-            {isActive('/about') && <span className="nav-indicator"></span>}
-          </Link>
+          {/* Industries Dropdown */}
+          <div className="relative group" ref={industriesRef}>
+            <button
+              onClick={toggleIndustriesMenu}
+              className={`relative flex items-center transition-colors ${isActive('/industries')
+                ? 'text-secondary font-medium nav-active'
+                : 'text-white hover:text-secondary'}`}
+              aria-expanded={isIndustriesMenuOpen}
+              aria-haspopup="true"
+              aria-controls="industries-dropdown"
+            >
+              Industries we serve
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className={`h-4 w-4 ml-1 transition-transform duration-200 ${
+                  isIndustriesMenuOpen ? "rotate-180" : ""
+                }`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+              {isActive('/industries') && <span className="nav-indicator"></span>}
+            </button>
+
+            {/* Industries Dropdown Menu with Animation */}
+            <AnimatePresence>
+              {isIndustriesMenuOpen && (
+                <motion.div
+                  id="industries-dropdown"
+                  className="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white/90 backdrop-blur-md ring-1 ring-black/5 focus:outline-none z-10 border border-white/10"
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={dropdownVariants}
+                >
+                  <div className="py-1" role="menu" aria-orientation="vertical">
+                    {industriesItems.map((item) => (
+                      <Link
+                        key={item.name}
+                        to={item.href}
+                        className={`block px-4 py-2 text-sm hover:bg-white/50 ${isActive(item.href)
+                          ? 'text-green-700 font-medium'
+                          : 'text-gray-700'}`}
+                        role="menuitem"
+                        tabIndex={0}
+                      >
+                        {item.name}
+                        {isActive(item.href) && <span className="ml-2 w-1.5 h-1.5 rounded-full bg-green-500 inline-block" aria-hidden="true"></span>}
+                      </Link>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Resources Dropdown */}
+          <div className="relative group" ref={resourcesRef}>
+            <button
+              onClick={toggleResourcesMenu}
+              className={`relative flex items-center transition-colors ${isActive('/resources')
+                ? 'text-secondary font-medium nav-active'
+                : 'text-white hover:text-secondary'}`}
+              aria-expanded={isResourcesMenuOpen}
+              aria-haspopup="true"
+              aria-controls="resources-dropdown"
+            >
+              Resources
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className={`h-4 w-4 ml-1 transition-transform duration-200 ${
+                  isResourcesMenuOpen ? "rotate-180" : ""
+                }`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+              {isActive('/resources') && <span className="nav-indicator"></span>}
+            </button>
+
+            {/* Resources Dropdown Menu with Animation */}
+            <AnimatePresence>
+              {isResourcesMenuOpen && (
+                <motion.div
+                  id="resources-dropdown"
+                  className="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white/90 backdrop-blur-md ring-1 ring-black/5 focus:outline-none z-10 border border-white/10"
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={dropdownVariants}
+                >
+                  <div className="py-1" role="menu" aria-orientation="vertical">
+                    {resourcesItems.map((item) => (
+                      <Link
+                        key={item.name}
+                        to={item.href}
+                        className={`block px-4 py-2 text-sm hover:bg-white/50 ${isActive(item.href)
+                          ? 'text-green-700 font-medium'
+                          : 'text-gray-700'}`}
+                        role="menuitem"
+                        tabIndex={0}
+                      >
+                        {item.name}
+                        {isActive(item.href) && <span className="ml-2 w-1.5 h-1.5 rounded-full bg-green-500 inline-block" aria-hidden="true"></span>}
+                      </Link>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* More Dropdown */}
+          <div className="relative group" ref={moreRef}>
+            <button
+              onClick={toggleMoreMenu}
+              className={`relative flex items-center transition-colors ${isActive('/about') || isActive('/careers') || isActive('/contact') || isActive('/faq')
+                ? 'text-secondary font-medium nav-active'
+                : 'text-white hover:text-secondary'}`}
+              aria-expanded={isMoreMenuOpen}
+              aria-haspopup="true"
+              aria-controls="more-dropdown"
+            >
+              More
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className={`h-4 w-4 ml-1 transition-transform duration-200 ${
+                  isMoreMenuOpen ? "rotate-180" : ""
+                }`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+              {(isActive('/about') || isActive('/careers') || isActive('/contact') || isActive('/faq')) && <span className="nav-indicator"></span>}
+            </button>
+
+            {/* More Dropdown Menu with Animation */}
+            <AnimatePresence>
+              {isMoreMenuOpen && (
+                <motion.div
+                  id="more-dropdown"
+                  className="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white/90 backdrop-blur-md ring-1 ring-black/5 focus:outline-none z-10 border border-white/10"
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={dropdownVariants}
+                >
+                  <div className="py-1" role="menu" aria-orientation="vertical">
+                    {moreItems.map((item) => (
+                      <Link
+                        key={item.name}
+                        to={item.href}
+                        className={`block px-4 py-2 text-sm hover:bg-white/50 ${isActive(item.href)
+                          ? 'text-green-700 font-medium'
+                          : 'text-gray-700'}`}
+                        role="menuitem"
+                        tabIndex={0}
+                      >
+                        {item.name}
+                        {isActive(item.href) && <span className="ml-2 w-1.5 h-1.5 rounded-full bg-green-500 inline-block" aria-hidden="true"></span>}
+                      </Link>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Removed individual links for Why Vonoy, Features, and About Us as they are now in dropdowns */}
         </div>
 
         {/* Language Switcher & Book a Demo Button - Only two buttons as specified */}
         <div className="hidden md:flex items-center space-x-4">
-          <div className="relative flex items-center">
+          <div className="relative flex items-center" ref={langRef}>
             <button
               onClick={toggleLangMenu}
               className="text-white hover:text-white px-4 py-2 rounded-md flex items-center text-sm font-medium border border-white/30 hover:border-white/50 transition-all duration-300 bg-white/15 hover:bg-white/25 backdrop-blur-md shadow-md hover:shadow-lg"
+              aria-expanded={isLangMenuOpen}
+              aria-haspopup="true"
+              aria-controls="language-dropdown"
             >
               <span className="text-white font-medium">{language === "en" ? "English" : "العربية"}</span>
               <svg
@@ -229,6 +623,7 @@ const Navbar: React.FC = () => {
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -240,50 +635,63 @@ const Navbar: React.FC = () => {
             </button>
 
             {/* Book a Demo Button */}
-            <Link to="/demo" className="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#00a79d] hover:bg-[#008f86] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00a79d] transition-colors">
+            <Link
+              to="/demo"
+              className="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#00a79d] hover:bg-[#008f86] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00a79d] transition-colors"
+              aria-label="Book a Demo"
+            >
               <span className="text-white">Book a Demo</span>
             </Link>
 
-            {/* Glass Effect Button removed */}
-
-            {/* Language Dropdown */}
-            {isLangMenuOpen && (
-              <div className="absolute left-0 top-full mt-2 w-40 rounded-md shadow-lg bg-white/90 backdrop-blur-md border border-white/30 focus:outline-none z-10">
-                <div className="py-1" role="menu" aria-orientation="vertical">
-                  <button
-                    onClick={() => switchLanguage("en")}
-                    className="block w-full text-left px-4 py-2 text-sm font-medium hover:bg-white/50 flex items-center"
-                    role="menuitem"
-                  >
-                    {language === "en" && (
-                      <span className="w-2 h-2 rounded-full bg-[#00a79d] mr-2"></span>
-                    )}
-                    <span className="text-green-700 font-semibold drop-shadow-sm">English</span>
-                  </button>
-                  <button
-                    onClick={() => switchLanguage("ar")}
-                    className="block w-full text-left px-4 py-2 text-sm font-medium hover:bg-white/50 flex items-center"
-                    role="menuitem"
-                  >
-                    {language === "ar" && (
-                      <span className="w-2 h-2 rounded-full bg-[#00a79d] mr-2"></span>
-                    )}
-                    <span className="text-green-700 font-semibold drop-shadow-sm">العربية</span>
-                  </button>
-                </div>
-              </div>
-            )}
+            {/* Language Dropdown with Animation */}
+            <AnimatePresence>
+              {isLangMenuOpen && (
+                <motion.div
+                  id="language-dropdown"
+                  className="absolute left-0 top-full mt-2 w-40 rounded-md shadow-lg bg-white/90 backdrop-blur-md border border-white/30 focus:outline-none z-10"
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={dropdownVariants}
+                >
+                  <div className="py-1" role="menu" aria-orientation="vertical">
+                    <button
+                      onClick={() => switchLanguage("en")}
+                      className="block w-full text-left px-4 py-2 text-sm font-medium hover:bg-white/50 flex items-center"
+                      role="menuitem"
+                      tabIndex={0}
+                    >
+                      {language === "en" && (
+                        <span className="w-2 h-2 rounded-full bg-[#00a79d] mr-2" aria-hidden="true"></span>
+                      )}
+                      <span className="text-green-700 font-semibold drop-shadow-sm">English</span>
+                    </button>
+                    <button
+                      onClick={() => switchLanguage("ar")}
+                      className="block w-full text-left px-4 py-2 text-sm font-medium hover:bg-white/50 flex items-center"
+                      role="menuitem"
+                      tabIndex={0}
+                    >
+                      {language === "ar" && (
+                        <span className="w-2 h-2 rounded-full bg-[#00a79d] mr-2" aria-hidden="true"></span>
+                      )}
+                      <span className="text-green-700 font-semibold drop-shadow-sm">العربية</span>
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-
-          {/* Contact Us button removed */}
         </div>
 
         {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center">
           <button
             onClick={toggleMenu}
-            className="text-white hover:text-secondary focus:outline-none"
-            aria-label="Toggle menu"
+            className="text-white hover:text-secondary focus:outline-none focus:ring-2 focus:ring-white/30 rounded-md p-1"
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-menu"
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           >
             {isMenuOpen ? (
               <svg
@@ -292,6 +700,7 @@ const Navbar: React.FC = () => {
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -307,6 +716,7 @@ const Navbar: React.FC = () => {
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -320,10 +730,18 @@ const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="absolute top-full left-0 w-full mobile-menu shadow-lg md:hidden z-50 max-h-[calc(100vh-4rem)] overflow-auto">
-          <div className="px-4 py-3 space-y-4">
+      {/* Mobile Menu with Animation */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            id="mobile-menu"
+            className="absolute top-full left-0 w-full mobile-menu shadow-lg md:hidden z-50 max-h-[calc(100vh-4rem)] overflow-auto"
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            variants={mobileMenuVariants}
+          >
+            <div className="px-4 py-3 space-y-4">
             <Link
               to="/"
               className={`block py-2 text-lg mobile-menu-item rounded px-3 ${isActive('/')
@@ -337,16 +755,75 @@ const Navbar: React.FC = () => {
             {/* Mobile Solutions Dropdown */}
             <div>
               <button
-                onClick={toggleMobileSubmenu}
+                onClick={() => toggleMobileSubmenu('solutions')}
                 className={`flex justify-between items-center w-full py-2 text-lg mobile-menu-item rounded px-3 ${isActive('/solutions')
                   ? 'text-secondary font-medium bg-white/10'
                   : 'text-white hover:text-secondary'}`}
+                aria-expanded={mobileSubmenuOpen === 'solutions'}
+                aria-controls="mobile-solutions-submenu"
               >
                 Solutions
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className={`h-5 w-5 transition-transform duration-200 ${
-                    isMobileSubmenuOpen ? "rotate-180" : ""
+                    mobileSubmenuOpen === 'solutions' ? "rotate-180" : ""
+                  }`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+              {isActive('/solutions') && <span className="mobile-nav-indicator"></span>}
+
+              {/* Mobile Solutions Submenu - Premium design without background */}
+              <AnimatePresence>
+                {mobileSubmenuOpen === 'solutions' && (
+                  <motion.div
+                    id="mobile-solutions-submenu"
+                    className="pl-4 space-y-2 mt-2 mobile-submenu"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                  >
+                  {solutionsItems.map((item) => (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      className={`block py-2 mobile-menu-item px-3 border-l-2 ${isActive(item.href)
+                        ? 'text-secondary font-medium border-secondary'
+                        : 'text-white/80 hover:text-secondary border-transparent'}`}
+                    >
+                      {item.name}
+                      {isActive(item.href) && <span className="ml-2 w-1.5 h-1.5 rounded-full bg-secondary inline-block"></span>}
+                    </Link>
+                  ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Mobile Industries Dropdown */}
+            <div>
+              <button
+                onClick={() => toggleMobileSubmenu('industries')}
+                className={`flex justify-between items-center w-full py-2 text-lg mobile-menu-item rounded px-3 ${isActive('/industries')
+                  ? 'text-secondary font-medium bg-white/10'
+                  : 'text-white hover:text-secondary'}`}
+              >
+                Industries we serve
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`h-5 w-5 transition-transform duration-200 ${
+                    mobileSubmenuOpen === 'industries' ? "rotate-180" : ""
                   }`}
                   fill="none"
                   viewBox="0 0 24 24"
@@ -360,12 +837,12 @@ const Navbar: React.FC = () => {
                   />
                 </svg>
               </button>
-              {isActive('/solutions') && <span className="mobile-nav-indicator"></span>}
+              {isActive('/industries') && <span className="mobile-nav-indicator"></span>}
 
-              {/* Mobile Solutions Submenu - Premium design without background */}
-              {isMobileSubmenuOpen && (
+              {/* Mobile Industries Submenu */}
+              {mobileSubmenuOpen === 'industries' && (
                 <div className="pl-4 space-y-2 mt-2 mobile-submenu">
-                  {solutionsItems.map((item) => (
+                  {industriesItems.map((item) => (
                     <Link
                       key={item.name}
                       to={item.href}
@@ -381,33 +858,113 @@ const Navbar: React.FC = () => {
               )}
             </div>
 
-            <Link
-              to="/why-vonoy"
-              className={`block py-2 text-lg mobile-menu-item rounded px-3 ${isActive('/why-vonoy')
-                ? 'text-secondary font-medium bg-white/10'
-                : 'text-white hover:text-secondary'}`}
-            >
-              Why Vonoy?
-              {isActive('/why-vonoy') && <span className="mobile-nav-indicator"></span>}
-            </Link>
-            <Link
-              to="/features"
-              className={`block py-2 text-lg mobile-menu-item rounded px-3 ${isActive('/features')
-                ? 'text-secondary font-medium bg-white/10'
-                : 'text-white hover:text-secondary'}`}
-            >
-              Features
-              {isActive('/features') && <span className="mobile-nav-indicator"></span>}
-            </Link>
-            <Link
-              to="/about"
-              className={`block py-2 text-lg mobile-menu-item rounded px-3 ${isActive('/about')
-                ? 'text-secondary font-medium bg-white/10'
-                : 'text-white hover:text-secondary'}`}
-            >
-              About Us
-              {isActive('/about') && <span className="mobile-nav-indicator"></span>}
-            </Link>
+            {/* Mobile Resources Dropdown */}
+            <div>
+              <button
+                onClick={() => toggleMobileSubmenu('resources')}
+                className={`flex justify-between items-center w-full py-2 text-lg mobile-menu-item rounded px-3 ${isActive('/resources')
+                  ? 'text-secondary font-medium bg-white/10'
+                  : 'text-white hover:text-secondary'}`}
+              >
+                Resources
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`h-5 w-5 transition-transform duration-200 ${
+                    mobileSubmenuOpen === 'resources' ? "rotate-180" : ""
+                  }`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+              {isActive('/resources') && <span className="mobile-nav-indicator"></span>}
+
+              {/* Mobile Resources Submenu */}
+              {mobileSubmenuOpen === 'resources' && (
+                <div className="pl-4 space-y-2 mt-2 mobile-submenu">
+                  {resourcesItems.map((item) => (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      className={`block py-2 mobile-menu-item px-3 border-l-2 ${isActive(item.href)
+                        ? 'text-secondary font-medium border-secondary'
+                        : 'text-white/80 hover:text-secondary border-transparent'}`}
+                    >
+                      {item.name}
+                      {isActive(item.href) && <span className="ml-2 w-1.5 h-1.5 rounded-full bg-secondary inline-block"></span>}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Mobile More Dropdown */}
+            <div>
+              <button
+                onClick={() => toggleMobileSubmenu('more')}
+                className={`flex justify-between items-center w-full py-2 text-lg mobile-menu-item rounded px-3 ${isActive('/about') || isActive('/careers') || isActive('/contact') || isActive('/faq')
+                  ? 'text-secondary font-medium bg-white/10'
+                  : 'text-white hover:text-secondary'}`}
+                aria-expanded={mobileSubmenuOpen === 'more'}
+                aria-controls="mobile-more-submenu"
+              >
+                More
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`h-5 w-5 transition-transform duration-200 ${
+                    mobileSubmenuOpen === 'more' ? "rotate-180" : ""
+                  }`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+              {(isActive('/about') || isActive('/careers') || isActive('/contact') || isActive('/faq')) && <span className="mobile-nav-indicator"></span>}
+
+              {/* Mobile More Submenu */}
+              <AnimatePresence>
+                {mobileSubmenuOpen === 'more' && (
+                  <motion.div
+                    id="mobile-more-submenu"
+                    className="pl-4 space-y-2 mt-2 mobile-submenu"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                  >
+                  {moreItems.map((item) => (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      className={`block py-2 mobile-menu-item px-3 border-l-2 ${isActive(item.href)
+                        ? 'text-secondary font-medium border-secondary'
+                        : 'text-white/80 hover:text-secondary border-transparent'}`}
+                    >
+                      {item.name}
+                      {isActive(item.href) && <span className="ml-2 w-1.5 h-1.5 rounded-full bg-secondary inline-block"></span>}
+                    </Link>
+                  ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Removed individual links for Why Vonoy, Features, and About Us as they are now in dropdowns */}
 
             {/* Mobile Language Switcher */}
             <div className="flex flex-col space-y-2 pt-4 border-t border-white/10">
@@ -447,6 +1004,7 @@ const Navbar: React.FC = () => {
                 className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
                 viewBox="0 0 20 20"
                 fill="currentColor"
+                aria-hidden="true"
               >
                 <path
                   fillRule="evenodd"
@@ -458,8 +1016,9 @@ const Navbar: React.FC = () => {
 
             {/* Mobile Glass Effect Button removed */}
           </div>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </nav>
   );
 };

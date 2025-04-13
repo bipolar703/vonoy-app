@@ -4,6 +4,13 @@
 @import "./styles/reset.css";
 @import "./styles/design-tokens.css";
 @import "./styles/utilities.css";
+@import "./styles/unified-optimizations.css";
+
+/* Note: The unified-optimizations.css file consolidates and replaces:
+ * - mcp-optimization.css
+ * - text-quality.css
+ * and animation-related styles from utilities.css
+ */
 
 /* Font Face Declarations */
 @font-face {

@@ -158,6 +158,39 @@ const BenefitSection: React.FC = () => {
         </svg>
       ),
     },
+    {
+      title: "Carbon emissions reduction initiatives",
+      icon: (
+        <svg
+          className={styles.benefitIcon}
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M17 7C17 5.93913 16.5786 4.92172 15.8284 4.17157C15.0783 3.42143 14.0609 3 13 3C11.9391 3 10.9217 3.42143 10.1716 4.17157C9.42143 4.92172 9 5.93913 9 7"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M5 7H19C20.1046 7 21 7.89543 21 9V18C21 19.1046 20.1046 20 19 20H5C3.89543 20 3 19.1046 3 18V9C3 7.89543 3.89543 7 5 7Z"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M8 12L10.5 14.5L16 9"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      ),
+    },
   ];
 
   return (

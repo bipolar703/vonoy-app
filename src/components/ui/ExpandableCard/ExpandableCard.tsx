@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import anime from 'animejs';
+import { createAnimation, createTimeline } from '../../../utils/animationSystem';
 import styles from './ExpandableCard.module.css';
 
 interface ExpandableCardProps {
@@ -42,67 +43,56 @@ const ExpandableCard: React.FC<ExpandableCardProps> = ({
   const contentRef = useRef<HTMLDivElement>(null);
   const [contentHeight, setContentHeight] = useState<number | undefined>(undefined);
 
-  // Animate content height using Anime.js
+  // Animate content height using enhanced createTimeline
   useEffect(() => {
     if (contentRef.current) {
-      // Cancel any existing animations on this element
-      anime.remove(contentRef.current);
-
       // Get the target height
       const targetHeight = isOpen ? contentRef.current.scrollHeight : 0;
 
-      // Create animation timeline with Anime.js
-      const timeline = anime.timeline({
-        easing: 'cubicBezier(0.25, 0.1, 0.25, 1)',
-        // Using Web Animation API differences from Anime.js documentation
-        // https://animejs.com/documentation/web-animation-api/api-differences-with-native-waapi/
-        // Setting iterations to 1 (default) for a single animation
-        // This is equivalent to the Web Animation API's iterations property
-        loop: false,
-        direction: 'normal',
-        autoplay: true
-      });
-
-      // Add height animation
-      timeline.add({
-        targets: contentRef.current,
-        height: targetHeight,
-        duration: 600, // Slower, more premium animation
-        complete: () => {
-          // Set height to auto when animation completes and card is open
-          // This allows content to adjust if its size changes
-          if (isOpen && contentRef.current) {
-            contentRef.current.style.height = 'auto';
-          }
+      // Prepare animations array for createTimeline
+      const animations = [
+        {
+          targets: contentRef.current,
+          properties: {
+            height: targetHeight
+          },
+          offset: 0
         }
-      });
+      ];
 
       // Add fade-in animation for content if opening
       if (isOpen && contentRef.current) {
         // Get only direct children of this specific card's content
         const contentElements = contentRef.current.querySelectorAll(':scope > *');
 
-        // Cancel any existing animations on these elements
-        contentElements.forEach(el => anime.remove(el));
-
-        timeline.add({
+        animations.push({
           targets: contentElements,
-          opacity: [0, 1],
-          translateY: [10, 0],
-          duration: 500,
-          delay: anime.stagger(50), // Staggered animation for child elements
-          easing: 'cubicBezier(0.25, 0.1, 0.25, 1)'
-        }, '-=400'); // Start before the height animation completes
+          properties: {
+            opacity: [0, 1],
+            translateY: [10, 0],
+            delay: anime.stagger(50) // Staggered animation for child elements
+          },
+          offset: '-=400' // Start before the height animation completes
+        });
       }
+
+      // Create the timeline with proper cleanup
+      const timeline = createTimeline(animations, {
+        duration: 600, // Slower, more premium animation
+        easing: 'cubicBezier(0.25, 0.1, 0.25, 1)'
+      });
+
+      // Set height to auto when animation completes and card is open
+      timeline.finished.then(() => {
+        if (isOpen && contentRef.current) {
+          contentRef.current.style.height = 'auto';
+        }
+      });
     }
 
-    // Cleanup function to remove animations when component unmounts or updates
+    // Cleanup is handled automatically by createTimeline
     return () => {
-      if (contentRef.current) {
-        anime.remove(contentRef.current);
-        const contentElements = contentRef.current.querySelectorAll('*');
-        contentElements.forEach(el => anime.remove(el));
-      }
+      // No manual cleanup needed as createTimeline handles it
     };
   }, [isOpen, children, description]);
 

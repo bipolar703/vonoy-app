@@ -1,0 +1,203 @@
+/**
+ * Unified Optimizations CSS
+ * 
+ * Consolidates optimizations from:
+ * - mcp-optimization.css
+ * - text-quality.css
+ * - utilities.css (animation-related)
+ * 
+ * Uses BEM naming convention for clarity and to avoid conflicts.
+ */
+
+/* ======================================================
+   Global Optimizations
+   ====================================================== */
+
+:root {
+  /* Text rendering optimizations */
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-synthesis: none;
+  font-display: swap;
+  
+  /* Improve kerning and ligatures */
+  font-kerning: normal;
+  font-feature-settings: "kern", "liga", "clig", "calt";
+  
+  /* Improve text clarity with subpixel positioning */
+  text-size-adjust: 100%;
+}
+
+/* Prevent layout shifts */
+img, video, iframe {
+  aspect-ratio: attr(width) / attr(height);
+  contain: layout paint;
+}
+
+/* Prevent layout shifts for text elements */
+h1, h2, h3, h4, h5, h6, p {
+  contain: layout style;
+}
+
+/* ======================================================
+   Animation & Transition Optimizations
+   ====================================================== */
+
+/* Base animation optimization class */
+.opt__animated {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  filter: blur(0); /* Prevent subpixel rendering issues */
+  transform: translate3d(0, 0, 0); /* Use hardware acceleration */
+}
+
+/* Page transition optimization */
+.opt__transition {
+  will-change: opacity, transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  text-rendering: geometricPrecision;
+}
+
+/* Text optimization during animations */
+.opt__animated-text {
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Loader optimization */
+.opt__loader {
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transform: translateZ(0);
+  will-change: opacity, transform;
+  text-rendering: geometricPrecision;
+}
+
+/* ======================================================
+   MCP Server Optimizations
+   ====================================================== */
+
+/* Optimize for MCP server rendering */
+.opt__mcp {
+  content-visibility: auto; /* Use content-visibility for off-screen content */
+  contain-intrinsic-size: 1px 1000px; /* Set explicit size to prevent layout shifts */
+  contain: layout paint style; /* Optimize rendering */
+}
+
+/* ======================================================
+   Media Container Optimizations
+   ====================================================== */
+
+/* Base media container */
+.opt__media {
+  position: relative;
+  height: 0;
+  overflow: hidden;
+}
+
+/* Common aspect ratios */
+.opt__media--16-9 {
+  padding-bottom: 56.25%; /* 16:9 */
+}
+
+.opt__media--4-3 {
+  padding-bottom: 75%; /* 4:3 */
+}
+
+.opt__media--1-1 {
+  padding-bottom: 100%; /* 1:1 */
+}
+
+.opt__media > img,
+.opt__media > iframe,
+.opt__media > video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ======================================================
+   High-DPI Screen Optimizations
+   ====================================================== */
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  body {
+    /* Improve text clarity on high-DPI displays */
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.01);
+  }
+  
+  /* Adjust font weight for better rendering on high-DPI screens */
+  h1, h2, h3 {
+    font-weight: 600; /* Slightly reduce font weight for better rendering */
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.05); /* Improve contrast */
+  }
+  
+  /* Improve text clarity for small text on high-DPI displays */
+  small, .text-sm {
+    -webkit-font-smoothing: subpixel-antialiased;
+    letter-spacing: 0.015em;
+  }
+}
+
+/* ======================================================
+   Component-Specific Optimizations
+   ====================================================== */
+
+/* Card optimization */
+.opt__card {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  will-change: transform, opacity;
+}
+
+/* Button optimization */
+.opt__button {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  will-change: transform, opacity;
+}
+
+/* Navigation item optimization */
+.opt__nav-item {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  will-change: transform, opacity;
+}
+
+/* ======================================================
+   Reduced Motion Preferences
+   ====================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  /* Respect user preferences for reduced motion */
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  /* Force animations for specific elements that need them */
+  .opt__force-animation,
+  .opt__force-animation *,
+  .opt__force-animation *::before,
+  .opt__force-animation *::after {
+    animation-duration: inherit !important;
+    animation-iteration-count: inherit !important;
+    transition-duration: inherit !important;
+  }
+}
