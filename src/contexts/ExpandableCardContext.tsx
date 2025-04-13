@@ -14,6 +14,7 @@ const ExpandableCardContext = createContext<ExpandableCardContextType | undefine
  * Provides context for managing expandable cards, ensuring only one card
  * is expanded at a time for a cleaner user experience.
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export const ExpandableCardProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
   
@@ -33,6 +34,7 @@ export const ExpandableCardProvider: React.FC<{ children: React.ReactNode }> = (
  * 
  * Custom hook to access the expandable card context.
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export const useExpandableCard = (): ExpandableCardContextType => {
   const context = useContext(ExpandableCardContext);
   

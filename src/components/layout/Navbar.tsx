@@ -116,8 +116,8 @@ const Navbar: React.FC = () => {
               className="h-10"
               width={120}
               height={40}
-              fetchPriority="high"
-              loading="lazy"
+              priority={true}
+              loading="eager"
             />
           </a>
         </div>
@@ -362,16 +362,16 @@ const Navbar: React.FC = () => {
               </button>
               {isActive('/solutions') && <span className="mobile-nav-indicator"></span>}
 
-              {/* Mobile Solutions Submenu */}
+              {/* Mobile Solutions Submenu - Premium design without background */}
               {isMobileSubmenuOpen && (
-                <div className="pl-4 space-y-2 mt-2 mobile-submenu p-2 mx-2 bg-white/5 rounded-md">
+                <div className="pl-4 space-y-2 mt-2 mobile-submenu">
                   {solutionsItems.map((item) => (
                     <Link
                       key={item.name}
                       to={item.href}
-                      className={`block py-1 mobile-menu-item px-3 rounded ${isActive(item.href)
-                        ? 'text-secondary font-medium bg-white/10'
-                        : 'text-white hover:text-secondary'}`}
+                      className={`block py-2 mobile-menu-item px-3 border-l-2 ${isActive(item.href)
+                        ? 'text-secondary font-medium border-secondary'
+                        : 'text-white/80 hover:text-secondary border-transparent'}`}
                     >
                       {item.name}
                       {isActive(item.href) && <span className="ml-2 w-1.5 h-1.5 rounded-full bg-secondary inline-block"></span>}

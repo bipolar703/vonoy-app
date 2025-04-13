@@ -1,0 +1,138 @@
+/* Text rendering optimization for sharp, high-quality text - 2025 Edition */
+
+/* Apply to all text elements for consistent rendering */
+body {
+  /* Optimize for legibility - best for text-heavy content */
+  text-rendering: optimizeLegibility;
+
+  /* Improve font smoothing on WebKit/Blink browsers */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Improve kerning and ligatures */
+  font-kerning: normal;
+  font-feature-settings: "kern", "liga", "clig", "calt";
+
+  /* Prevent text from becoming blurry during animations */
+  backface-visibility: hidden;
+
+  /* Improve text clarity with subpixel positioning */
+  text-size-adjust: 100%;
+
+  /* Ensure consistent line height for better readability */
+  line-height: 1.5;
+
+  /* Improve text contrast */
+  color-adjust: exact;
+
+  /* Optimize font loading and display */
+  font-display: swap;
+}
+
+/* Ensure headings have the highest quality rendering */
+h1, h2, h3, h4, h5, h6 {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Improve letter spacing for headings */
+  letter-spacing: -0.01em;
+
+  /* Prevent layout shifts during font loading */
+  font-display: swap;
+
+  /* Improve contrast and readability */
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.05);
+
+  /* Ensure proper line height for headings */
+  line-height: 1.2;
+
+  /* Prevent text from becoming blurry during animations */
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Ensure paragraph text is highly readable */
+p, li, span, a {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Improve readability with proper letter spacing */
+  letter-spacing: 0.01em;
+
+  /* Ensure proper line height */
+  line-height: 1.6;
+
+  /* Improve text clarity */
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.01);
+}
+
+/* Fix for text during animations - 2025 techniques */
+.animated-element {
+  /* Prevent text from becoming blurry during animations */
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+
+  /* Use GPU acceleration for smoother animations */
+  transform: translate3d(0, 0, 0);
+
+  /* Improve text clarity during animations */
+  text-rendering: geometricPrecision;
+
+  /* Prevent subpixel rendering issues */
+  filter: blur(0);
+}
+
+/* High-DPI screen optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  body {
+    /* Further optimize for high-DPI displays */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    /* Improve text clarity on high-DPI displays */
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.01);
+  }
+
+  /* Adjust font weight for better rendering on high-DPI screens */
+  h1, h2, h3 {
+    font-weight: 600; /* Slightly reduce font weight for better rendering */
+
+    /* Improve contrast on high-DPI displays */
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Improve text clarity for small text on high-DPI displays */
+  small, .text-sm {
+    -webkit-font-smoothing: subpixel-antialiased;
+    letter-spacing: 0.015em;
+  }
+}
+
+/* Prevent text from becoming blurry during transitions */
+.page-transition-loader * {
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transform: translateZ(0);
+  will-change: opacity, transform;
+
+  /* Improve text clarity during transitions */
+  text-rendering: geometricPrecision;
+}
+
+/* Optimize text in cards and UI components */
+.card, .button, .nav-item {
+  /* Prevent text from becoming blurry */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+
+  /* Improve text clarity */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Optimize for animations */
+  will-change: transform, opacity;
+}

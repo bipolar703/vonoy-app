@@ -1,10 +1,12 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 
 // Import critical components directly
 import Navbar from "./components/layout/Navbar";
 import HeroSection from "./components/sections/HeroSection";
 import LogoLoader from "./components/ui/LogoLoader";
 import Preload from "./components/ui/Preload";
+import PageTransition from "./components/layout/PageTransition";
+import { initSectionAnimations } from "./utils/sectionAnimations";
 import "./components/ui/LogoLoader.css";
 
 // Lazy load non-critical components
@@ -42,16 +44,31 @@ const SectionLoader = () => (
  * Other sections are loaded as the user scrolls down
  */
 function App() {
+  // Initialize all section animations
+  useEffect(() => {
+    // Initialize section animations after a short delay to ensure DOM is ready
+    const timer = setTimeout(() => {
+      initSectionAnimations();
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Preload critical resources */}
+      {/* Preload critical resources - optimized for MCP servers */}
       <Preload
         resources={[
-          { href: '/hero-bg.webp', as: 'image', importance: 'high' },
-          { href: '/logo.svg', as: 'image', importance: 'high' }
+          // Only preload the logo which is used immediately in the header
+          { href: '/logo.svg', as: 'image', importance: 'high', immediateUse: true },
+          // Use prefetch for other resources to avoid warnings
+          { href: '/hero-bg.webp', as: 'image', importance: 'high', immediateUse: false },
+          { href: '/fonts/inter-var.woff2', as: 'font', importance: 'low', immediateUse: false, crossOrigin: 'anonymous' }
+          // YouTube thumbnail removed from preload to avoid CORS issues
         ]}
       />
 
+      <PageTransition />
       <Navbar />
       <main className="flex-grow">
         {/* Section 1: Hero - Critical, load immediately */}

@@ -45,6 +45,9 @@ const ExpandableCard: React.FC<ExpandableCardProps> = ({
   // Animate content height using Anime.js
   useEffect(() => {
     if (contentRef.current) {
+      // Cancel any existing animations on this element
+      anime.remove(contentRef.current);
+
       // Get the target height
       const targetHeight = isOpen ? contentRef.current.scrollHeight : 0;
 
@@ -76,7 +79,12 @@ const ExpandableCard: React.FC<ExpandableCardProps> = ({
 
       // Add fade-in animation for content if opening
       if (isOpen && contentRef.current) {
-        const contentElements = contentRef.current.querySelectorAll('*');
+        // Get only direct children of this specific card's content
+        const contentElements = contentRef.current.querySelectorAll(':scope > *');
+
+        // Cancel any existing animations on these elements
+        contentElements.forEach(el => anime.remove(el));
+
         timeline.add({
           targets: contentElements,
           opacity: [0, 1],
@@ -87,6 +95,15 @@ const ExpandableCard: React.FC<ExpandableCardProps> = ({
         }, '-=400'); // Start before the height animation completes
       }
     }
+
+    // Cleanup function to remove animations when component unmounts or updates
+    return () => {
+      if (contentRef.current) {
+        anime.remove(contentRef.current);
+        const contentElements = contentRef.current.querySelectorAll('*');
+        contentElements.forEach(el => anime.remove(el));
+      }
+    };
   }, [isOpen, children, description]);
 
   // Handle resize events
@@ -103,7 +120,12 @@ const ExpandableCard: React.FC<ExpandableCardProps> = ({
   }, [isOpen]);
 
   // Toggle open/closed state
-  const handleToggle = () => {
+  const handleToggle = (e?: React.MouseEvent | React.KeyboardEvent) => {
+    // Prevent event bubbling if event is provided
+    if (e) {
+      e.stopPropagation();
+    }
+
     const newIsOpen = !isOpen;
 
     // Update internal state if not controlled
@@ -120,14 +142,14 @@ const ExpandableCard: React.FC<ExpandableCardProps> = ({
   return (
     <div
       className={`${styles.card} ${isOpen ? styles.open : ''} ${className}`}
-      onClick={handleToggle}
+      onClick={(e) => handleToggle(e)}
       tabIndex={0}
       role="button"
       aria-expanded={isOpen}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          handleToggle();
+          handleToggle(e);
         }
       }}
     >

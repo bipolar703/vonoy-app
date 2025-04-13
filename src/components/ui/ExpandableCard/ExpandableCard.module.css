@@ -11,6 +11,10 @@
   cursor: pointer;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   will-change: transform, box-shadow, background-color; /* Performance optimization */
+  height: 100%; /* Take full height of container */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Align content to the top */
 }
 
 .card:hover {
@@ -91,8 +95,10 @@
   overflow: hidden;
   /* Transition handled by Anime.js */
   will-change: height; /* Performance optimization */
-  opacity: 1;
+  opacity: 0;
   transition: opacity 0.3s ease;
+  width: 100%; /* Ensure content takes full width */
+  flex: 0 0 auto; /* Don't allow content to flex */
 }
 
 .card.open .content {

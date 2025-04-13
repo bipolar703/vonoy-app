@@ -36,7 +36,7 @@ const Footer: React.FC = () => {
           alt=""
           className={styles.footerLines}
           loading="lazy"
-          fetchPriority="low"
+          priority={false}
         />
       </div>
 
@@ -58,7 +58,7 @@ const Footer: React.FC = () => {
               width={120}
               height={40}
               loading="lazy"
-              fetchPriority="high"
+              priority={false}
             />
             <p className={styles.description}>
               AI-powered fleet operations management platform that helps

@@ -1,42 +1,50 @@
 import { StrictMode, Suspense, lazy, startTransition } from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { ErrorBoundary } from 'react-error-boundary';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Routes, Route, createRoutesFromElements } from 'react-router-dom';
 import ErrorFallback from './components/ui/ErrorFallback';
 import RouteTransition from './components/ui/RouteTransition';
-import PageTransition from './components/layout/PageTransition';
+// PageTransition is now included in App.tsx
 import { initializePerformanceOptimizations, measureRenderTime } from './utils/performance';
 import { reportWebVitalsToConsole } from './hooks/useWebVitals';
 import './index.css';
 import './styles/navbar.css';
+import './styles/text-quality.css';
+import './styles/mcp-optimization.css'; // MCP server optimizations
 
-// Preload critical assets
+// Preload critical assets - optimized for MCP servers
 const preloadAssets = () => {
   if (typeof document === 'undefined') return;
 
-  // Preload the logo for the loader
+  // Preload the logo for the loader - used immediately
   const logoLink = document.createElement('link');
   logoLink.rel = 'preload';
   logoLink.as = 'image';
   logoLink.href = '/logo.svg';
+  logoLink.fetchPriority = 'high';
   document.head.appendChild(logoLink);
 
-  // Preload critical fonts
+  // Use prefetch for non-immediate resources to avoid warnings
+  // Prefetch critical fonts - will be used soon but not immediately
   const fontLink = document.createElement('link');
-  fontLink.rel = 'preload';
-  fontLink.as = 'font';
+  fontLink.rel = 'prefetch'; // Changed from preload to prefetch
   fontLink.href = '/fonts/inter-var.woff2';
   fontLink.type = 'font/woff2';
   fontLink.crossOrigin = 'anonymous';
   document.head.appendChild(fontLink);
 
-  // Preload YouTube thumbnail for the video section
-  const ytThumbnail = document.createElement('link');
-  ytThumbnail.rel = 'preload';
-  ytThumbnail.as = 'image';
-  ytThumbnail.href = 'https://img.youtube.com/vi/hxm2rdVl7Y0/maxresdefault.jpg';
-  ytThumbnail.crossOrigin = 'anonymous';
-  document.head.appendChild(ytThumbnail);
+  // Use preconnect for YouTube domain - better than preload for external resources
+  const ytDomain = document.createElement('link');
+  ytDomain.rel = 'preconnect';
+  ytDomain.href = 'https://img.youtube.com';
+  ytDomain.crossOrigin = 'anonymous';
+  document.head.appendChild(ytDomain);
+
+  // Add DNS prefetch as well for even faster resolution
+  const ytDNS = document.createElement('link');
+  ytDNS.rel = 'dns-prefetch';
+  ytDNS.href = 'https://img.youtube.com';
+  document.head.appendChild(ytDNS);
 };
 
 // Use dynamic import for better code splitting
@@ -76,20 +84,30 @@ startTransition(() => {
         onError={(error) => console.error('Application error:', error)}
       >
         <Suspense fallback={<RouteTransition />}>
-          <Router>
-            <PageTransition />
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/about" element={<AboutUsPage />} />
-              <Route path="/demo" element={<BookDemoPage />} />
-              {/* Catch-all route for pages under development */}
-              <Route path="/solutions/*" element={<UnderDevelopmentPage />} />
-              <Route path="/features/*" element={<UnderDevelopmentPage />} />
-              <Route path="/why-vonoy" element={<UnderDevelopmentPage />} />
-              {/* 404 page for any unmatched routes */}
-              <Route path="*" element={<UnderDevelopmentPage />} />
-            </Routes>
-          </Router>
+          <RouterProvider router={createBrowserRouter(
+            createRoutesFromElements(
+              <>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/about" element={<AboutUsPage />} />
+                <Route path="/demo" element={<BookDemoPage />} />
+                {/* Catch-all route for pages under development */}
+                <Route path="/solutions/*" element={<UnderDevelopmentPage />} />
+                <Route path="/features/*" element={<UnderDevelopmentPage />} />
+                <Route path="/why-vonoy" element={<UnderDevelopmentPage />} />
+                {/* 404 page for any unmatched routes */}
+                <Route path="*" element={<UnderDevelopmentPage />} />
+              </>
+            ),
+            {
+              // Enable all future flags to resolve warnings and prepare for v7
+              future: {
+                v7_startTransition: true,
+                v7_relativeSplatPath: true,
+                v7_normalizeFormMethod: true,
+                v7_prependBasename: true
+              }
+            }
+          )} />
         </Suspense>
       </ErrorBoundary>
     </StrictMode>

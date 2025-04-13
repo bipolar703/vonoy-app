@@ -30,13 +30,31 @@ export const fadeInUp = (
   delay = 0,
   duration = 800
 ) => {
+  // Safety check for null or undefined elements
+  if (!element) {
+    console.warn('fadeInUp: Element is null or undefined');
+    return anime();
+  }
+
   // Apply will-change for better performance
   if (typeof element !== 'string') {
-    const targets = element instanceof HTMLElement ? [element] : Array.from(element);
-    targets.forEach(el => {
-      el.style.willChange = 'transform, opacity';
-      el.style.backfaceVisibility = 'hidden'; // Prevent flickering
-    });
+    try {
+      // Safely handle potential null or non-iterable elements
+      const targets = element instanceof HTMLElement ?
+        [element] :
+        (element && typeof element[Symbol.iterator] === 'function') ?
+          Array.from(element) :
+          [];
+
+      targets.forEach(el => {
+        if (el && el.style) {
+          el.style.willChange = 'transform, opacity';
+          el.style.backfaceVisibility = 'hidden'; // Prevent flickering
+        }
+      });
+    } catch (error) {
+      console.warn('fadeInUp: Error applying styles', error);
+    }
   }
 
   return anime({
@@ -47,13 +65,19 @@ export const fadeInUp = (
     duration,
     delay: typeof delay === 'function' ? delay : anime.stagger(100, { start: delay }),
     complete: (anim) => {
-      // Clean up will-change after animation
-      const targets = anim.animatables.map(a => a.target);
-      targets.forEach(el => {
-        if (el instanceof HTMLElement) {
-          el.style.willChange = 'auto';
+      try {
+        // Clean up will-change after animation
+        if (anim && anim.animatables) {
+          const targets = anim.animatables.map(a => a.target);
+          targets.forEach(el => {
+            if (el instanceof HTMLElement) {
+              el.style.willChange = 'auto';
+            }
+          });
         }
-      });
+      } catch (error) {
+        console.warn('fadeInUp: Error in complete callback', error);
+      }
     }
   });
 };
@@ -206,6 +230,12 @@ export const typeText = (
 
   if (!target) return;
 
+  // Safety check - if target is not in the DOM, don't proceed
+  if (!document.body.contains(target as Node)) {
+    console.warn('typeText: Target element is not in the DOM');
+    return;
+  }
+
   // Create a span for the cursor
   const cursor = document.createElement('span');
   cursor.className = 'typing-cursor';
@@ -235,25 +265,58 @@ export const typeText = (
   target.appendChild(cursor);
 
   let index = 0;
+  let intervalId: number | null = null;
 
   // Start typing after the delay
   const startTimer = setTimeout(() => {
-    const timer = setInterval(() => {
+    intervalId = window.setInterval(() => {
+      // Safety check - if element was removed from DOM during animation
+      if (!document.body.contains(target as Node)) {
+        if (intervalId !== null) {
+          clearInterval(intervalId);
+        }
+        return;
+      }
+
       if (index < text.length) {
-        // Create a text node and insert before the cursor
-        const char = document.createTextNode(text.charAt(index));
-        target.insertBefore(char, cursor);
-        index++;
+        try {
+          // Create a text node and insert before the cursor
+          const char = document.createTextNode(text.charAt(index));
+
+          // Check if cursor is still a child of target before inserting
+          if (cursor.parentNode === target) {
+            target.insertBefore(char, cursor);
+            index++;
+          } else {
+            // If cursor is no longer a child, append text and stop
+            target.textContent += text.charAt(index);
+            index++;
+            if (index >= text.length && intervalId !== null) {
+              clearInterval(intervalId);
+            }
+          }
+        } catch (error) {
+          console.warn('typeText: Error during animation', error);
+          // Fallback: just set the full text
+          target.textContent = text;
+          if (intervalId !== null) {
+            clearInterval(intervalId);
+          }
+        }
       } else {
-        clearInterval(timer);
+        if (intervalId !== null) {
+          clearInterval(intervalId);
+        }
         // Remove cursor after typing is complete (optional)
         setTimeout(() => {
-          cursor.remove();
+          if (cursor.parentNode === target) {
+            cursor.remove();
+          }
         }, 2000);
       }
     }, speed);
 
-    return timer;
+    return intervalId;
   }, startDelay);
 
   return startTimer;

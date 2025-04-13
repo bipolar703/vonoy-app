@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./WhyVonoySection.module.css";
 import { scrollReveal } from "../../utils/animations";
+import { whyVonoySectionAnimation } from "../../utils/sectionAnimations";
 import ExpandableCard from "../../components/ui/ExpandableCard";
 
 /**
@@ -24,6 +25,7 @@ const FeatureCards: React.FC<{ features: any[] }> = ({ features }) => {
 
   // Handle card toggle with animation - each card expands independently
   const handleCardToggle = (id: string, isOpen: boolean) => {
+    // Update only the clicked card's state
     setExpandedCards(prev => ({
       ...prev,
       [id]: isOpen
@@ -34,18 +36,20 @@ const FeatureCards: React.FC<{ features: any[] }> = ({ features }) => {
     <div className={styles.featuresGrid}>
       {features.map((feature, index) => {
         const cardId = `feature-${index}`;
+        // Check if this specific card is open
         const isOpen = !!expandedCards[cardId];
 
         return (
-          <ExpandableCard
-            key={index}
-            title={feature.title}
-            description={feature.description}
-            icon={feature.icon}
-            className={styles.featureCard}
-            isOpen={isOpen}
-            onToggle={(open) => handleCardToggle(cardId, open)}
-          />
+          <div key={index} className="card-container">
+            <ExpandableCard
+              title={feature.title}
+              description={feature.description}
+              icon={feature.icon}
+              className={styles.featureCard}
+              isOpen={isOpen}
+              onToggle={(open) => handleCardToggle(cardId, open)}
+            />
+          </div>
         );
       })}
     </div>
@@ -58,8 +62,34 @@ const WhyVonoySection: React.FC = () => {
   // Initialize animations when component mounts
   useEffect(() => {
     if (sectionRef.current) {
-      // Scroll reveal animation for the section
+      // Basic scroll reveal for compatibility
       scrollReveal(sectionRef.current, 0.1);
+
+      // Add section-specific premium animation
+      sectionRef.current.id = 'why-vonoy-section';
+
+      // Add animation classes to elements
+      const title = sectionRef.current.querySelector('.' + styles.sectionTitle);
+      if (title) title.classList.add('section-title');
+
+      // Initialize the premium animation with IntersectionObserver
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              whyVonoySectionAnimation(sectionRef.current!);
+              observer.disconnect();
+            }
+          });
+        },
+        { threshold: 0.2 }
+      );
+
+      observer.observe(sectionRef.current);
+
+      return () => {
+        observer.disconnect();
+      };
     }
   }, []);
   // Features data - Updated based on vonoy-edits.md

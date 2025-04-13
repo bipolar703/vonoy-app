@@ -23,8 +23,17 @@ const VideoSection: React.FC = () => {
   useEffect(() => {
     if (isInView && !isVideoLoaded) {
       const img = new Image();
+      // Set crossOrigin to anonymous to avoid CORS issues
+      img.crossOrigin = "anonymous";
       img.src = "https://img.youtube.com/vi/hxm2rdVl7Y0/maxresdefault.jpg";
       img.onload = () => setIsVideoLoaded(true);
+      img.onerror = () => {
+        // Fallback to a different thumbnail size if maxresdefault fails
+        const fallbackImg = new Image();
+        fallbackImg.crossOrigin = "anonymous";
+        fallbackImg.src = "https://img.youtube.com/vi/hxm2rdVl7Y0/hqdefault.jpg";
+        fallbackImg.onload = () => setIsVideoLoaded(true);
+      };
     }
   }, [isInView, isVideoLoaded]);
 
@@ -41,16 +50,16 @@ const VideoSection: React.FC = () => {
   };
 
   return (
-    <section ref={sectionRef} className={styles.section}>
-      <div className={styles.container}>
-        <div className={styles.sectionHeader}>
+    <section ref={sectionRef} className={styles.section} id="video-section">
+      <div className={`${styles.container} video-content`}>
+        <div className={`${styles.sectionHeader} video-content`}>
           <h2 className={styles.sectionTitle}>See Vonoy in Action</h2>
           <p className={styles.sectionDescription}>
             A demo video explaining how Vonoy works
           </p>
         </div>
 
-        <div className={styles.videoContainer}>
+        <div className={`${styles.videoContainer} video-content`}>
           {/* Video thumbnail overlay (hidden when video is playing) */}
           {!isPlaying && (
             <div className={styles.videoOverlay}>
@@ -80,7 +89,6 @@ const VideoSection: React.FC = () => {
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               loading="lazy"
-              fetchpriority="low"
             ></iframe>
           ) : (
             <div className={styles.videoPlaceholder}>
@@ -88,8 +96,12 @@ const VideoSection: React.FC = () => {
                 <div
                   className={styles.thumbnailContainer}
                   style={{
-                    backgroundImage: `url(https://img.youtube.com/vi/hxm2rdVl7Y0/maxresdefault.jpg)`
+                    backgroundImage: `url(https://img.youtube.com/vi/hxm2rdVl7Y0/maxresdefault.jpg)`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
                   }}
+                  role="img"
+                  aria-label="Video thumbnail"
                 >
                   <div className={styles.thumbnailOverlay}></div>
                 </div>

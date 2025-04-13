@@ -64,6 +64,8 @@
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
   gap: 1.5rem; /* Reduced gap for more compact design */
+  grid-auto-rows: min-content; /* Ensure rows only take the height they need */
+  align-items: start; /* Align items to the start of the grid cell */
 }
 
 @media (min-width: 640px) {
@@ -82,6 +84,26 @@
   /* Styles will be inherited from ExpandableCard component */
   /* Just add any custom styles specific to this section */
   margin-bottom: 1rem;
+  height: 100%;
+}
+
+/* Ensure each card container is independent and uniform size */
+:global(.card-container) {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  isolation: isolate; /* Create a new stacking context */
+}
+
+/* Ensure all cards have the same height in each row */
+@media (min-width: 640px) {
+  .featuresGrid {
+    grid-auto-rows: 1fr; /* Make all rows the same height */
+  }
+
+  :global(.card-container) {
+    min-height: 100%; /* Ensure all cards take full height of their grid cell */
+  }
 }
 
 .featureIcon {

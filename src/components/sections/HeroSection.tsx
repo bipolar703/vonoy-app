@@ -3,6 +3,7 @@ import HeroAnimation from "./HeroAnimation";
 import OptimizedImage from "../ui/OptimizedImage";
 import styles from "./HeroSection.module.css";
 import { typeText, fadeInUp } from "../../utils/animations";
+import { heroSectionAnimation } from "../../utils/sectionAnimations";
 
 /**
  * HeroSection Component
@@ -26,17 +27,53 @@ const HeroSection: React.FC = () => {
 
   // Initialize animations when component mounts
   useEffect(() => {
-    if (headingRef.current && descriptionRef.current && ctaRef.current) {
-      // Typing animation for heading
-      const heading = headingRef.current;
-      const originalText = heading.textContent || '';
-      heading.textContent = '';
-      typeText(heading, originalText, 30);
-
-      // Fade in animations for description and CTA
-      fadeInUp(descriptionRef.current, 1000, 800);
-      fadeInUp(ctaRef.current, 1500, 800);
+    // Add section ID for animation targeting
+    const sectionElement = document.querySelector('.' + styles.heroSection);
+    if (sectionElement) {
+      sectionElement.id = 'hero-section';
     }
+
+    // Safety check to ensure elements exist before animating
+    const safeAnimate = () => {
+      if (headingRef.current && descriptionRef.current && ctaRef.current) {
+        try {
+          // Typing animation for heading with safety checks
+          const heading = headingRef.current;
+          const originalText = heading.textContent || '';
+          heading.textContent = '';
+
+          // Add animated-element class for text quality
+          heading.classList.add('animated-element');
+          descriptionRef.current.classList.add('animated-element');
+          ctaRef.current.classList.add('animated-element');
+
+          // Use safer typing animation
+          setTimeout(() => {
+            typeText(heading, originalText, 30);
+          }, 300);
+
+          // Fade in animations for description and CTA
+          setTimeout(() => {
+            fadeInUp(descriptionRef.current, 1000, 800);
+          }, 500);
+
+          setTimeout(() => {
+            fadeInUp(ctaRef.current, 1500, 800);
+          }, 800);
+        } catch (error) {
+          console.warn('Animation error:', error);
+          // Fallback: ensure content is visible even if animation fails
+          if (headingRef.current) headingRef.current.style.opacity = '1';
+          if (descriptionRef.current) descriptionRef.current.style.opacity = '1';
+          if (ctaRef.current) ctaRef.current.style.opacity = '1';
+        }
+      }
+    };
+
+    // Delay animation slightly to ensure DOM is ready
+    const timer = setTimeout(safeAnimate, 100);
+
+    return () => clearTimeout(timer);
   }, []);
   return (
     <section className={styles.heroSection} id="hero-section">
@@ -47,30 +84,41 @@ const HeroSection: React.FC = () => {
       <div className={`${styles.heroContainer} pt-24`}>
         <div className={styles.container}>
           <div className={styles.content}>
-            <h1 className={styles.heading}>
-              Transform Your Fleet Operations with AI-Powered Efficiency
-            </h1>
-            <p className={styles.description}>
-              Vonoy helps businesses optimize fleet utilization, reduce costs,
-              and enhance delivery efficiency with data-driven, AI-powered
-              solutions.
-            </p>
+            {/* Reserve space with min-height to prevent layout shift */}
+            <div className="min-h-[120px] md:min-h-[160px] flex items-center">
+              <h1 ref={headingRef} className={`${styles.heading} hero-title`}>
+                Transform Your Fleet Operations with AI-Powered Efficiency
+              </h1>
+            </div>
+            {/* Reserve space with min-height to prevent layout shift */}
+            <div className="min-h-[80px] md:min-h-[100px] flex items-center">
+              <p ref={descriptionRef} className={`${styles.description} hero-subtitle`}>
+                Vonoy helps businesses optimize fleet utilization, reduce costs,
+                and enhance delivery efficiency with data-driven, AI-powered
+                solutions.
+              </p>
+            </div>
             {/* Using the green button color as specified */}
-            <button className={styles.button}>
-              Book a Demo
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className={styles.buttonIcon}
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </button>
+            {/* Reserve space with min-height to prevent layout shift */}
+            <div className="min-h-[60px] flex items-center">
+              <div ref={ctaRef} className="hero-cta opacity-0" style={{ minWidth: '180px', minHeight: '48px' }}>
+                <button className={styles.button}>
+                  Book a Demo
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className={styles.buttonIcon}
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 

@@ -1,0 +1,124 @@
+/* MCP Server Optimization - April 2025 */
+
+/* Global optimizations for MCP servers */
+:root {
+  /* Set base rendering quality */
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+  /* Improve text clarity */
+  font-synthesis: none;
+  
+  /* Optimize font loading */
+  font-display: swap;
+}
+
+/* Prevent layout shifts */
+img, video, iframe {
+  aspect-ratio: attr(width) / attr(height);
+  contain: layout paint;
+}
+
+/* Optimize animations */
+.animated-element {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  
+  /* Prevent subpixel rendering issues */
+  filter: blur(0);
+  
+  /* Use hardware acceleration */
+  transform: translate3d(0, 0, 0);
+}
+
+/* Optimize transitions */
+.page-transition-element {
+  will-change: opacity, transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  
+  /* Improve text clarity during transitions */
+  text-rendering: geometricPrecision;
+}
+
+/* Prevent layout shifts for text elements */
+h1, h2, h3, h4, h5, h6, p {
+  contain: layout style;
+}
+
+/* Optimize for high-DPI screens */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  body {
+    /* Improve text clarity on high-DPI displays */
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.01);
+  }
+  
+  /* Adjust font weight for better rendering on high-DPI screens */
+  h1, h2, h3 {
+    font-weight: 600; /* Slightly reduce font weight for better rendering */
+    
+    /* Improve contrast on high-DPI displays */
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Improve text clarity for small text on high-DPI displays */
+  small, .text-sm {
+    -webkit-font-smoothing: subpixel-antialiased;
+    letter-spacing: 0.015em;
+  }
+}
+
+/* Optimize for MCP server rendering */
+.mcp-optimized {
+  /* Use content-visibility for off-screen content */
+  content-visibility: auto;
+  
+  /* Set explicit size to prevent layout shifts */
+  contain-intrinsic-size: 1px 1000px;
+  
+  /* Optimize rendering */
+  contain: layout paint style;
+}
+
+/* Prevent layout shifts for images and media */
+.media-container {
+  position: relative;
+  height: 0;
+  overflow: hidden;
+}
+
+/* Common aspect ratios */
+.aspect-16-9 {
+  padding-bottom: 56.25%; /* 16:9 */
+}
+
+.aspect-4-3 {
+  padding-bottom: 75%; /* 4:3 */
+}
+
+.aspect-1-1 {
+  padding-bottom: 100%; /* 1:1 */
+}
+
+.media-container > img,
+.media-container > iframe,
+.media-container > video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Optimize for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
