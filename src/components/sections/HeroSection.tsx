@@ -102,7 +102,7 @@ const HeroSection: React.FC = () => {
             {/* Reserve space with min-height to prevent layout shift */}
             <div className="min-h-[60px] flex items-center">
               <div ref={ctaRef} className="hero-cta opacity-0" style={{ minWidth: '180px', minHeight: '48px' }}>
-                <button className={styles.button}>
+                <a href="/book-demo" className={styles.button}>
                   Book a Demo
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -116,7 +116,7 @@ const HeroSection: React.FC = () => {
                       clipRule="evenodd"
                     />
                   </svg>
-                </button>
+                </a>
               </div>
             </div>
           </div>

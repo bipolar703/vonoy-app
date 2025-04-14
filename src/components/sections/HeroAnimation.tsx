@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import anime from 'animejs';
+import anime from 'animejs/lib/anime.js';
+import React, { useEffect, useRef, useState } from 'react';
 
 /**
  * HeroAnimation Component
@@ -16,45 +16,54 @@ import anime from 'animejs';
  *
  * @returns {JSX.Element} The rendered canvas animation
  */
+
+// Define Particle type at module scope
+type Particle = {
+  x: number;
+  y: number;
+  targetX: number;
+  targetY: number;
+  radius: number;
+  baseRadius: number;
+  color: string;
+  vx: number;
+  vy: number;
+  angle: number;
+  speed: number;
+  oscillationSpeed: number;
+  isGlowing: boolean;
+  connections: number[];
+  opacity: number;
+};
+
+type AnimationParams = {
+  targets: any;
+  opacity?: number[] | ((el: Particle) => number);
+  scale?: number[];
+  delay?: number | ((el: any, i: number) => number);
+  duration?: number;
+  easing?: string;
+};
+
 const HeroAnimation: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<anime.AnimeInstance | null>(null);
-  const particlesRef = useRef<any[]>([]);
+  const particlesRef = useRef<Particle[]>([]);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext('2d');
     if (!ctx) return;
-
-    // Enhanced particle type with more properties
-    type Particle = {
-      x: number;
-      y: number;
-      targetX: number;
-      targetY: number;
-      radius: number;
-      baseRadius: number;
-      color: string;
-      vx: number;
-      vy: number;
-      angle: number;
-      speed: number;
-      oscillationSpeed: number;
-      isGlowing: boolean;
-      connections: number[];
-      opacity: number;
-    };
 
     // Initialize particles with enhanced properties
     const initParticles = () => {
       const particles: Particle[] = [];
-      const particleCount = 40; // More particles for richer effect
+      const particleCount = 40;
 
       for (let i = 0; i < particleCount; i++) {
-        // Create particles with more dynamic properties
         particles.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
@@ -62,21 +71,19 @@ const HeroAnimation: React.FC = () => {
           targetY: Math.random() * canvas.height,
           radius: Math.random() * 2 + 1,
           baseRadius: Math.random() * 2 + 1,
-          color: i % 2 === 0 ? '#3dd598' : '#0a6dc2', // Brand colors
+          color: i % 2 === 0 ? '#3dd598' : '#0a6dc2',
           vx: 0,
           vy: 0,
           angle: Math.random() * Math.PI * 2,
           speed: 0.1 + Math.random() * 0.2,
           oscillationSpeed: 0.001 + Math.random() * 0.002,
-          isGlowing: Math.random() > 0.8, // Some particles glow
-          connections: [], // Track connections to other particles
-          opacity: 0.4 + Math.random() * 0.4
+          isGlowing: Math.random() > 0.8,
+          connections: [],
+          opacity: 0.4 + Math.random() * 0.4,
         });
       }
 
-      // Store particles for anime.js animations
       particlesRef.current = particles;
-
       return particles;
     };
 
@@ -92,7 +99,7 @@ const HeroAnimation: React.FC = () => {
 
     // Initial sizing
     const particles = handleResize();
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
 
     // Enhanced connection drawing with gradient and flow effect
     const drawConnections = (p1: Particle, p2: Particle, distance: number) => {
@@ -139,7 +146,7 @@ const HeroAnimation: React.FC = () => {
       const time = Date.now() * 0.001;
 
       // Reset connections
-      particles.forEach(p => p.connections = []);
+      particles.forEach((p) => (p.connections = []));
 
       // Update and draw particles
       particles.forEach((p, index) => {
@@ -184,9 +191,10 @@ const HeroAnimation: React.FC = () => {
         }
 
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = p.color === '#3dd598' ?
-          `rgba(61, 213, 152, ${p.opacity})` :
-          `rgba(10, 109, 194, ${p.opacity})`;
+        ctx.fillStyle =
+          p.color === '#3dd598'
+            ? `rgba(61, 213, 152, ${p.opacity})`
+            : `rgba(10, 109, 194, ${p.opacity})`;
         ctx.fill();
 
         // Reset shadow
@@ -196,12 +204,14 @@ const HeroAnimation: React.FC = () => {
       // Draw connections after all particles are updated
       particles.forEach((p1, i) => {
         particles.forEach((p2, j) => {
-          if (i < j) { // Avoid duplicate connections
+          if (i < j) {
+            // Avoid duplicate connections
             const dx = p1.x - p2.x;
             const dy = p1.y - p2.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
 
-            if (distance < 180) { // Increased connection distance
+            if (distance < 180) {
+              // Increased connection distance
               drawConnections(p1, p2, distance);
             }
           }
@@ -225,12 +235,12 @@ const HeroAnimation: React.FC = () => {
       delay: anime.stagger(50),
       loop: true,
       direction: 'alternate',
-      update: function(anim) {
+      update: function (anim) {
         // Fade in canvas when animation starts
         if (anim.progress > 10 && !isVisible) {
           setIsVisible(true);
         }
-      }
+      },
     });
 
     // Create a timeline for staggered entrance
@@ -243,15 +253,46 @@ const HeroAnimation: React.FC = () => {
       targets: canvas,
       opacity: [0, 0.3],
       duration: 1000,
-      easing: 'cubicBezier(0.25, 0.1, 0.25, 1)'
+      easing: 'cubicBezier(0.25, 0.1, 0.25, 1)',
     });
 
     // Cleanup
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener('resize', handleResize);
       if (animationRef.current) animationRef.current.pause();
     };
   }, []);
+
+  // Start animation when component mounts
+  const startAnimation = () => {
+    if (!isVisible) {
+      setIsVisible(true);
+
+      // Animate particles in
+      const timeline = anime.timeline({
+        easing: 'easeOutExpo',
+      });
+
+      const fadeInAnimation: AnimationParams = {
+        targets: particlesRef.current,
+        opacity: [0, (particle: Particle) => particle.opacity],
+        scale: [0, 1],
+        delay: anime.stagger(50),
+        duration: 1000,
+      };
+
+      timeline.add(fadeInAnimation).add(
+        {
+          targets: '.hero-content',
+          opacity: [0, 1],
+          translateY: [20, 0],
+          duration: 800,
+          easing: 'easeOutQuad',
+        },
+        '-=400'
+      );
+    }
+  };
 
   return (
     <canvas
@@ -261,7 +302,7 @@ const HeroAnimation: React.FC = () => {
         opacity: isVisible ? 0.3 : 0,
         willChange: 'transform, opacity',
         transition: 'opacity 1s cubic-bezier(0.25, 0.1, 0.25, 1)',
-        filter: 'blur(0.5px)' // Subtle blur for softer effect
+        filter: 'blur(0.5px)', // Subtle blur for softer effect
       }}
     />
   );

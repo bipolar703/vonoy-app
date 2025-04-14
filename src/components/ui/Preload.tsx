@@ -36,15 +36,18 @@ const Preload: React.FC<PreloadProps> = ({ resources }) => {
       // This approach reduces console warnings while still optimizing performance
       if (resource.as === 'script') {
         link.rel = 'modulepreload'; // Better for scripts
-      } else if (resource.href.startsWith('http') && !resource.immediateUse) {
-        // For external resources that aren't used immediately, use preconnect
+      } else if (resource.href.startsWith('http')) {
+        // For external resources, use preconnect instead of preload
         link.rel = 'preconnect';
         if (!resource.crossOrigin || resource.crossOrigin === 'anonymous') {
           link.crossOrigin = 'anonymous';
         }
+      } else if (resource.immediateUse) {
+        // Only use preload for immediate resources that are on the same domain
+        link.rel = 'preload';
       } else {
         // Use prefetch for non-immediate resources to avoid console warnings
-        link.rel = resource.immediateUse ? 'preload' : 'prefetch';
+        link.rel = 'prefetch';
       }
       link.href = resource.href;
 

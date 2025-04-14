@@ -3,8 +3,8 @@ import * as ReactDOM from 'react-dom/client';
 import { ErrorBoundary } from 'react-error-boundary';
 import { createBrowserRouter, RouterProvider, Routes, Route, createRoutesFromElements } from 'react-router-dom';
 import ErrorFallback from './components/ui/ErrorFallback';
-import RouteTransition from './components/ui/RouteTransition';
-// PageTransition is now included in App.tsx
+import LoadingScreen from './components/ui/LoadingScreen';
+import ScrollToTop from './components/utils/ScrollToTop';
 import { initializePerformanceOptimizations, measureRenderTime } from './utils/performance';
 import { reportWebVitalsToConsole } from './hooks/useWebVitals';
 import './index.css';
@@ -33,14 +33,7 @@ const preloadAssets = () => {
   fontLink.crossOrigin = 'anonymous';
   document.head.appendChild(fontLink);
 
-  // Use preconnect for YouTube domain - better than preload for external resources
-  const ytDomain = document.createElement('link');
-  ytDomain.rel = 'preconnect';
-  ytDomain.href = 'https://img.youtube.com';
-  ytDomain.crossOrigin = 'anonymous';
-  document.head.appendChild(ytDomain);
-
-  // Add DNS prefetch as well for even faster resolution
+  // Use DNS prefetch for YouTube domain - better than preconnect for external resources
   const ytDNS = document.createElement('link');
   ytDNS.rel = 'dns-prefetch';
   ytDNS.href = 'https://img.youtube.com';
@@ -83,7 +76,7 @@ startTransition(() => {
         onReset={() => window.location.reload()}
         onError={(error) => console.error('Application error:', error)}
       >
-        <Suspense fallback={<RouteTransition />}>
+        <Suspense fallback={<LoadingScreen />}>
           <RouterProvider router={createBrowserRouter(
             createRoutesFromElements(
               <>

@@ -23,7 +23,7 @@ body {
   line-height: 1.5;
 
   /* Improve text contrast */
-  color-adjust: exact;
+  print-color-adjust: exact;
 
   /* Optimize font loading and display */
   font-display: swap;

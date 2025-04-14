@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import styles from "./StatsSection.module.css";
-import { scrollReveal, staggerAnimation, pulseAnimation } from "../../utils/animations";
+import { scrollReveal, staggerAnimation } from "../../utils/animations";
+import AnimatedCounter from "../../components/ui/AnimatedCounter";
+import anime from "animejs";
 
 /**
  * StatsSection Component
@@ -35,9 +37,34 @@ const StatsSection: React.FC = () => {
         duration: 800
       }, 100);
 
-      // Pulse animation for stat values
-      const statValues = statsGridRef.current.querySelectorAll(`.${styles.statValue}`);
-      pulseAnimation(statValues, 1.05, 2000);
+      // Animate the visualization dots
+      const dots = sectionRef.current.querySelectorAll(`.${styles.visualizationDot}`);
+      dots.forEach((dot, index) => {
+        anime({
+          targets: dot,
+          translateX: () => anime.random(-30, 30),
+          translateY: () => anime.random(-30, 30),
+          scale: [1, 1.2, 1],
+          opacity: [0.4, 0.8, 0.4],
+          easing: 'easeInOutSine',
+          duration: () => anime.random(3000, 5000),
+          delay: index * 200,
+          loop: true,
+          direction: 'alternate'
+        });
+      });
+
+      // Animate the visualization lines
+      const lines = sectionRef.current.querySelectorAll(`.${styles.visualizationLine}`);
+      lines.forEach((line, index) => {
+        anime({
+          targets: line,
+          rotate: [index * 120, index * 120 + 360],
+          easing: 'linear',
+          duration: 20000 + (index * 5000),
+          loop: true
+        });
+      });
     }
   }, []);
   return (
@@ -47,6 +74,7 @@ const StatsSection: React.FC = () => {
       {/* Modern design elements: Floating accent circles */}
       <div className={styles.accentCircle1}></div>
       <div className={styles.accentCircle2}></div>
+      <div className={styles.accentCircle3}></div>
 
       {/* Content container */}
       <div className={styles.container}>
@@ -83,7 +111,9 @@ const StatsSection: React.FC = () => {
                       />
                     </svg>
                   </div>
-                  <h3 className={styles.statValue}>31%</h3>
+                  <h3 className={styles.statValue}>
+                    <AnimatedCounter value={31} suffix="%" duration={2500} />
+                  </h3>
                   <p className={styles.statLabel}>Cost Reduction</p>
                 </div>
               </div>
@@ -107,7 +137,9 @@ const StatsSection: React.FC = () => {
                       />
                     </svg>
                   </div>
-                  <h3 className={styles.statValue}>19.8%</h3>
+                  <h3 className={styles.statValue}>
+                    <AnimatedCounter value={19.8} suffix="%" duration={2500} delay={200} />
+                  </h3>
                   <p className={styles.statLabel}>Fewer Vehicles Required</p>
                 </div>
               </div>
@@ -131,7 +163,9 @@ const StatsSection: React.FC = () => {
                       />
                     </svg>
                   </div>
-                  <h3 className={styles.statValue}>10%</h3>
+                  <h3 className={styles.statValue}>
+                    <AnimatedCounter value={10} suffix="%" duration={2500} delay={400} />
+                  </h3>
                   <p className={styles.statLabel}>
                     Increase in Fleet Efficiency
                   </p>

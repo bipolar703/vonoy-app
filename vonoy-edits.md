@@ -1,5 +1,4 @@
-Remove the solutions box in the hero image on the right
-2. Why choose vonoy should have these reasons:
+Why choose vonoy should have these reasons:
 
 1. Built on Science
 
@@ -16,8 +15,6 @@ We deliver both the technical infrastructure (APIs, TMS, apps) and the strategic
 4. Proven Track Record
 
 Led by former Amazon logistics experts and academic researchers, we’ve delivered measurable savings and operational improvements for enterprise clients across Europe, Middle East and North Africa.
-
- 
 
 Navigation:
 
@@ -49,7 +46,6 @@ EV Fleet Operations
 Any business with logistics complexity
 About Us
 Book a demo
- 
 
 About Us page:
 

@@ -3,6 +3,8 @@ import styles from "./WhyVonoySection.module.css";
 import { scrollReveal } from "../../utils/animations";
 import { whyVonoySectionAnimation } from "../../utils/sectionAnimations";
 import ExpandableCard from "../../components/ui/ExpandableCard";
+import { useInView } from "react-intersection-observer";
+import anime from "animejs";
 
 /**
  * Why Choose Vonoy Section
@@ -18,26 +20,28 @@ import ExpandableCard from "../../components/ui/ExpandableCard";
  * - Modern glass morphism design
  */
 
-// Card component with independent expansion
+// Card component with only one card expanded at a time
 const FeatureCards: React.FC<{ features: any[] }> = ({ features }) => {
-  // Track which cards are expanded with local state instead of context
-  const [expandedCards, setExpandedCards] = useState<Record<string, boolean>>({});
+  // Track which card is expanded (only one at a time)
+  const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
 
-  // Handle card toggle with animation - each card expands independently
+  // Handle card toggle with animation - only one card expands at a time
   const handleCardToggle = (id: string, isOpen: boolean) => {
-    // Update only the clicked card's state
-    setExpandedCards(prev => ({
-      ...prev,
-      [id]: isOpen
-    }));
+    if (isOpen) {
+      // If opening a card, set it as the expanded card (closing any other)
+      setExpandedCardId(id);
+    } else if (expandedCardId === id) {
+      // If closing the currently expanded card, set to null
+      setExpandedCardId(null);
+    }
   };
 
   return (
     <div className={styles.featuresGrid}>
       {features.map((feature, index) => {
         const cardId = `feature-${index}`;
-        // Check if this specific card is open
-        const isOpen = !!expandedCards[cardId];
+        // Check if this specific card is the one that should be open
+        const isOpen = expandedCardId === cardId;
 
         return (
           <div key={index} className="card-container">
@@ -237,10 +241,87 @@ const WhyVonoySection: React.FC = () => {
         </svg>
       ),
     },
+    {
+      title: "Efficiency That Reduces Emissions",
+      description: "Our optimization reduces not just cost and time—but carbon footprint. Fewer vehicles, shorter routes, and better fleet planning mean more sustainable operations from day one.",
+      icon: (
+        <svg
+          className={styles.featureIcon}
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M2 22L12 2L22 22H2Z"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M12 18H12.01"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M12 14V10"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      ),
+    },
   ];
 
+  // Use Intersection Observer to trigger animations when section is in view
+  const { ref: inViewRef, inView } = useInView({
+    threshold: 0.2,
+    triggerOnce: false
+  });
+
+  // Combine refs
+  const setRefs = (element: HTMLElement | null) => {
+    // Set the ref from useRef
+    sectionRef.current = element;
+    // Set the ref from useInView
+    inViewRef(element);
+  };
+
+  // Add animation for geometric lines when in view
+  useEffect(() => {
+    if (sectionRef.current && inView) {
+      // Animate the geometric lines
+      const lines = sectionRef.current.querySelectorAll(`.${styles.geometricLine}`);
+      lines.forEach((line, index) => {
+        anime({
+          targets: line,
+          strokeDashoffset: [anime.setDashoffset, 0],
+          easing: 'cubicBezier(0.16, 1, 0.3, 1)',
+          duration: 1500,
+          delay: index * 150,
+          opacity: [0, 0.5]
+        });
+      });
+    }
+  }, [inView]);
+
   return (
-    <section ref={sectionRef} className={styles.section}>
+    <section ref={setRefs} className={styles.section}>
+      <div className={styles.geometricLines}>
+        <svg className={styles.linesSvg} viewBox="0 0 1000 600" preserveAspectRatio="none">
+          <path className={styles.geometricLine} d="M0,100 L1000,100" />
+          <path className={styles.geometricLine} d="M0,300 L1000,300" />
+          <path className={styles.geometricLine} d="M0,500 L1000,500" />
+          <path className={styles.geometricLine} d="M200,0 L200,600" />
+          <path className={styles.geometricLine} d="M400,0 L400,600" />
+          <path className={styles.geometricLine} d="M600,0 L600,600" />
+          <path className={styles.geometricLine} d="M800,0 L800,600" />
+        </svg>
+      </div>
       <div className={styles.sectionBg}>
         <div className={styles.glow}></div>
       </div>

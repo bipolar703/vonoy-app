@@ -1,5 +1,5 @@
 .statsSection {
-  background-color: rgb(23 45 70);
+  background-color: rgb(15, 30, 50); /* Darker background as requested */
   color: white;
   padding: 4rem 0; /* Reduced padding for more compact design */
   position: relative;
@@ -18,12 +18,13 @@
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgba(61, 213, 152, 0.1) 0%,
-    rgba(61, 213, 152, 0.05) 40%,
+    rgba(61, 213, 152, 0.15) 0%,
+    rgba(61, 213, 152, 0.08) 40%,
     rgba(61, 213, 152, 0) 70%
   );
   filter: blur(40px);
-  opacity: 0.5;
+  opacity: 0.6;
+  animation: pulse-glow 8s infinite alternate ease-in-out;
 }
 
 .accentCircle2 {
@@ -35,12 +36,51 @@
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    rgba(10, 109, 194, 0.15) 0%,
-    rgba(10, 109, 194, 0.05) 40%,
+    rgba(10, 109, 194, 0.2) 0%,
+    rgba(10, 109, 194, 0.08) 40%,
     rgba(10, 109, 194, 0) 70%
   );
   filter: blur(60px);
-  opacity: 0.4;
+  opacity: 0.5;
+  animation: pulse-glow 10s infinite alternate-reverse ease-in-out;
+}
+
+.accentCircle3 {
+  position: absolute;
+  top: 40%;
+  left: 30%;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.02) 40%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  filter: blur(30px);
+  opacity: 0.3;
+  animation: float-subtle 15s infinite alternate ease-in-out;
+}
+
+@keyframes pulse-glow {
+  0% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes float-subtle {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(30px, -20px);
+  }
 }
 
 .container {
@@ -87,27 +127,38 @@
 }
 
 .visualizationCircle {
-  width: 180px;
-  height: 180px;
+  width: 220px;
+  height: 220px;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(61, 213, 152, 0.1), rgba(10, 109, 194, 0.1));
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, rgba(61, 213, 152, 0.15), rgba(10, 109, 194, 0.15));
+  border: 1px solid rgba(255, 255, 255, 0.15);
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 0 30px rgba(61, 213, 152, 0.2);
-  animation: pulse 4s infinite alternate ease-in-out;
+  box-shadow: 0 0 40px rgba(61, 213, 152, 0.25);
+  animation: pulse 6s infinite alternate ease-in-out;
 }
 
 .visualizationCircle::before {
   content: '';
   position: absolute;
-  width: 140px;
-  height: 140px;
+  width: 170px;
+  height: 170px;
   border-radius: 50%;
-  border: 1px dashed rgba(255, 255, 255, 0.2);
-  animation: rotate 20s linear infinite;
+  border: 1px dashed rgba(255, 255, 255, 0.25);
+  animation: rotate 30s linear infinite;
+}
+
+.visualizationCircle::after {
+  content: '';
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: radial-gradient(circle, rgba(61, 213, 152, 0.05) 0%, rgba(10, 109, 194, 0.05) 100%);
+  animation: pulse 4s infinite alternate-reverse ease-in-out;
 }
 
 .visualizationCircle::after {
@@ -168,11 +219,12 @@
 
 .visualizationDot {
   position: absolute;
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background-color: #3dd598;
-  box-shadow: 0 0 10px rgba(61, 213, 152, 0.8);
+  box-shadow: 0 0 15px rgba(61, 213, 152, 0.8), 0 0 5px rgba(255, 255, 255, 0.5) inset;
+  z-index: 3;
 }
 
 .visualizationDot:nth-child(1) {
@@ -305,45 +357,69 @@
 }
 
 .statCardWrapper {
-  background-color: rgb(32, 60, 91);
-  border-radius: 0.75rem;
+  background-color: rgb(25, 45, 70); /* Slightly darker card background */
+  border-radius: 1rem;
   overflow: hidden;
   height: 100%;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.statCardWrapper:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
 }
 
 .statCard {
-  background-color: rgb(32, 60, 91);
-  padding: 1.25rem; /* Reduced padding for more compact design */
+  background-color: rgb(25, 45, 70); /* Slightly darker card background */
+  padding: 1.5rem; /* Slightly increased padding for better spacing */
   text-align: center;
   position: relative;
   height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   opacity: 0; /* Start hidden for stagger animation */
   transform: translateY(20px); /* Start position for animation */
-  cursor: pointer; /* Indicate interactivity */
+  cursor: default; /* Changed from pointer since cards don't expand */
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 /* Hover effects now handled by Anime.js */
 
 .iconContainer {
-  background-color: rgba(61, 213, 152, 0.1);
-  width: 3rem;
-  height: 3rem;
-  border-radius: 0.5rem;
+  background-color: rgba(61, 213, 152, 0.15);
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
   transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.iconContainer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(61, 213, 152, 0.2), rgba(10, 109, 194, 0.2));
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .statCard:hover .iconContainer {
-  background-color: rgba(61, 213, 152, 0.2);
   transform: scale(1.1);
+}
+
+.statCard:hover .iconContainer::before {
+  opacity: 1;
 }
 
 .statIcon {
@@ -353,9 +429,9 @@
 }
 
 .statValue {
-  font-size: 2.5rem;
+  font-size: 3rem;
   font-weight: 700;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
   background: linear-gradient(to right, #3dd598, #0a6dc2);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -363,12 +439,28 @@
   color: transparent;
   display: inline-block; /* For animation */
   will-change: transform, opacity; /* Performance optimization */
+  position: relative;
+  line-height: 1.2;
+}
+
+.statValue::after {
+  content: '';
+  position: absolute;
+  bottom: -0.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2rem;
+  height: 2px;
+  background: linear-gradient(to right, #3dd598, #0a6dc2);
+  border-radius: 2px;
+  opacity: 0.7;
 }
 
 .statLabel {
   color: rgba(255, 255, 255, 0.8);
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 500;
+  letter-spacing: 0.01em;
 }
 
 .ctaSection {

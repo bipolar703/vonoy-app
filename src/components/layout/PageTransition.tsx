@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { useLocation, useNavigationType } from 'react-router-dom';
 import anime from 'animejs';
 import OptimizedImage from '../ui/OptimizedImage';
 
@@ -15,6 +15,16 @@ const getRandomLoadingTime = (min: number, max: number): number => {
 };
 
 /**
+ * Get a random loading text from the available options
+ * @returns {string} - Random loading text
+ */
+const getRandomLoadingText = (): string => {
+  const loadingTexts = ['Initializing...', 'Loading...'];
+  const randomIndex = Math.floor(Math.random() * loadingTexts.length);
+  return loadingTexts[randomIndex];
+};
+
+/**
  * PageTransition Component
  *
  * Provides a smooth transition between routes with a loading animation
@@ -27,11 +37,20 @@ const PageTransition: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [prevLocation, setPrevLocation] = useState('');
   const [loadingProgress, setLoadingProgress] = useState(0);
+  const [loadingText, setLoadingText] = useState(getRandomLoadingText());
   const animationsRef = useRef<{
     dots?: anime.AnimeInstance;
     logo?: anime.AnimeInstance;
     progress?: anime.AnimeInstance;
+    glow?: anime.AnimeInstance;
+    maskGlow?: anime.AnimeInstance;
   }>({});
+
+  // Get navigation type (POP, PUSH, REPLACE)
+  const navigationType = useNavigationType();
+
+  // Track if this is a page navigation or initial load
+  const isPageNavigation = useRef(false);
 
   // Performance optimization: Use requestIdleCallback for non-critical tasks
   const scheduleIdleTask = (callback: () => void) => {
@@ -53,132 +72,115 @@ const PageTransition: React.FC = () => {
     if (animationsRef.current.progress) {
       animationsRef.current.progress.pause();
     }
+    if (animationsRef.current.glow) {
+      animationsRef.current.glow.pause();
+    }
+    if (animationsRef.current.maskGlow) {
+      animationsRef.current.maskGlow.pause();
+    }
   };
 
-  useEffect(() => {
-    // Set initial location on first render
-    if (prevLocation === '') {
-      setPrevLocation(location.pathname);
-      return;
-    }
+  // Start loading animation
+  const startLoading = useCallback(() => {
+    // Show loading and set random text
+    setIsVisible(true);
+    setLoadingText(getRandomLoadingText());
 
-    // Only show transition when location changes
-    if (prevLocation !== location.pathname) {
-      // Reset loading progress
-      setLoadingProgress(0);
+    // Generate random loading time between 1.5 and 2 seconds
+    const loadingTime = getRandomLoadingTime(1.5, 2);
 
-      // Show transition
-      setIsVisible(true);
+    // Animate the enhanced loader glow effects
+    animationsRef.current.glow = anime({
+      targets: '.enhanced-loader::before',
+      opacity: [0.3, 0.6, 0.3],
+      scale: [1.1, 1.15, 1.1],
+      easing: 'easeInOutSine',
+      duration: 2500,
+      loop: true
+    });
 
-      // Generate random loading time between 1.75 and 4 seconds
-      const loadingTime = getRandomLoadingTime(1.75, 4);
+    // Animate the SVG mask glow
+    animationsRef.current.maskGlow = anime({
+      targets: '.enhanced-loader::after',
+      opacity: [0.2, 0.5, 0.2],
+      easing: 'easeInOutSine',
+      duration: 2500,
+      loop: true
+    });
 
-      // Animate dots using Anime.js with Web Animation API considerations
-      animationsRef.current.dots = anime({
-        targets: '.loading-dot',
-        scale: [0.8, 1.2, 0.8],
-        opacity: [0.5, 1, 0.5],
-        // Using Web Animation API differences from Anime.js documentation
-        // https://animejs.com/documentation/web-animation-api/api-differences-with-native-waapi/iterations
-        loop: true,
-        easing: 'cubicBezier(0.455, 0.03, 0.515, 0.955)', // Improved easing for smoother animation
-        duration: 1500,
-        delay: anime.stagger(200),
-        // Use hardware acceleration for better performance
-        willChange: 'opacity, transform'
-      });
+    // Preload resources during the loading time
+    scheduleIdleTask(() => {
+      // Preload critical resources for the next page
+      const linkPrefetch = document.createElement('link');
+      linkPrefetch.rel = 'prefetch';
+      linkPrefetch.href = location.pathname;
+      document.head.appendChild(linkPrefetch);
+    });
 
-      // Animate logo using Anime.js
-      animationsRef.current.logo = anime({
-        targets: '.page-transition-logo',
-        scale: [0.98, 1.02],
-        opacity: [0.7, 1],
-        loop: true,
-        direction: 'alternate',
-        easing: 'cubicBezier(0.445, 0.05, 0.55, 0.95)', // Improved easing
-        duration: 2000,
-        // Use hardware acceleration
-        willChange: 'opacity, transform'
-      });
-
-      // Animate progress bar
-      animationsRef.current.progress = anime({
-        targets: '.loading-progress-bar-inner',
-        width: ['0%', '100%'],
-        easing: 'cubicBezier(0.25, 0.1, 0.25, 1)',
-        duration: loadingTime,
-        update: function(anim) {
-          setLoadingProgress(Math.round(anim.progress));
+    // Hide transition after the loading time
+    const timer = setTimeout(() => {
+      // Fade out animation with improved transition
+      anime({
+        targets: '.page-transition-loader',
+        opacity: [1, 0],
+        duration: 600,
+        easing: 'cubicBezier(0.16, 1, 0.3, 1)', // Improved easing for smoother transition
+        begin: () => {
+          // Fade out the content first for a smoother transition
+          anime({
+            targets: '.page-transition-content',
+            opacity: [1, 0],
+            translateY: [0, -10],
+            duration: 400,
+            easing: 'cubicBezier(0.16, 1, 0.3, 1)'
+          });
+        },
+        complete: () => {
+          setIsVisible(false);
+          cleanupAnimations();
+          setPrevLocation(location.pathname);
+          isPageNavigation.current = false;
         }
       });
+    }, loadingTime);
 
-      // Preload resources during the loading time
-      scheduleIdleTask(() => {
-        // Preload critical resources for the next page
-        const linkPrefetch = document.createElement('link');
-        linkPrefetch.rel = 'prefetch';
-        linkPrefetch.href = location.pathname;
-        document.head.appendChild(linkPrefetch);
-      });
+    return timer;
+  }, [location.pathname]);
 
-      // Hide transition after the random loading time
-      const timer = setTimeout(() => {
-        // Fade out animation
-        anime({
-          targets: '.page-transition-loader',
-          opacity: [1, 0],
-          duration: 400,
-          easing: 'cubicBezier(0.25, 0.1, 0.25, 1)',
-          complete: () => {
-            setIsVisible(false);
-            cleanupAnimations();
-          }
-        });
-      }, loadingTime);
-
-      // Update previous location
-      setPrevLocation(location.pathname);
-
+  // Handle initial page load
+  useEffect(() => {
+    if (prevLocation === '') {
+      const timer = startLoading();
       return () => {
         clearTimeout(timer);
         cleanupAnimations();
       };
     }
-  }, [location, prevLocation]);
+  }, []);
+
+  // Handle route changes
+  useEffect(() => {
+    // Skip the first render (initial load is handled separately)
+    if (prevLocation === '') return;
+
+    // Only show loading for actual navigation (not back/forward)
+    if (prevLocation !== location.pathname) {
+      isPageNavigation.current = true;
+      const timer = startLoading();
+      return () => {
+        clearTimeout(timer);
+        cleanupAnimations();
+      };
+    }
+  }, [location.pathname, prevLocation, startLoading]);
 
   return (
     <div className={`page-transition-loader ${isVisible ? '' : 'hidden'}`}>
       <div className="page-transition-content">
-        <OptimizedImage
-          src="/logo.svg"
-          alt="Vonoy"
-          width={120}
-          height={40}
-          className="page-transition-logo"
-          priority={true}
-          loading="eager"
-        />
-        <div className="loading-dots">
-          <div className="loading-dot"></div>
-          <div className="loading-dot"></div>
-          <div className="loading-dot"></div>
+        <div className="enhanced-loader">
+          <img src="/favicon.svg" alt="Loading" />
         </div>
-
-        {/* Progress bar */}
-        <div className="loading-progress">
-          <div className="loading-progress-bar">
-            <div className="loading-progress-bar-inner"></div>
-          </div>
-          <div className="loading-progress-text">{loadingProgress}%</div>
-        </div>
-
-        {/* Loading message */}
-        <div className="loading-message">
-          {loadingProgress < 30 && "Initializing..."}
-          {loadingProgress >= 30 && loadingProgress < 60 && "Loading resources..."}
-          {loadingProgress >= 60 && loadingProgress < 90 && "Optimizing performance..."}
-          {loadingProgress >= 90 && "Almost ready..."}
-        </div>
+        <p className="mt-4 text-white/80 text-sm font-medium">{loadingText}</p>
       </div>
     </div>
   );

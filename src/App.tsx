@@ -6,6 +6,8 @@ import HeroSection from "./components/sections/HeroSection";
 import LogoLoader from "./components/ui/LogoLoader";
 import Preload from "./components/ui/Preload";
 import PageTransition from "./components/layout/PageTransition";
+import LoadingScreen from "./components/ui/LoadingScreen";
+import ScrollToTop from "./components/utils/ScrollToTop";
 import { initSectionAnimations } from "./utils/sectionAnimations";
 import "./components/ui/LogoLoader.css";
 
@@ -60,14 +62,12 @@ function App() {
       <Preload
         resources={[
           // Only preload the logo which is used immediately in the header
-          { href: '/logo.svg', as: 'image', importance: 'high', immediateUse: true },
-          // Use prefetch for other resources to avoid warnings
-          { href: '/hero-bg.webp', as: 'image', importance: 'high', immediateUse: false },
-          { href: '/fonts/inter-var.woff2', as: 'font', importance: 'low', immediateUse: false, crossOrigin: 'anonymous' }
-          // YouTube thumbnail removed from preload to avoid CORS issues
+          { href: '/logo.svg', as: 'image', importance: 'high', immediateUse: true }
+          // Removed preloading of hero-bg.webp and YouTube thumbnails to avoid warnings
         ]}
       />
 
+      <ScrollToTop />
       <PageTransition />
       <Navbar />
       <main className="flex-grow">
@@ -75,7 +75,7 @@ function App() {
         <HeroSection />
 
         {/* Lazy load all non-critical sections */}
-        <Suspense fallback={<SectionLoader />}>
+        <Suspense fallback={<LoadingScreen message="Loading content..." />}>
           {/* Section 2: Why Choose Vonoy? */}
           <WhyVonoySection />
 
@@ -93,7 +93,7 @@ function App() {
         </Suspense>
       </main>
 
-      <Suspense fallback={<SectionLoader />}>
+      <Suspense fallback={<LoadingScreen message="Loading footer..." />}>
         <Footer />
       </Suspense>
     </div>

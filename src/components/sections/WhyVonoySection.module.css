@@ -1,15 +1,41 @@
 .section {
   position: relative;
   background-color: white;
-  padding: 4rem 0; /* Reduced padding for more compact design */
+  padding: 6rem 0; /* Increased padding for better spacing */
   overflow: hidden;
   opacity: 0; /* Start hidden for scroll reveal animation */
+  isolation: isolate; /* Create a new stacking context */
 }
 
 .sectionBg {
   position: absolute;
   inset: 0;
   overflow: hidden;
+  z-index: -1;
+}
+
+.geometricLines {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.05;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.linesSvg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+.geometricLine {
+  fill: none;
+  stroke: #00a79d;
+  stroke-width: 1;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  opacity: 0;
 }
 
 /* Grid removed as requested */
@@ -22,12 +48,24 @@
   height: 100%;
   background: radial-gradient(
     circle,
-    rgba(61, 213, 152, 0.1) 0%,
-    rgba(10, 109, 194, 0.05) 50%,
+    rgba(61, 213, 152, 0.15) 0%,
+    rgba(10, 109, 194, 0.08) 50%,
     rgba(255, 255, 255, 0) 70%
   );
   filter: blur(60px);
   transform: rotate(-15deg);
+  animation: pulse-subtle 10s infinite alternate ease-in-out;
+}
+
+@keyframes pulse-subtle {
+  0% {
+    opacity: 0.5;
+    transform: rotate(-15deg) scale(1);
+  }
+  100% {
+    opacity: 0.8;
+    transform: rotate(-12deg) scale(1.1);
+  }
 }
 
 .container {
@@ -44,13 +82,27 @@
 }
 
 .sectionTitle {
-  font-size: 2.5rem;
+  font-size: 3rem;
   font-weight: 800;
   line-height: 1.2;
   color: #102a43;
   position: relative;
   display: inline-block;
+  margin-bottom: 1.5rem;
 }
+
+/* .sectionTitle::after {
+  content: '';
+  position: absolute;
+  bottom: -0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4rem;
+  height: 0.25rem;
+  background: linear-gradient(to right, #3dd598, #0a6dc2);
+  border-radius: 9999px;
+  box-shadow: 0 0 20px rgba(61, 213, 152, 0.5);
+} */
 
 .highlight {
   position: relative;
@@ -63,9 +115,11 @@
 .featuresGrid {
   display: grid;
   grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: 1.5rem; /* Reduced gap for more compact design */
-  grid-auto-rows: min-content; /* Ensure rows only take the height they need */
-  align-items: start; /* Align items to the start of the grid cell */
+  gap: 1.5rem; /* Compact gap for modern design */
+  grid-auto-rows: 1fr; /* Equal height rows */
+  align-items: stretch; /* Stretch items to fill the grid cell */
+  position: relative;
+  z-index: 2;
 }
 
 @media (min-width: 640px) {
@@ -76,15 +130,39 @@
 
 @media (min-width: 1024px) {
   .featuresGrid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
-.featureCard {
-  /* Styles will be inherited from ExpandableCard component */
-  /* Just add any custom styles specific to this section */
-  margin-bottom: 1rem;
+/* Ensure all cards have the same fixed height */
+:global(.card-container) {
   height: 100%;
+  display: flex;
+}
+
+:global(.card-container > div) {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.featureCard {
+  margin-bottom: 0;
+  height: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, rgba(10,21,32,0.96) 80%, rgba(42,157,143,0.10) 100%);
+  border: 1.5px solid rgba(42,157,143,0.18);
+  box-shadow: 0 4px 32px 0 rgba(10,21,32,0.10), 0 1.5px 8px 0 rgba(42,157,143,0.08);
+  color: #f3f6fa;
+  backdrop-filter: blur(8px);
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.featureCard:hover, .featureCard:focus-within {
+  background: linear-gradient(135deg, rgba(10,21,32,1) 90%, rgba(42,157,143,0.18) 100%);
+  box-shadow: 0 8px 40px 0 rgba(10,21,32,0.18), 0 2px 12px 0 rgba(42,157,143,0.12);
 }
 
 /* Ensure each card container is independent and uniform size */
@@ -93,6 +171,12 @@
   flex-direction: column;
   height: 100%;
   isolation: isolate; /* Create a new stacking context */
+  transition: transform 0.3s ease;
+}
+
+/* Subtle hover effect for cards */
+:global(.card-container:hover) {
+  transform: translateY(-5px);
 }
 
 /* Ensure all cards have the same height in each row */
@@ -112,6 +196,7 @@
   color: #3dd598;
   position: relative;
   z-index: 1;
+  filter: drop-shadow(0 0 8px rgba(61, 213, 152, 0.3));
 }
 
 /* All styles for title, description, and expand/collapse are now handled by the ExpandableCard component */
