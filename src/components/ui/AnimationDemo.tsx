@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import styles from './AnimationDemo.module.css';
-import GroupTransition from './GroupTransition';
-import TransitionComponent from './TransitionComponent';
+import MotionGroup from './MotionGroup';
+import MotionTransition from './MotionTransition';
+import { motion } from 'framer-motion';
 
 /**
  * AnimationDemo Component
  *
- * A demo component showcasing various animations using animate.css with react-transition-group
+ * A demo component showcasing various animations using Framer Motion
  */
 const AnimationDemo: React.FC = () => {
   const [showContent, setShowContent] = useState(false);
@@ -122,7 +123,7 @@ const AnimationDemo: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.heading}>Animation Demos with react-transition-group</h1>
+      <h1 className={styles.heading}>Animation Demos with Framer Motion</h1>
 
       <section className="mb-12">
         <h2 className={styles.sectionHeading}>1. Basic Transitions</h2>
@@ -177,21 +178,20 @@ const AnimationDemo: React.FC = () => {
         </button>
 
         <div className="border rounded p-4 min-h-[200px] flex items-center justify-center">
-          <TransitionComponent
+          <MotionTransition
             in={showContent}
-            timeout={1000}
-            animationIn={selectedAnimation}
-            animationOut={selectedExitAnimation}
+            duration={1}
+            animationType="fadeInUp"
           >
             <div className={styles.card}>
               <h2 className="text-xl font-semibold mb-3">Animated Content</h2>
               <p className="text-gray-700">
                 This content block is using the{' '}
-                <strong>{showContent ? selectedAnimation : selectedExitAnimation}</strong> animation
-                from animate.css, powered by react-transition-group.
+                <strong>fadeInUp</strong> animation
+                from Framer Motion, with smooth transitions.
               </p>
             </div>
-          </TransitionComponent>
+          </MotionTransition>
         </div>
       </section>
 
@@ -265,12 +265,11 @@ const AnimationDemo: React.FC = () => {
           </p>
         </div>
 
-        <GroupTransition
+        <MotionGroup
           className="mt-4"
-          animationIn={groupAnimationIn}
-          animationOut={groupAnimationOut}
-          staggerDelay={staggerDelay}
-          duration={800}
+          animationIn="fadeInUp"
+          staggerDelay={staggerDelay / 1000}
+          duration={0.8}
         >
           {cardItems.map((card, index) => (
             <div key={index} className={styles.card}>
@@ -279,7 +278,7 @@ const AnimationDemo: React.FC = () => {
               <div className="mt-3 text-sm text-gray-500">Click to toggle</div>
             </div>
           ))}
-        </GroupTransition>
+        </MotionGroup>
       </section>
 
       <section className="mt-8">
@@ -288,20 +287,19 @@ const AnimationDemo: React.FC = () => {
           <div>
             <h3 className="text-lg font-medium mb-2">Basic Transition</h3>
             <pre className={styles.codeBlock}>
-              {`import TransitionComponent from './TransitionComponent';
+              {`import MotionTransition from './MotionTransition';
 
 // In your component
 const [isVisible, setIsVisible] = useState(false);
 
 return (
-  <TransitionComponent
+  <MotionTransition
     in={isVisible}
-    timeout={1000}
-    animationIn="${selectedAnimation}"
-    animationOut="${selectedExitAnimation}"
+    duration={1}
+    animationType="fadeInUp"
   >
     <div>Your content here</div>
-  </TransitionComponent>
+  </MotionTransition>
 );`}
             </pre>
           </div>
@@ -309,22 +307,21 @@ return (
           <div>
             <h3 className="text-lg font-medium mb-2">Group Transition</h3>
             <pre className={styles.codeBlock}>
-              {`import GroupTransition from './GroupTransition';
+              {`import MotionGroup from './MotionGroup';
 
 // In your component
 return (
-  <GroupTransition
-    animationIn="${groupAnimationIn}"
-    animationOut="${groupAnimationOut}"
-    staggerDelay={${staggerDelay}}
-    duration={800}
+  <MotionGroup
+    animationIn="fadeInUp"
+    staggerDelay={${staggerDelay / 1000}}
+    duration={0.8}
   >
     {itemsArray.map(item => (
       <div key={item.id}>
         {item.content}
       </div>
     ))}
-  </GroupTransition>
+  </MotionGroup>
 );`}
             </pre>
           </div>
