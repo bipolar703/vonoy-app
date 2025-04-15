@@ -1,12 +1,15 @@
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 import { defineConfig } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
 
 // Simplified Vite config
 export default defineConfig({
   plugins: [
     // React with fast refresh
     react(),
+    // Tailwind CSS
+    tailwindcss(),
   ],
 
   // Resolve configuration
