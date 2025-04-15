@@ -1,6 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import { fadeInUp, typeText } from '../../utils/animations';
+import React from 'react';
+import { motion } from 'framer-motion';
 import styles from './HeroSection.module.css';
 
 /**
@@ -8,79 +7,39 @@ import styles from './HeroSection.module.css';
  *
  * The main hero section at the top of the homepage.
  * Features a gradient background with the specified color (rgb(6 4 31)).
- * Grid effects have been removed as requested for a more compact, interactive UI.
- * Added a cinematic noise and grain filter overlay for modern aesthetic.
+ * Uses smooth fade-in animations with Framer Motion.
  *
  * Features:
- * - Anime.js animations for text and content
+ * - Framer Motion animations for smooth fade-in effects
  * - More compact design with reduced details
  * - Interactive elements with hover effects
  * - Optimized performance with will-change properties
  * - Cinematic noise and grain filter for modern film-like effect
- *
- * @returns {JSX.Element} The rendered HeroSection component
  */
 const HeroSection: React.FC = () => {
-  const headingRef = useRef<HTMLHeadingElement>(null);
-  const descriptionRef = useRef<HTMLParagraphElement>(null);
-  const ctaRef = useRef<HTMLDivElement>(null);
+  // Animation variants for staggered fade-in
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.3,
+        delayChildren: 0.2,
+      },
+    },
+  };
 
-  // Initialize animations when component mounts
-  useEffect(() => {
-    // Add section ID for animation targeting
-    const sectionElement = document.querySelector('.' + styles.heroSection);
-    if (sectionElement) {
-      sectionElement.id = 'hero-section';
-    }
-
-    // Safety check to ensure elements exist before animating
-    const safeAnimate = () => {
-      if (headingRef.current && descriptionRef.current && ctaRef.current) {
-        try {
-          // Typing animation for heading with safety checks
-          const heading = headingRef.current;
-          const originalText = heading.textContent || '';
-          heading.textContent = '';
-
-          // Add animated-element class for text quality
-          heading.classList.add('animated-element');
-          descriptionRef.current.classList.add('animated-element');
-          ctaRef.current.classList.add('animated-element');
-
-          // Use safer typing animation
-          setTimeout(() => {
-            if (headingRef.current) {
-              typeText(heading, originalText, 30);
-            }
-          }, 300);
-
-          // Fade in animations for description and CTA
-          setTimeout(() => {
-            if (descriptionRef.current) {
-              fadeInUp(descriptionRef.current, 1000, 800);
-            }
-          }, 500);
-
-          /* Remove CTA fade-in
-          setTimeout(() => {
-            fadeInUp(ctaRef.current, 1500, 800);
-          }, 800);
-          */
-        } catch (error) {
-          console.warn('Animation error:', error);
-          // Fallback: ensure content is visible even if animation fails
-          if (headingRef.current) headingRef.current.style.opacity = '1';
-          if (descriptionRef.current) descriptionRef.current.style.opacity = '1';
-          if (ctaRef.current) ctaRef.current.style.opacity = '1';
-        }
-      }
-    };
-
-    // Delay animation slightly to ensure DOM is ready
-    const timer = setTimeout(safeAnimate, 100);
-
-    return () => clearTimeout(timer);
-  }, []);
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+        ease: [0.16, 1, 0.3, 1],
+      },
+    },
+  };
   return (
     <section className={styles.heroSection} id="hero-section">
       {/* Video Background */}
@@ -105,32 +64,47 @@ const HeroSection: React.FC = () => {
       <div className="absolute inset-0 bg-gradient-to-r from-[rgba(6,4,31,0.85)] to-[rgba(6,4,31,0.6)] z-1"></div>
 
       <div className={`${styles.heroContainer} pt-24 relative z-10`}>
-        <div className={styles.container}>
+        <motion.div
+          className={styles.container}
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
+        >
           <div className={styles.content}>
-            {/* Reserve space with min-height to prevent layout shift */}
+            {/* Heading with smooth fade-in */}
             <div className="min-h-[120px] md:min-h-[160px] flex items-center">
-              <h1 ref={headingRef} className={`${styles.heading} hero-title`}>
+              <motion.h1
+                className={`${styles.heading} hero-title`}
+                variants={itemVariants}
+              >
                 Transform Your Fleet Operations with AI-Powered Efficiency
-              </h1>
+              </motion.h1>
             </div>
-            {/* Reserve space with min-height to prevent layout shift */}
+
+            {/* Description with smooth fade-in */}
             <div className="min-h-[80px] md:min-h-[100px] flex items-center">
-              <p ref={descriptionRef} className={`${styles.description} hero-subtitle !opacity-100`}>
+              <motion.p
+                className={`${styles.description} hero-subtitle`}
+                variants={itemVariants}
+              >
                 Vonoy helps businesses optimize fleet utilization, reduce costs, and enhance
                 delivery efficiency with data-driven, AI-powered solutions.
-              </p>
+              </motion.p>
             </div>
-            {/* Button positioned closer to the description */}
-            {/* Reserve space with min-height to prevent layout shift */}
-            <div ref={ctaRef} className="min-h-[50px] mt-2 flex items-center">
-              <Link
-                to="/book-demo"
-                className="px-6 py-3 rounded-md font-semibold bg-[#3dd598] hover:shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#3dd598] focus:ring-opacity-50 inline-flex items-center"
+
+            {/* CTA button with smooth fade-in */}
+            <motion.div
+              className="min-h-[50px] mt-4 flex items-center"
+              variants={itemVariants}
+            >
+              <a
+                href="/book-demo"
+                className="px-6 py-3 rounded-md font-semibold bg-[#3dd598] text-white hover:shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#3dd598] focus:ring-opacity-50 inline-flex items-center"
               >
-                <span className="text-white">Book a Demo</span>
+                Book a Demo
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 inline-block ml-2 text-white"
+                  className="h-5 w-5 inline-block ml-2"
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >
@@ -140,13 +114,11 @@ const HeroSection: React.FC = () => {
                     clipRule="evenodd"
                   />
                 </svg>
-              </Link>
-            </div>
+              </a>
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
       </div>
-
-      {/* Solutions panel removed as requested */}
     </section>
   );
 };

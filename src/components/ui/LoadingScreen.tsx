@@ -49,7 +49,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
 
   return (
     <motion.div
-      className="min-h-screen flex flex-col items-center justify-center bg-primary/95 backdrop-blur-md"
+      className="min-h-screen flex flex-col items-center justify-center bg-[#141f2e] backdrop-blur-md"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
