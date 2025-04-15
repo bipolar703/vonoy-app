@@ -1,101 +1,50 @@
-import { lazy, Suspense, useEffect } from "react";
+import { Route, Routes } from 'react-router-dom';
 
-// Import critical components directly
-import Navbar from "./components/layout/Navbar";
-import HeroSection from "./components/sections/HeroSection";
-import LogoLoader from "./components/ui/LogoLoader";
-import Preload from "./components/ui/Preload";
-import PageTransition from "./components/layout/PageTransition";
-import LoadingScreen from "./components/ui/LoadingScreen";
-import ScrollToTop from "./components/utils/ScrollToTop";
-import { initSectionAnimations } from "./utils/sectionAnimations";
-import "./components/ui/LogoLoader.css";
-
-// Lazy load non-critical components
-const Footer = lazy(() => import("./components/layout/Footer"));
-const WhyVonoySection = lazy(() => import("./components/sections/WhyVonoySection"));
-const StatsSection = lazy(() => import("./components/sections/StatsSection"));
-const CustomizationSection = lazy(() => import("./components/sections/CustomizationSection"));
-const BenefitSection = lazy(() => import("./components/sections/BenefitSection"));
-const VideoSection = lazy(() => import("./components/sections/VideoSection"));
+// Import all components directly
+import Footer from './components/layout/Footer';
+import Navbar from './components/layout/Navbar';
+import PageTransition from './components/layout/PageTransition';
+import BenefitSection from './components/sections/BenefitSection';
+import CustomizationSection from './components/sections/CustomizationSection';
+import HeroSection from './components/sections/HeroSection';
+import StatsSection from './components/sections/StatsSection';
+import VideoSection from './components/sections/VideoSection';
+import WhyVonoySection from './components/sections/WhyVonoySection';
+import ScrollToTop from './components/utils/ScrollToTop';
 
 /**
- * Main App component
- *
- * Assembles the modular components into the complete application
- * Sections organized according to the specified order in the Homepage Details
- *
- * @returns {JSX.Element} The rendered application
- */
-/**
- * Loading component for suspense fallback
- * Uses the custom LogoLoader component for a branded loading experience
- */
-// Use RouteTransition for full-page transitions and SectionLoader for in-page section loading
-const SectionLoader = () => (
-  <div className="flex justify-center items-center py-16">
-    <LogoLoader />
-  </div>
-);
-
-/**
- * Main App component
- *
- * Implements code splitting and lazy loading for better performance
- * Only critical components (Navbar, Hero) are loaded immediately
- * Other sections are loaded as the user scrolls down
+ * Main App component - Further simplified
+ * Removed all animation initialization code
  */
 function App() {
-  // Initialize all section animations
-  useEffect(() => {
-    // Initialize section animations after a short delay to ensure DOM is ready
-    const timer = setTimeout(() => {
-      initSectionAnimations();
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Preload critical resources - optimized for MCP servers */}
-      <Preload
-        resources={[
-          // Only preload the logo which is used immediately in the header
-          { href: '/logo.svg', as: 'image', importance: 'high', immediateUse: true }
-          // Removed preloading of hero-bg.webp and YouTube thumbnails to avoid warnings
-        ]}
-      />
-
       <ScrollToTop />
       <PageTransition />
       <Navbar />
-      <main className="flex-grow">
-        {/* Section 1: Hero - Critical, load immediately */}
+
+      <main className="flex-grow relative z-0">
+        {/* Hero Section */}
         <HeroSection />
 
-        {/* Lazy load all non-critical sections */}
-        <Suspense fallback={<LoadingScreen message="Loading content..." />}>
-          {/* Section 2: Why Choose Vonoy? */}
-          <WhyVonoySection />
+        {/* Why Choose Vonoy? */}
+        <WhyVonoySection />
 
-          {/* Section 3: Vonoy in Numbers */}
-          <StatsSection />
+        {/* Vonoy in Numbers */}
+        <StatsSection />
 
-          {/* Section 4: Customization */}
-          <CustomizationSection />
+        {/* Customization */}
+        <CustomizationSection />
 
-          {/* Section 5: Who Can Benefit */}
-          <BenefitSection />
+        {/* Who Can Benefit */}
+        <BenefitSection />
 
-          {/* Section 6: See Vonoy In Action */}
-          <VideoSection />
-        </Suspense>
+        {/* See Vonoy In Action */}
+        <VideoSection />
       </main>
 
-      <Suspense fallback={<LoadingScreen message="Loading footer..." />}>
-        <Footer />
-      </Suspense>
+
+      <Footer />
     </div>
   );
 }

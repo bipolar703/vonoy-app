@@ -43,6 +43,7 @@ const navigationItems = [
       { name: 'Whitepapers', path: '/resources/whitepapers' },
       { name: 'Case Studies', path: '/resources/case-studies' },
       { name: 'Documentation', path: '/resources/documentation' },
+      { name: 'Animations', path: '/animations' },
     ],
   },
   {
@@ -81,7 +82,13 @@ const Navbar: React.FC = () => {
       return location.pathname === path;
     }
     // More precise matching to ensure proper highlighting
-    if (path === '/about' || path === '/demo' || path === '/solutions' || path === '/features' || path === '/why-vonoy') {
+    if (
+      path === '/about' ||
+      path === '/demo' ||
+      path === '/solutions' ||
+      path === '/features' ||
+      path === '/why-vonoy'
+    ) {
       return location.pathname === path || location.pathname.startsWith(`${path}/`);
     }
     return location.pathname.startsWith(path);
@@ -90,15 +97,22 @@ const Navbar: React.FC = () => {
   // Check if the current path is in a dropdown
   const isInDropdown = (items: { name: string; path: string }[] | undefined) => {
     if (!items) return false;
-    return items.some((item) => location.pathname === item.path || location.pathname.startsWith(`${item.path}/`));
+    return items.some(
+      (item) => location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
+    );
   };
 
   // Find the parent dropdown item for the current path
   const findActiveDropdownParent = () => {
     for (const item of navigationItems) {
-      if (item.dropdown && item.items && item.items.some(subItem =>
-        location.pathname === subItem.path || location.pathname.startsWith(`${subItem.path}/`)
-      )) {
+      if (
+        item.dropdown &&
+        item.items &&
+        item.items.some(
+          (subItem) =>
+            location.pathname === subItem.path || location.pathname.startsWith(`${subItem.path}/`)
+        )
+      ) {
         return item.path;
       }
     }
@@ -234,6 +248,11 @@ const Navbar: React.FC = () => {
       setOpenDropdown(activeParent);
     }
 
+    // Close all dropdowns and menus on route change for better UX
+    setOpenDropdown(null);
+    setIsLangMenuOpen(false);
+    setIsMenuOpen(false);
+
     return () => clearTimeout(timer);
   }, [location.pathname]);
 
@@ -354,9 +373,7 @@ const Navbar: React.FC = () => {
                           >
                             {subItem.name}
                           </span>
-                          {location.pathname === subItem.path && (
-                            <span className="absolute left-1.5 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-secondary active-indicator"></span>
-                          )}
+                          {/* Removed active-indicator dot */}
                         </Link>
                       ))}
                     </div>
@@ -374,10 +391,7 @@ const Navbar: React.FC = () => {
                   {item.name}
                 </Link>
               )}
-              {/* Active indicator for main navigation items */}
-              {(isActive(item.path) || isInDropdown(item.items)) && (
-                <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-secondary rounded-full active-indicator"></div>
-              )}
+              {/* Removed active-indicator dot for main navigation items */}
             </div>
           ))}
         </div>
@@ -415,9 +429,7 @@ const Navbar: React.FC = () => {
                     language === 'en' ? 'text-secondary font-medium bg-white/5' : 'text-white'
                   }`}
                 >
-                  {language === 'en' && (
-                    <span className="absolute left-1.5 w-2 h-2 rounded-full bg-secondary active-indicator"></span>
-                  )}
+                  {/* Removed active-indicator dot for language switcher */}
                   <span className={`ml-3 ${language === 'en' ? 'text-secondary' : ''}`}>
                     English
                   </span>
@@ -428,9 +440,7 @@ const Navbar: React.FC = () => {
                     language === 'ar' ? 'text-secondary font-medium bg-white/5' : 'text-white'
                   }`}
                 >
-                  {language === 'ar' && (
-                    <span className="absolute left-1.5 w-2 h-2 rounded-full bg-secondary active-indicator"></span>
-                  )}
+                  {/* Removed active-indicator dot for language switcher */}
                   <span className={`ml-3 ${language === 'ar' ? 'text-secondary' : ''}`}>
                     العربية
                   </span>
@@ -474,122 +484,120 @@ const Navbar: React.FC = () => {
         <div
           className={`absolute top-full left-0 right-0 bg-primary/95 backdrop-blur-xl md:hidden max-h-[80vh] overflow-y-auto shadow-xl mobile-menu-container fixed-when-visible z-40 transition-all duration-300 ${isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}
         >
-            <div className="container mx-auto px-4 py-6 space-y-5">
-              {navigationItems.map((item) => (
-                <div key={item.path} className="relative">
-                  {item.dropdown ? (
-                    <>
-                      <div
-                        onClick={(e) => toggleDropdown(item.path, e)}
-                        className={`flex items-center justify-between w-full cursor-pointer py-3 px-4 rounded-lg ${
-                          isActive(item.path) || isInDropdown(item.items)
-                            ? 'text-secondary font-medium bg-white/5'
-                            : 'text-white hover:bg-white/5'
-                        } transition-colors mobile-menu-toggle-dropdown`}
-                        role="button"
-                        aria-expanded={openDropdown === item.path}
-                        tabIndex={0}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            toggleDropdown(item.path, e as unknown as React.MouseEvent);
-                          }
-                        }}
-                      >
-                        <span>{item.name}</span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className={`h-5 w-5 transition-transform ${
-                            openDropdown === item.path ? 'transform rotate-180' : ''
-                          }`}
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 9l-7 7-7-7"
-                          />
-                        </svg>
-                      </div>
-                      {/* Mobile Dropdown menu */}
-                      {openDropdown === item.path && (
-                        <div className="pl-4 mt-3 space-y-2 border-l-2 border-secondary/30 ml-2 mobile-submenu">
-                          {item.items?.map((subItem) => (
-                            <Link
-                              key={subItem.path}
-                              to={subItem.path}
-                              className={`block py-2.5 px-4 rounded-lg relative pl-6 ${
-                                location.pathname === subItem.path
-                                  ? 'text-secondary font-medium bg-white/5'
-                                  : 'text-white/90 hover:text-white hover:bg-white/5'
-                              } transition-colors mobile-menu-item`}
-                              onClick={() => {
-                                setOpenDropdown(null);
-                                setIsMenuOpen(false);
-                              }}
-                            >
-                              {location.pathname === subItem.path && (
-                                <span className="absolute left-1 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-secondary active-indicator"></span>
-                              )}
-                              {subItem.name}
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <Link
-                      to={item.path}
-                      className={`block py-3 px-4 rounded-lg ${
-                        isActive(item.path)
+          <div className="container mx-auto px-4 py-6 space-y-5">
+            {navigationItems.map((item) => (
+              <div key={item.path} className="relative">
+                {item.dropdown ? (
+                  <>
+                    <div
+                      onClick={(e) => toggleDropdown(item.path, e)}
+                      className={`flex items-center justify-between w-full cursor-pointer py-3 px-4 rounded-lg ${
+                        isActive(item.path) || isInDropdown(item.items)
                           ? 'text-secondary font-medium bg-white/5'
                           : 'text-white hover:bg-white/5'
-                      } transition-colors`}
-                      onClick={() => setIsMenuOpen(false)}
+                      } transition-colors mobile-menu-toggle-dropdown`}
+                      role="button"
+                      aria-expanded={openDropdown === item.path}
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          toggleDropdown(item.path, e as unknown as React.MouseEvent);
+                        }
+                      }}
                     >
-                      {item.name}
-                    </Link>
-                  )}
-                </div>
-              ))}
-
-              <div className="pt-4 border-t border-gray-700">
-                <button
-                  onClick={() => switchLanguage(language === 'en' ? 'ar' : 'en')}
-                  className="flex items-center text-white hover:text-secondary transition-colors py-3 px-4 rounded-lg w-full bg-primary/60 hover:bg-primary/80 backdrop-blur-sm border border-white/20 mb-4"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 mr-3"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+                      <span>{item.name}</span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className={`h-5 w-5 transition-transform ${
+                          openDropdown === item.path ? 'transform rotate-180' : ''
+                        }`}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </div>
+                    {/* Mobile Dropdown menu */}
+                    {openDropdown === item.path && (
+                      <div className="pl-4 mt-3 space-y-2 border-l-2 border-secondary/30 ml-2 mobile-submenu">
+                        {item.items?.map((subItem) => (
+                          <Link
+                            key={subItem.path}
+                            to={subItem.path}
+                            className={`block py-2.5 px-4 rounded-lg relative pl-6 ${
+                              location.pathname === subItem.path
+                                ? 'text-secondary font-medium bg-white/5'
+                                : 'text-white/90 hover:text-white hover:bg-white/5'
+                            } transition-colors mobile-menu-item`}
+                            onClick={() => {
+                              setOpenDropdown(null);
+                              setIsMenuOpen(false);
+                            }}
+                          >
+                            {/* Removed active-indicator dot in mobile menu */}
+                            {subItem.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <Link
+                    to={item.path}
+                    className={`block py-3 px-4 rounded-lg ${
+                      isActive(item.path)
+                        ? 'text-secondary font-medium bg-white/5'
+                        : 'text-white hover:bg-white/5'
+                    } transition-colors`}
+                    onClick={() => setIsMenuOpen(false)}
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9"
-                    />
-                  </svg>
-                  <span className="flex-1 text-left">
-                    {language === 'en' ? 'Switch to العربية' : 'Switch to English'}
-                  </span>
-                </button>
-
-                <Link
-                  to="/book-demo"
-                  className="flex items-center justify-center w-full text-center bg-[#58C0BE] hover:bg-[#4BAFAD] px-6 py-3 rounded-lg font-medium transition-all duration-300 shadow-md relative overflow-hidden group"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <span className="text-white relative z-10 font-medium">Book a Demo</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#58C0BE] to-[#4BAFAD] group-hover:scale-105 transition-transform duration-300"></div>
-                </Link>
+                    {item.name}
+                  </Link>
+                )}
               </div>
+            ))}
+
+            <div className="pt-4 border-t border-gray-700">
+              <button
+                onClick={() => switchLanguage(language === 'en' ? 'ar' : 'en')}
+                className="flex items-center text-white hover:text-secondary transition-colors py-3 px-4 rounded-lg w-full bg-primary/60 hover:bg-primary/80 backdrop-blur-sm border border-white/20 mb-4"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 mr-3"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9"
+                  />
+                </svg>
+                <span className="flex-1 text-left">
+                  {language === 'en' ? 'Switch to العربية' : 'Switch to English'}
+                </span>
+              </button>
+
+              <Link
+                to="/book-demo"
+                className="flex items-center justify-center w-full text-center bg-[#58C0BE] hover:bg-[#4BAFAD] px-6 py-3 rounded-lg font-medium transition-all duration-300 shadow-md relative overflow-hidden group"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <span className="text-white relative z-10 font-medium">Book a Demo</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-[#58C0BE] to-[#4BAFAD] group-hover:scale-105 transition-transform duration-300"></div>
+              </Link>
             </div>
           </div>
+        </div>
       </div>
     </nav>
   );

@@ -43,7 +43,7 @@ const preloadAssets = () => {
 // Use dynamic import for better code splitting
 const HomePage = lazy(() => import('./App'));
 const AboutUsPage = lazy(() => import('./components/pages/AboutUs'));
-const BookDemoPage = lazy(() => import('./components/pages/BookDemo'));
+const BookDemoPage = lazy(() => import('./components/pages/BookDemo.jsx'));
 const UnderDevelopmentPage = lazy(() => import('./components/pages/UnderDevelopment'));
 const GenericPage = lazy(() => import('./components/pages/GenericPage'));
 
@@ -82,7 +82,7 @@ startTransition(() => {
               <>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/about" element={<AboutUsPage />} />
-                <Route path="/demo" element={<BookDemoPage />} />
+                <Route path="/book-demo" element={<BookDemoPage />} />
                 {/* Catch-all route for pages under development */}
                 <Route path="/solutions/*" element={<UnderDevelopmentPage />} />
                 <Route path="/features/*" element={<UnderDevelopmentPage />} />

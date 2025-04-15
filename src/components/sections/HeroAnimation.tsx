@@ -1,12 +1,12 @@
-import anime from 'animejs/lib/anime.js';
 import React, { useEffect, useRef, useState } from 'react';
+import { motion, useAnimation } from 'framer-motion';
 
 /**
  * HeroAnimation Component
  *
  * Creates a modern, dynamic canvas-based animation for the hero section.
  * Features a network of flowing particles with dynamic connections.
- * Uses Anime.js for smoother animations and better performance.
+ * Uses Framer Motion for smoother animations and better performance.
  *
  * Features:
  * - Dynamic particle system with flowing motion
@@ -36,18 +36,11 @@ type Particle = {
   opacity: number;
 };
 
-type AnimationParams = {
-  targets: any;
-  opacity?: number[] | ((el: Particle) => number);
-  scale?: number[];
-  delay?: number | ((el: any, i: number) => number);
-  duration?: number;
-  easing?: string;
-};
+
 
 const HeroAnimation: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<anime.AnimeInstance | null>(null);
+  const controls = useAnimation();
   const particlesRef = useRef<Particle[]>([]);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -225,83 +218,32 @@ const HeroAnimation: React.FC = () => {
     // Start animation
     animate();
 
-    // Use Anime.js for enhanced particle animations
-    animationRef.current = anime({
-      targets: particlesRef.current,
-      opacity: (el: any) => [el.opacity, Math.min(el.opacity + 0.3, 1)],
-      radius: (el: any) => [el.baseRadius, el.baseRadius * 1.5],
-      easing: 'cubicBezier(0.25, 0.1, 0.25, 1)',
-      duration: 3000,
-      delay: anime.stagger(50),
-      loop: true,
-      direction: 'alternate',
-      update: function (anim) {
-        // Fade in canvas when animation starts
-        if (anim.progress > 10 && !isVisible) {
-          setIsVisible(true);
-        }
-      },
-    });
-
-    // Create a timeline for staggered entrance
-    const timeline = anime.timeline({
-      easing: 'cubicBezier(0.25, 0.1, 0.25, 1)',
-    });
-
-    // Add canvas fade-in to timeline
-    timeline.add({
-      targets: canvas,
-      opacity: [0, 0.3],
-      duration: 1000,
-      easing: 'cubicBezier(0.25, 0.1, 0.25, 1)',
-    });
+    // Fade in canvas when animation starts
+    setTimeout(() => {
+      setIsVisible(true);
+    }, 500);
 
     // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);
-      if (animationRef.current) animationRef.current.pause();
+      // No need to pause animations with Framer Motion
     };
   }, []);
 
-  // Start animation when component mounts
-  const startAnimation = () => {
-    if (!isVisible) {
-      setIsVisible(true);
-
-      // Animate particles in
-      const timeline = anime.timeline({
-        easing: 'easeOutExpo',
-      });
-
-      const fadeInAnimation: AnimationParams = {
-        targets: particlesRef.current,
-        opacity: [0, (particle: Particle) => particle.opacity],
-        scale: [0, 1],
-        delay: anime.stagger(50),
-        duration: 1000,
-      };
-
-      timeline.add(fadeInAnimation).add(
-        {
-          targets: '.hero-content',
-          opacity: [0, 1],
-          translateY: [20, 0],
-          duration: 800,
-          easing: 'easeOutQuad',
-        },
-        '-=400'
-      );
-    }
-  };
+  // Start animation when component mounts - handled by Framer Motion
 
   return (
-    <canvas
+    <motion.canvas
       ref={canvasRef}
       className="absolute inset-0 w-full h-full pointer-events-none z-0"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: isVisible ? 0.3 : 0 }}
+      transition={{
+        duration: 1,
+        ease: [0.25, 0.1, 0.25, 1]
+      }}
       style={{
-        opacity: isVisible ? 0.3 : 0,
         willChange: 'transform, opacity',
-        transition: 'opacity 1s cubic-bezier(0.25, 0.1, 0.25, 1)',
         filter: 'blur(0.5px)', // Subtle blur for softer effect
       }}
     />

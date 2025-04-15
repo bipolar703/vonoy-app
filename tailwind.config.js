@@ -1,20 +1,20 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
         // Primary colors
-        primary: "#121F2F", // Legacy primary
-        secondary: "#00a79d", // Updated to match logo green color
-        dark: "#0D1B2A",
-        light: "#F9F9F9",
+        primary: '#121F2F', // Legacy primary
+        secondary: '#00a79d', // Updated to match logo green color
+        dark: '#0D1B2A',
+        light: '#F9F9F9',
 
         // New color definitions as per requirements
-        "hero-bg": "rgb(6 4 31)", // Hero section background
-        "stats-bg": "rgb(32 60 91)", // Vonoy in numbers section
-        "footer-bg": "rgb(12 29 44)", // Footer background
-        highlight: "#0a6dc2", // Highlight color
+        'hero-bg': 'rgb(6 4 31)', // Hero section background
+        'stats-bg': 'rgb(32 60 91)', // Vonoy in numbers section
+        'footer-bg': 'rgb(12 29 44)', // Footer background
+        highlight: '#0a6dc2', // Highlight color
       },
       // Animation definitions
       animation: {
@@ -25,6 +25,8 @@ export default {
         'slide-in-left': 'slideInLeft 0.6s ease-in-out',
         'bounce-light': 'bounceLight 2s infinite',
         'pulse-subtle': 'pulseSubtle 3s infinite',
+        fadeInUp: 'fadeInUp 0.7s ease-out forwards',
+        drawLine: 'drawLine 1.5s ease-in-out forwards',
       },
       keyframes: {
         fadeIn: {
@@ -55,8 +57,16 @@ export default {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0.8' },
         },
+        fadeInUp: {
+          '0%': { transform: 'translateY(30px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        drawLine: {
+          '0%': { strokeDashoffset: '1000', opacity: '0' },
+          '100%': { strokeDashoffset: '0', opacity: '0.2' },
+        },
       },
     },
   },
-  plugins: [import("@tailwindcss/aspect-ratio")],
+  plugins: [import('@tailwindcss/aspect-ratio')],
 };

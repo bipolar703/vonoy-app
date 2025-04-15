@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { memo, useEffect, useRef } from 'react';
 import styles from './ExpandableCard.module.css';
-import anime from 'animejs';
+
+// Remove the unused counter
+// let uniqueCardId = 0;
 
 interface ExpandableCardProps {
   title: string;
@@ -13,10 +14,10 @@ interface ExpandableCardProps {
 }
 
 /**
- * ExpandableCard Component
+ * ExpandableCard Component - Enhanced version with smooth animations
  *
- * A premium, interactive card component that can expand to show more content.
- * Features smooth animations, glass morphism design, and hover effects.
+ * An interactive card component that can expand to show more content.
+ * Uses CSS transitions for smooth animations and includes subtle hover effects.
  *
  * @param {string} title - The card title
  * @param {string} description - The card description (shown when expanded)
@@ -31,67 +32,42 @@ const ExpandableCard: React.FC<ExpandableCardProps> = ({
   icon,
   className = '',
   isOpen = false,
-  onToggle
+  onToggle,
 }) => {
-  // Local state for controlled or uncontrolled usage
-  const [isExpanded, setIsExpanded] = useState(isOpen);
-  const cardRef = useRef<HTMLDivElement>(null);
+  // Reference to content for height animation
+  const contentRef = useRef<HTMLDivElement>(null);
+  // Track if this is the initial render
+  const isInitialRender = useRef(true);
 
-  // Update local state when prop changes
+  // Apply animation class only after initial render
   useEffect(() => {
-    setIsExpanded(isOpen);
-  }, [isOpen]);
-
-  // Add subtle animation effects when component mounts
-  useEffect(() => {
-    if (cardRef.current) {
-      // Add subtle hover animation
-      const iconContainer = cardRef.current.querySelector(`.${styles.iconContainer}`);
-      if (iconContainer) {
-        anime({
-          targets: iconContainer,
-          scale: [1, 1.05, 1],
-          opacity: [0.9, 1, 0.9],
-          easing: 'easeInOutSine',
-          duration: 3000,
-          loop: true
-        });
-      }
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
     }
   }, []);
 
-  // Handle card click
-  const handleToggle = () => {
-    const newState = !isExpanded;
-    setIsExpanded(newState);
-
-    // Call onToggle callback if provided
+  const handleToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
     if (onToggle) {
-      onToggle(newState);
+      onToggle(!isOpen);
     }
   };
 
   return (
-    <motion.div
-      ref={cardRef}
-      className={`${styles.card} ${className} ${isExpanded ? styles.expanded : ''}`}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      whileHover={{ translateY: -5, boxShadow: '0 15px 30px rgba(0, 0, 0, 0.15)' }}
+    <div
+      className={`${styles.card} ${className} ${isOpen ? styles.expanded : ''} ${
+        !isInitialRender.current ? styles.animated : ''
+      }`}
       onClick={handleToggle}
     >
       <div className={styles.cardHeader}>
         <div className={styles.iconContainer}>
-          {icon}
+          <div className={styles.icon}>{icon}</div>
           <div className={styles.iconGlow} />
         </div>
         <h3 className={styles.title}>{title}</h3>
-        <motion.div
-          className={styles.arrow}
-          animate={{ rotate: isExpanded ? 180 : 0 }}
-          transition={{ duration: 0.3 }}
-        >
+        <div className={`${styles.arrow} ${isOpen ? styles.arrowExpanded : ''}`}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="20"
@@ -105,24 +81,26 @@ const ExpandableCard: React.FC<ExpandableCardProps> = ({
           >
             <polyline points="6 9 12 15 18 9"></polyline>
           </svg>
-        </motion.div>
+        </div>
       </div>
 
-      <AnimatePresence>
-        {isExpanded && (
-          <motion.div
-            className={styles.cardContent}
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-          >
-            <p className={styles.description}>{description}</p>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
+      {/* Content with height animation */}
+      <div
+        className={`${styles.cardContent} ${isOpen ? styles.contentVisible : ''}`}
+        style={{
+          maxHeight: isOpen
+            ? contentRef.current
+              ? `${contentRef.current.scrollHeight}px`
+              : '500px'
+            : '0px',
+        }}
+      >
+        <div ref={contentRef} className={styles.contentWrapper}>
+          <p className={styles.description}>{description}</p>
+        </div>
+      </div>
+    </div>
   );
 };
 
-export default ExpandableCard;
+export default memo(ExpandableCard);

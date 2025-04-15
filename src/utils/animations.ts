@@ -1,146 +1,51 @@
 /**
  * Animation Utilities
  *
- * A collection of reusable animation functions using Anime.js 4.
+ * A collection of reusable animation functions using Framer Motion.
  * Implements modern animation techniques for a more interactive UI.
  * Optimized for performance with will-change hints and GPU acceleration.
  *
  * @module utils/animations
  */
 
-import anime from 'animejs';
+// Stub file for backward compatibility - use motionAnimations.ts instead
 
 /**
  * Fade in element with a slight upward movement
- *
- * @param element - Target element or selector
- * @param delay - Delay before animation starts (ms)
- * @param duration - Animation duration (ms)
- * @returns Anime.js animation instance
- *
- * @example
- * // Fade in a single element
- * fadeInUp(document.querySelector('.hero-title'), 300, 800);
- *
- * // Fade in multiple elements with staggered delay
- * fadeInUp(document.querySelectorAll('.card'), 0, 800);
+ * This is a stub for backward compatibility - use motionAnimations.ts instead
  */
 export const fadeInUp = (
   element: string | HTMLElement | NodeListOf<HTMLElement>,
   delay = 0,
   duration = 800
 ) => {
-  // Safety check for null or undefined elements
-  if (!element) {
-    console.warn('fadeInUp: Element is null or undefined');
-    return anime();
-  }
-
-  // Apply will-change for better performance
-  if (typeof element !== 'string') {
-    try {
-      // Safely handle potential null or non-iterable elements
-      const targets = element instanceof HTMLElement ?
-        [element] :
-        (element && typeof element[Symbol.iterator] === 'function') ?
-          Array.from(element) :
-          [];
-
-      targets.forEach(el => {
-        if (el && el.style) {
-          el.style.willChange = 'transform, opacity';
-          el.style.backfaceVisibility = 'hidden'; // Prevent flickering
-        }
-      });
-    } catch (error) {
-      console.warn('fadeInUp: Error applying styles', error);
-    }
-  }
-
-  return anime({
-    targets: element,
-    opacity: [0, 1],
-    translateY: [20, 0],
-    easing: 'cubicBezier(0.25, 0.1, 0.25, 1)',
-    duration,
-    delay: typeof delay === 'function' ? delay : anime.stagger(100, { start: delay }),
-    complete: (anim) => {
-      try {
-        // Clean up will-change after animation
-        if (anim && anim.animatables) {
-          const targets = anim.animatables.map(a => a.target);
-          targets.forEach(el => {
-            if (el instanceof HTMLElement) {
-              el.style.willChange = 'auto';
-            }
-          });
-        }
-      } catch (error) {
-        console.warn('fadeInUp: Error in complete callback', error);
-      }
-    }
-  });
+  console.warn('fadeInUp: This function is deprecated. Use Framer Motion variants from motionAnimations.ts instead.');
+  return { pause: () => {} }; // Return a dummy object with a pause method for backward compatibility
 };
 
 /**
  * Reveal content when scrolled into view
- * @param element - Target element or selector
- * @param threshold - Percentage of element visible before triggering
+ * This is a stub for backward compatibility - use Framer Motion's useInView hook instead
  */
 export const scrollReveal = (
   element: string | HTMLElement | NodeListOf<HTMLElement>,
   threshold = 0.1
 ) => {
-  const targets = typeof element === 'string'
-    ? document.querySelectorAll(element)
-    : element instanceof HTMLElement
-      ? [element]
-      : element;
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          anime({
-            targets: entry.target,
-            opacity: [0, 1],
-            translateY: [20, 0],
-            easing: 'cubicBezier(0.25, 0.1, 0.25, 1)',
-            duration: 800,
-            delay: anime.stagger(100),
-          });
-          observer.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold }
-  );
-
-  Array.from(targets).forEach((target) => {
-    target.style.opacity = '0';
-    observer.observe(target);
-  });
-
-  return observer;
+  console.warn('scrollReveal: This function is deprecated. Use Framer Motion\'s useInView hook instead.');
+  return { disconnect: () => {} }; // Return a dummy object with a disconnect method for backward compatibility
 };
 
 /**
  * Create a staggered animation for multiple elements
- * @param element - Target elements or selector
- * @param properties - Animation properties
- * @param staggerDelay - Delay between each element animation
+ * This is a stub for backward compatibility - use Framer Motion's staggerChildren instead
  */
 export const staggerAnimation = (
   element: string | HTMLElement | NodeListOf<HTMLElement>,
   properties: Record<string, any>,
   staggerDelay = 50
 ) => {
-  return anime({
-    targets: element,
-    ...properties,
-    delay: anime.stagger(staggerDelay),
-    easing: 'cubicBezier(0.25, 0.1, 0.25, 1)',
-  });
+  console.warn('staggerAnimation: This function is deprecated. Use Framer Motion\'s staggerChildren instead.');
+  return { pause: () => {} }; // Return a dummy object with a pause method for backward compatibility
 };
 
 /**

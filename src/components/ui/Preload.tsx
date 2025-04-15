@@ -1,9 +1,20 @@
 import React, { useEffect, useState } from 'react';
 
+// Define valid 'as' values that are actually supported by browsers
+type SupportedPreloadTypes =
+  | 'script'
+  | 'style'
+  | 'image'
+  | 'font'
+  | 'audio'
+  | 'video'
+  | 'document'
+  | 'fetch';
+
 interface PreloadProps {
   resources: Array<{
     href: string;
-    as: 'script' | 'style' | 'image' | 'font' | 'fetch' | 'audio' | 'video' | 'document' | 'embed' | 'object' | 'track';
+    as: SupportedPreloadTypes;
     type?: string;
     crossOrigin?: 'anonymous' | 'use-credentials';
     importance?: 'high' | 'low' | 'auto';
@@ -24,62 +35,67 @@ const Preload: React.FC<PreloadProps> = ({ resources }) => {
 
   useEffect(() => {
     // Create and append link elements for preloading
-    const linkElements = resources.map(resource => {
-      // Skip if already loaded
-      if (loadedResources.has(resource.href)) {
-        return null;
-      }
-
-      const link = document.createElement('link');
-
-      // Use modulepreload for scripts, preconnect for external domains, and prefetch for other resources
-      // This approach reduces console warnings while still optimizing performance
-      if (resource.as === 'script') {
-        link.rel = 'modulepreload'; // Better for scripts
-      } else if (resource.href.startsWith('http')) {
-        // For external resources, use preconnect instead of preload
-        link.rel = 'preconnect';
-        if (!resource.crossOrigin || resource.crossOrigin === 'anonymous') {
-          link.crossOrigin = 'anonymous';
+    const linkElements = resources
+      .map((resource) => {
+        // Skip if already loaded
+        if (loadedResources.has(resource.href)) {
+          return null;
         }
-      } else if (resource.immediateUse) {
-        // Only use preload for immediate resources that are on the same domain
-        link.rel = 'preload';
-      } else {
-        // Use prefetch for non-immediate resources to avoid console warnings
-        link.rel = 'prefetch';
-      }
-      link.href = resource.href;
 
-      // Only set 'as' attribute for preload (required)
-      if (link.rel === 'preload') {
-        link.as = resource.as;
-      }
+        const link = document.createElement('link');
 
-      if (resource.type) link.type = resource.type;
-      if (resource.crossOrigin) link.crossOrigin = resource.crossOrigin;
-      if (resource.importance) link.setAttribute('importance', resource.importance);
+        // Determine the appropriate rel attribute based on resource type
+        if (resource.as === 'script') {
+          // Modern browsers prefer modulepreload for JS
+          link.rel = 'modulepreload';
+        } else if (resource.href.startsWith('http') && !resource.immediateUse) {
+          // For external resources that aren't needed immediately, use preconnect
+          link.rel = 'preconnect';
+          if (!resource.crossOrigin || resource.crossOrigin === 'anonymous') {
+            link.crossOrigin = 'anonymous';
+          }
+        } else if (resource.immediateUse) {
+          // Use preload for resources needed on the current page
+          link.rel = 'preload';
+          link.as = resource.as;
+        } else {
+          // Use prefetch for resources likely needed for future navigation
+          link.rel = 'prefetch';
+        }
 
-      // Add onload handler to track loaded resources
-      link.onload = () => {
-        setLoadedResources(prev => {
-          const updated = new Set(prev);
-          updated.add(resource.href);
-          return updated;
-        });
-      };
+        link.href = resource.href;
 
-      return link;
-    }).filter(Boolean); // Remove null entries
+        // Add additional attributes if provided
+        if (resource.type) link.type = resource.type;
+        if (resource.crossOrigin) link.crossOrigin = resource.crossOrigin;
+        if (resource.importance) link.setAttribute('importance', resource.importance);
+
+        // Add onload handler to track loaded resources
+        link.onload = () => {
+          setLoadedResources((prev) => {
+            const updated = new Set(prev);
+            updated.add(resource.href);
+            return updated;
+          });
+        };
+
+        // Add onerror handler for better error tracking
+        link.onerror = (e) => {
+          console.warn(`Failed to preload resource: ${resource.href}`, e);
+        };
+
+        return link;
+      })
+      .filter(Boolean); // Remove null entries
 
     // Append all links to head
-    linkElements.forEach(link => {
+    linkElements.forEach((link) => {
       if (link) document.head.appendChild(link);
     });
 
     // Cleanup on unmount
     return () => {
-      linkElements.forEach(link => {
+      linkElements.forEach((link) => {
         if (link && document.head.contains(link)) {
           document.head.removeChild(link);
         }
