@@ -1,19 +1,49 @@
-/* BookDemo Page Styles */
-/* Most styles are now inline with Tailwind CSS */
-
-/* Geometric lines animation */
-
-.geometricLine {
-  fill: none;
-  stroke: #00a79d;
-  stroke-width: 1;
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
-  opacity: 0;
+/* BookDemo Page Styles - Minimal, only for custom background/particles/geometric lines */
+.gradientBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 10% 20%, rgba(42, 157, 143, 0.05) 0%, transparent 40%),
+              radial-gradient(circle at 80% 70%, rgba(10, 147, 150, 0.08) 0%, transparent 50%);
+  animation: pulseGradient 15s ease-in-out infinite alternate;
+  z-index: 0;
+  filter: blur(2px) brightness(1.05);
+  opacity: 0.95;
 }
 
-/* Animation class for form groups */
-.formGroup {
-  opacity: 0;
-  transform: translateY(20px);
+@keyframes pulseGradient {
+  0% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+}
+
+.glassShape {
+  background: rgba(42, 157, 143, 0.03);
+  backdrop-filter: blur(8px);
+  position: relative;
+  overflow: hidden;
+}
+
+.particles {
+  /* If you have a custom particles effect, keep it here */
+}
+
+.glassReflection {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
 }

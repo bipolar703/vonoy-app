@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { useLocation, useNavigationType } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import LoadingScreen from '../ui/LoadingScreen';
 
@@ -17,7 +17,6 @@ const PageTransition: React.FC = () => {
   const [prevLocation, setPrevLocation] = useState('');
 
   // Get navigation type (POP, PUSH, REPLACE)
-  const navigationType = useNavigationType();
 
   // Track if this is a page navigation or initial load
   const isPageNavigation = useRef(false);
@@ -32,9 +31,6 @@ const PageTransition: React.FC = () => {
   };
 
   // Clean up animations safely - no longer needed with Framer Motion
-  const cleanupAnimations = () => {
-    // Framer Motion handles cleanup automatically
-  };
 
   // Start loading animation
   const startLoading = useCallback(() => {

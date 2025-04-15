@@ -125,7 +125,7 @@ const HeroSection: React.FC = () => {
             Vonoy helps businesses optimize fleet utilization, reduce costs, and
             enhance delivery efficiency with data-driven, AI-powered solutions.
           </p>
-          <button className="bg-secondary text-primary px-6 py-3 rounded-md font-medium text-lg hover:bg-opacity-90 transition-colors flex items-center">
+          <button className="bg-secondary text-white px-6 py-3 rounded-md font-medium text-lg hover:bg-opacity-90 transition-colors flex items-center">
             Book a Demo
             <svg
               xmlns="http://www.w3.org/2000/svg"

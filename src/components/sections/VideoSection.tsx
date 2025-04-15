@@ -16,23 +16,38 @@ import { useInView } from "../hooks/useInView";
 const VideoSection: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
-  const sectionRef = useRef<HTMLElement>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
   const isInView = useInView(sectionRef, { threshold: 0.1, once: true });
 
   // Preload the YouTube thumbnail when section comes into view
   useEffect(() => {
     if (isInView && !isVideoLoaded) {
+      // Use a local variable to track if the component is still mounted
+      let isMounted = true;
+
       const img = new Image();
       // Set crossOrigin to anonymous to avoid CORS issues
       img.crossOrigin = "anonymous";
       img.src = "https://img.youtube.com/vi/hxm2rdVl7Y0/maxresdefault.jpg";
-      img.onload = () => setIsVideoLoaded(true);
+      img.onload = () => {
+        // Only update state if component is still mounted
+        if (isMounted) setIsVideoLoaded(true);
+      };
       img.onerror = () => {
         // Fallback to a different thumbnail size if maxresdefault fails
+        if (!isMounted) return;
+
         const fallbackImg = new Image();
         fallbackImg.crossOrigin = "anonymous";
         fallbackImg.src = "https://img.youtube.com/vi/hxm2rdVl7Y0/hqdefault.jpg";
-        fallbackImg.onload = () => setIsVideoLoaded(true);
+        fallbackImg.onload = () => {
+          if (isMounted) setIsVideoLoaded(true);
+        };
+      };
+
+      // Cleanup function to prevent state updates after unmount
+      return () => {
+        isMounted = false;
       };
     }
   }, [isInView, isVideoLoaded]);

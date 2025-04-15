@@ -63,7 +63,7 @@ export default {
         },
         drawLine: {
           '0%': { strokeDashoffset: '1000', opacity: '0' },
-          '100%': { strokeDashoffset: '0', opacity: '0.2' },
+          '100%': { strokeDashoffset: '0', opacity: '0.2', animationPlayState: 'paused' },
         },
       },
     },

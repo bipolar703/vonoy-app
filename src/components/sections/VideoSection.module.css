@@ -47,6 +47,10 @@
   border-radius: 1rem;
   overflow: hidden;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  /* Prevent layout shifts */
+  min-height: 300px;
+  contain: layout size style;
+  will-change: transform;
 }
 
 .videoOverlay {
@@ -114,6 +118,10 @@
   justify-content: center;
   overflow: hidden;
   border-radius: 1rem;
+  /* Prevent layout shifts */
+  contain: layout size style;
+  will-change: transform;
+  aspect-ratio: 16/9;
 }
 
 /* Gradient placeholder styling */
@@ -135,6 +143,10 @@
   position: relative;
   transform: scale(1.01); /* Slight scale to prevent white edges */
   transition: transform 0.5s ease-in-out;
+  /* Prevent layout shifts */
+  contain: layout size style;
+  will-change: transform;
+  aspect-ratio: 16/9;
 }
 
 .thumbnailContainer:hover {

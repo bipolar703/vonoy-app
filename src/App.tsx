@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom';
+// Main App component file
 
 // Import all components directly
 import Footer from './components/layout/Footer';
@@ -30,11 +30,11 @@ function App() {
         {/* Why Choose Vonoy? */}
         <WhyVonoySection />
 
-        {/* Vonoy in Numbers */}
-        <StatsSection />
-
         {/* Customization */}
         <CustomizationSection />
+
+        {/* Vonoy in Numbers */}
+        <StatsSection />
 
         {/* Who Can Benefit */}
         <BenefitSection />

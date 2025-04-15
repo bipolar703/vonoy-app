@@ -58,8 +58,16 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
       <div className="enhanced-loader">
         <img src="/favicon.svg" alt="Loading" />
       </div>
+
+      {/* Loading dots animation */}
+      <div className="loading-dots mt-4">
+        <div className="loading-dot" style={{ animation: 'dotPulse 1.5s infinite ease-in-out 0s' }}></div>
+        <div className="loading-dot" style={{ animation: 'dotPulse 1.5s infinite ease-in-out 0.2s' }}></div>
+        <div className="loading-dot" style={{ animation: 'dotPulse 1.5s infinite ease-in-out 0.4s' }}></div>
+      </div>
+
       <motion.p
-        className="mt-4 text-white/80 text-sm font-medium"
+        className="mt-2 text-white text-sm font-medium"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2 }}

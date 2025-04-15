@@ -27,8 +27,6 @@
   display: inline-block;
 }
 
-
-
 .sectionDescription {
   font-size: 1.25rem;
   color: #486581;
@@ -57,38 +55,45 @@
 .card {
   background-color: #f8fafc;
   border-radius: 0.75rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05),
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.05),
     0 4px 6px -2px rgba(0, 0, 0, 0.025);
   padding: 2rem;
-  transition: all 0.3s ease;
+  transition:
+    box-shadow 0.3s,
+    transform 0.3s,
+    border-color 0.3s;
   height: 100%;
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.03);
+  border: 4px solid transparent;
+  will-change: transform, box-shadow;
 }
 
 .card::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    to bottom right,
-    rgba(61, 213, 152, 0.05),
-    rgba(10, 109, 194, 0.05)
-  );
+  background: linear-gradient(to bottom right, rgba(61, 213, 152, 0.05), rgba(10, 109, 194, 0.05));
   opacity: 0;
   transition: opacity 0.3s ease;
 }
 
 .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08),
+  /* Only keep effects like ::before, icon, etc. */
+}
+
+.card-container:hover .card {
+  transform: scale(1.05);
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.08),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border-color: rgba(61, 213, 152, 0.1);
 }
 
 .card:hover::before {
@@ -146,7 +151,7 @@
 }
 
 .optimize::after {
-  content: "";
+  content: '';
   position: absolute;
   inset: -2px -4px;
   background: radial-gradient(
@@ -182,15 +187,8 @@
   right: 0;
   width: 100%;
   height: 100%;
-  background-image: radial-gradient(
-      circle at 90% 10%,
-      rgba(61, 213, 152, 0.05) 0%,
-      rgba(61, 213, 152, 0) 50%
-    ),
-    radial-gradient(
-      circle at 10% 90%,
-      rgba(10, 109, 194, 0.05) 0%,
-      rgba(10, 109, 194, 0) 50%
-    );
+  background-image:
+    radial-gradient(circle at 90% 10%, rgba(61, 213, 152, 0.05) 0%, rgba(61, 213, 152, 0) 50%),
+    radial-gradient(circle at 10% 90%, rgba(10, 109, 194, 0.05) 0%, rgba(10, 109, 194, 0) 50%);
   z-index: 1;
 }

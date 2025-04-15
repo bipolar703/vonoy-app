@@ -1,16 +1,21 @@
 import { StrictMode, Suspense, lazy, startTransition } from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { ErrorBoundary } from 'react-error-boundary';
-import { createBrowserRouter, RouterProvider, Routes, Route, createRoutesFromElements } from 'react-router-dom';
+import {
+  Route,
+  RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements,
+} from 'react-router-dom';
 import ErrorFallback from './components/ui/ErrorFallback';
 import LoadingScreen from './components/ui/LoadingScreen';
-import ScrollToTop from './components/utils/ScrollToTop';
-import { initializePerformanceOptimizations, measureRenderTime } from './utils/performance';
 import { reportWebVitalsToConsole } from './hooks/useWebVitals';
 import './index.css';
-import './styles/navbar.css';
-import './styles/text-quality.css';
 import './styles/mcp-optimization.css'; // MCP server optimizations
+import './styles/navbar.css';
+import './styles/phone-input.css';
+import './styles/text-quality.css';
+import { initializePerformanceOptimizations, measureRenderTime } from './utils/performance';
 
 // Preload critical assets - optimized for MCP servers
 const preloadAssets = () => {
@@ -43,9 +48,8 @@ const preloadAssets = () => {
 // Use dynamic import for better code splitting
 const HomePage = lazy(() => import('./App'));
 const AboutUsPage = lazy(() => import('./components/pages/AboutUs'));
-const BookDemoPage = lazy(() => import('./components/pages/BookDemo.jsx'));
+const BookDemoPage = lazy(() => import('./components/pages/BookDemo'));
 const UnderDevelopmentPage = lazy(() => import('./components/pages/UnderDevelopment'));
-const GenericPage = lazy(() => import('./components/pages/GenericPage'));
 
 // Get the root element
 const rootElement = document.getElementById('root');
@@ -64,9 +68,6 @@ preloadAssets();
 // Create root and render app
 const root = ReactDOM.createRoot(rootElement);
 
-// Single global loading indicator to prevent multiple loading states
-let isFirstLoad = true;
-
 // Use startTransition to prioritize UI responsiveness
 startTransition(() => {
   root.render(
@@ -77,30 +78,29 @@ startTransition(() => {
         onError={(error) => console.error('Application error:', error)}
       >
         <Suspense fallback={<LoadingScreen />}>
-          <RouterProvider router={createBrowserRouter(
-            createRoutesFromElements(
-              <>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/about" element={<AboutUsPage />} />
-                <Route path="/book-demo" element={<BookDemoPage />} />
-                {/* Catch-all route for pages under development */}
-                <Route path="/solutions/*" element={<UnderDevelopmentPage />} />
-                <Route path="/features/*" element={<UnderDevelopmentPage />} />
-                <Route path="/why-vonoy" element={<UnderDevelopmentPage />} />
-                {/* 404 page for any unmatched routes */}
-                <Route path="*" element={<UnderDevelopmentPage />} />
-              </>
-            ),
-            {
-              // Enable all future flags to resolve warnings and prepare for v7
-              future: {
-                v7_startTransition: true,
-                v7_relativeSplatPath: true,
-                v7_normalizeFormMethod: true,
-                v7_prependBasename: true
+          <RouterProvider
+            router={createBrowserRouter(
+              createRoutesFromElements(
+                <>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/about" element={<AboutUsPage />} />
+                  <Route path="/book-demo" element={<BookDemoPage />} />
+                  {/* Catch-all route for pages under development */}
+                  <Route path="/solutions/*" element={<UnderDevelopmentPage />} />
+                  <Route path="/features/*" element={<UnderDevelopmentPage />} />
+                  <Route path="/why-vonoy" element={<UnderDevelopmentPage />} />
+                  {/* 404 page for any unmatched routes */}
+                  <Route path="*" element={<UnderDevelopmentPage />} />
+                </>
+              ),
+              {
+                // Enable all future flags to resolve warnings and prepare for v7
+                future: {
+                  // v7_prependBasename: true,
+                },
               }
-            }
-          )} />
+            )}
+          />
         </Suspense>
       </ErrorBoundary>
     </StrictMode>
@@ -114,12 +114,9 @@ if (process.env.NODE_ENV !== 'production') {
 
 // Add event listener to track when the app is fully loaded
 window.addEventListener('load', () => {
-  // Mark first load as complete
-  isFirstLoad = false;
-
   // Register service worker for caching (if in production)
   if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js').catch(error => {
+    navigator.serviceWorker.register('/service-worker.js').catch((error) => {
       console.error('SW registration failed:', error);
     });
   }
@@ -183,3 +180,11 @@ if (process.env.NODE_ENV === 'production') {
 if (import.meta.hot) {
   import.meta.hot.accept();
 }
+
+// 0. Add a comment about server config for SPA routing
+// NOTE: For production, ensure your server is configured to serve index.html for all unknown routes (see https://stackoverflow.com/questions/42972073/react-app-returning-500-internal-server-error and https://serverfault.com/questions/1054257/nginx-500-interal-server-error-with-react-app-1-rewrite-or-internal-redirectio)
+
+// 1. Use a single error boundary (ErrorBoundary) with ErrorFallback
+// 2. Remove any duplicate/unnecessary error boundaries from entry
+// 3. Ensure all routes are handled by RouterProvider with Suspense fallback
+// 4. Remove any unnecessary or duplicate imports

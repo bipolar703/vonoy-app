@@ -265,7 +265,12 @@ const Navbar: React.FC = () => {
   const toggleDropdown = (path: string, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation(); // Prevent event bubbling
-    setOpenDropdown(openDropdown === path ? null : path);
+
+    // Only toggle if it's a different dropdown or closing the current one
+    // This prevents re-triggering animations when clicking the same dropdown
+    if (openDropdown !== path || e.target instanceof HTMLElement && e.target.closest('.dropdown-toggle')) {
+      setOpenDropdown(openDropdown === path ? null : path);
+    }
   };
 
   const switchLanguage = (lang: 'en' | 'ar') => {
@@ -323,7 +328,7 @@ const Navbar: React.FC = () => {
                 <>
                   <div
                     onClick={(e) => toggleDropdown(item.path, e)}
-                    className={`flex items-center cursor-pointer transition-colors py-2 px-3 rounded-lg ${
+                    className={`flex items-center cursor-pointer transition-colors py-2 px-3 rounded-lg dropdown-toggle ${
                       isActive(item.path) || isInDropdown(item.items)
                         ? 'text-secondary font-medium bg-white/5 backdrop-blur-sm'
                         : `${isDarkBackground ? 'text-white' : 'text-gray-800'} hover:text-secondary hover:bg-white/5`
@@ -482,7 +487,7 @@ const Navbar: React.FC = () => {
 
         {/* Mobile Menu with enhanced styling and animations */}
         <div
-          className={`absolute top-full left-0 right-0 bg-primary/95 backdrop-blur-xl md:hidden max-h-[80vh] overflow-y-auto shadow-xl mobile-menu-container fixed-when-visible z-40 transition-all duration-300 ${isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}
+          className={`absolute top-full left-0 right-0 bg-primary backdrop-blur-xl md:hidden max-h-[80vh] overflow-y-auto shadow-xl mobile-menu-container fixed-when-visible z-40 transition-all duration-300 ${isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}
         >
           <div className="container mx-auto px-4 py-6 space-y-5">
             {navigationItems.map((item) => (
@@ -491,10 +496,10 @@ const Navbar: React.FC = () => {
                   <>
                     <div
                       onClick={(e) => toggleDropdown(item.path, e)}
-                      className={`flex items-center justify-between w-full cursor-pointer py-3 px-4 rounded-lg ${
+                      className={`flex items-center justify-between w-full cursor-pointer py-3 px-4 rounded-lg dropdown-toggle ${
                         isActive(item.path) || isInDropdown(item.items)
-                          ? 'text-secondary font-medium bg-white/5'
-                          : 'text-white hover:bg-white/5'
+                          ? 'text-secondary font-medium bg-white/10'
+                          : 'text-white hover:bg-white/10 bg-white/5'
                       } transition-colors mobile-menu-toggle-dropdown`}
                       role="button"
                       aria-expanded={openDropdown === item.path}
@@ -532,8 +537,8 @@ const Navbar: React.FC = () => {
                             to={subItem.path}
                             className={`block py-2.5 px-4 rounded-lg relative pl-6 ${
                               location.pathname === subItem.path
-                                ? 'text-secondary font-medium bg-white/5'
-                                : 'text-white/90 hover:text-white hover:bg-white/5'
+                                ? 'text-secondary font-medium bg-white/10'
+                                : 'text-white hover:bg-white/10 bg-white/5'
                             } transition-colors mobile-menu-item`}
                             onClick={() => {
                               setOpenDropdown(null);
@@ -552,8 +557,8 @@ const Navbar: React.FC = () => {
                     to={item.path}
                     className={`block py-3 px-4 rounded-lg ${
                       isActive(item.path)
-                        ? 'text-secondary font-medium bg-white/5'
-                        : 'text-white hover:bg-white/5'
+                        ? 'text-secondary font-medium bg-white/10'
+                        : 'text-white hover:bg-white/10 bg-white/5'
                     } transition-colors`}
                     onClick={() => setIsMenuOpen(false)}
                   >

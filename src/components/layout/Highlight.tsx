@@ -3,7 +3,7 @@ import React from "react";
 /**
  * Highlight Component
  *
- * Renders text with a highlight color (set to #0a6dc2)
+ * Renders text with a highlight color (set to #58a49d)
  * Used to emphasize important words in headings and text
  *
  * @param {React.ReactNode} children - The content to be highlighted
