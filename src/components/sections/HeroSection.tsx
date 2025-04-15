@@ -99,7 +99,7 @@ const HeroSection: React.FC = () => {
             >
               <a
                 href="/book-demo"
-                className="px-6 py-3 rounded-md font-semibold bg-[#3dd598] text-white hover:shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#3dd598] focus:ring-opacity-50 inline-flex items-center"
+                className="px-6 py-3 rounded-md font-semibold bg-[#58a49d] text-white hover:shadow-lg transform transition-all duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#58a49d] focus:ring-opacity-50 inline-flex items-center"
               >
                 Book a Demo
                 <svg
