@@ -159,6 +159,41 @@ body {
   font-weight: 500;
 }
 
+/* Enhanced Loading Animation with breathing glow */
+.enhanced-loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100px;
+  height: 100px;
+  contain: layout size; /* Prevent layout shifts */
+  overflow: visible;
+}
+
+.enhanced-loader img {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+  z-index: 2;
+  position: relative;
+  contain: layout size style; /* Prevent layout shifts */
+  animation: breathe 3s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
 /* Error fallback */
 .error-fallback {
   display: flex;
