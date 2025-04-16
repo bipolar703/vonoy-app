@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import OptimizedImage from "../ui/OptimizedImage";
-import styles from "./Footer.module.css";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import OptimizedImage from '../ui/OptimizedImage';
+import styles from './Footer.module.css';
 
 /**
  * Footer Component
@@ -13,17 +13,43 @@ import styles from "./Footer.module.css";
  * @returns {JSX.Element} The rendered Footer component
  */
 const Footer: React.FC = () => {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  // Helper for navigation with loading and scroll-to-top
+  const handleNavigate =
+    (path: string, isWorking: boolean = true) =>
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      setLoading(true);
+      setTimeout(() => {
+        setLoading(false);
+        window.scrollTo({ top: 0, behavior: 'auto' });
+        navigate(isWorking ? path : '/under-development');
+      }, 350); // Simulate loading, adjust as needed
+    };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Here you would typically handle the subscription logic
     alert(`Subscribed with email: ${email}`);
-    setEmail("");
+    setEmail('');
   };
 
   return (
     <footer className={styles.footer}>
+      {loading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="loader">
+            <div className="loaderCircle"></div>
+            <div className="loaderCircle"></div>
+            <div className="loaderCircle"></div>
+            <div className="loaderCircle"></div>
+            <div className="loaderCircle"></div>
+          </div>
+        </div>
+      )}
       {/* Modern design element: Subtle diagonal pattern overlay */}
       <div className={styles.diagonalPattern}>
         <div className={styles.diagonalPatternInner}></div>
@@ -61,9 +87,8 @@ const Footer: React.FC = () => {
               priority={false}
             />
             <p className={styles.description}>
-              AI-powered fleet operations management platform that helps
-              businesses optimize resources, reduce costs, and enhance delivery
-              efficiency.
+              AI-powered fleet operations management platform that helps businesses optimize
+              resources, reduce costs, and enhance delivery efficiency.
             </p>
 
             {/* Email Subscription Form */}
@@ -97,28 +122,33 @@ const Footer: React.FC = () => {
               </form>
             </div>
 
+            {/* Social Media Links: Only YouTube and LinkedIn */}
             <div className={styles.socialLinks}>
-              <a href="#" className={styles.socialLink} aria-label="Facebook">
+              <a
+                href="https://www.youtube.com/@Vonoyplatform"
+                className={styles.socialLink}
+                aria-label="YouTube"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {/* YouTube SVG */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className={styles.socialIcon}
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z" />
+                  <path d="M23.498 6.186a2.994 2.994 0 0 0-2.107-2.117C19.379 3.5 12 3.5 12 3.5s-7.379 0-9.391.569A2.994 2.994 0 0 0 .502 6.186C0 8.2 0 12 0 12s0 3.8.502 5.814a2.994 2.994 0 0 0 2.107 2.117C4.621 20.5 12 20.5 12 20.5s7.379 0 9.391-.569a2.994 2.994 0 0 0 2.107-2.117C24 15.8 24 12 24 12s0-3.8-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                 </svg>
               </a>
-              <a href="#" className={styles.socialLink} aria-label="Twitter">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className={styles.socialIcon}
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
-                </svg>
-              </a>
-              <a href="#" className={styles.socialLink} aria-label="LinkedIn">
+              <a
+                href="https://www.linkedin.com/company/vonoy/about/"
+                className={styles.socialLink}
+                aria-label="LinkedIn"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {/* LinkedIn SVG */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className={styles.socialIcon}
@@ -140,29 +170,45 @@ const Footer: React.FC = () => {
               </h3>
               <ul className={styles.linkList}>
                 <li>
-                  <Link to="/" className={styles.linkItem}>
+                  <a href="/" className={styles.linkItem} onClick={handleNavigate('/', true)}>
                     <span className={styles.linkItemText}>Home</span>
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link to="/about" className={styles.linkItem}>
+                  <a
+                    href="/about"
+                    className={styles.linkItem}
+                    onClick={handleNavigate('/about', true)}
+                  >
                     <span className={styles.linkItemText}>About Us</span>
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link to="/solutions" className={styles.linkItem}>
+                  <a
+                    href="/solutions"
+                    className={styles.linkItem}
+                    onClick={handleNavigate('/solutions', false)}
+                  >
                     <span className={styles.linkItemText}>Solutions</span>
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link to="/features" className={styles.linkItem}>
+                  <a
+                    href="/features"
+                    className={styles.linkItem}
+                    onClick={handleNavigate('/features', false)}
+                  >
                     <span className={styles.linkItemText}>Features</span>
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link to="/demo" className={styles.linkItem}>
+                  <a
+                    href="/demo"
+                    className={styles.linkItem}
+                    onClick={handleNavigate('/book-demo', true)}
+                  >
                     <span className={styles.linkItemText}>Book a Demo</span>
-                  </Link>
+                  </a>
                 </li>
               </ul>
             </div>
@@ -175,16 +221,12 @@ const Footer: React.FC = () => {
               <ul className={styles.linkList}>
                 <li>
                   <a href="#" className={styles.linkItem}>
-                    <span className={styles.linkItemText}>
-                      Fleet Management
-                    </span>
+                    <span className={styles.linkItemText}>Fleet Management</span>
                   </a>
                 </li>
                 <li>
                   <a href="#" className={styles.linkItem}>
-                    <span className={styles.linkItemText}>
-                      Route Optimization
-                    </span>
+                    <span className={styles.linkItemText}>Route Optimization</span>
                   </a>
                 </li>
                 <li>
@@ -221,7 +263,9 @@ const Footer: React.FC = () => {
                       d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                     />
                   </svg>
-                  <span className={styles.contactText}>support@vonoy.co</span>
+                  <a href="mailto:support@vonoy.co" className={styles.contactText}>
+                    support@vonoy.co
+                  </a>
                 </li>
               </ul>
             </div>

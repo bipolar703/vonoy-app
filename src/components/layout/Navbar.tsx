@@ -268,7 +268,10 @@ const Navbar: React.FC = () => {
 
     // Only toggle if it's a different dropdown or closing the current one
     // This prevents re-triggering animations when clicking the same dropdown
-    if (openDropdown !== path || e.target instanceof HTMLElement && e.target.closest('.dropdown-toggle')) {
+    if (
+      openDropdown !== path ||
+      (e.target instanceof HTMLElement && e.target.closest('.dropdown-toggle'))
+    ) {
       setOpenDropdown(openDropdown === path ? null : path);
     }
   };
@@ -489,6 +492,7 @@ const Navbar: React.FC = () => {
         <div
           className={`absolute top-full left-0 right-0 bg-primary backdrop-blur-xl md:hidden max-h-[80vh] overflow-y-auto shadow-xl mobile-menu-container fixed-when-visible z-40 transition-all duration-300 ${isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}
         >
+          <div className="mobile-menu-gradient-line" />
           <div className="container mx-auto px-4 py-6 space-y-5">
             {navigationItems.map((item) => (
               <div key={item.path} className="relative">
