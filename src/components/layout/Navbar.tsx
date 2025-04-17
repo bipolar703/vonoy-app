@@ -34,21 +34,10 @@ const navigationItems = [
       { name: 'EV Fleet Operations', path: '/industries/ev-fleet' },
     ],
   },
+  // Removed Resources
   {
-    name: 'Resources',
-    path: '/resources',
-    dropdown: true,
-    items: [
-      { name: 'Blog', path: '/resources/blog' },
-      { name: 'Whitepapers', path: '/resources/whitepapers' },
-      { name: 'Case Studies', path: '/resources/case-studies' },
-      { name: 'Documentation', path: '/resources/documentation' },
-      { name: 'Animations', path: '/animations' },
-    ],
-  },
-  {
-    name: 'More',
-    path: '/more',
+    name: 'About Us',
+    path: '/about',
     dropdown: true,
     items: [
       { name: 'About Us', path: '/about' },
@@ -286,6 +275,8 @@ const Navbar: React.FC = () => {
                 <>
                   <div
                     onClick={(e) => toggleDropdown(item.path, e)}
+                    onMouseEnter={() => setOpenDropdown(item.path)}
+                    onMouseLeave={() => setOpenDropdown(null)}
                     className={`flex items-center cursor-pointer transition-colors py-2 px-3 rounded-lg dropdown-toggle ${
                       isActive(item.path) || isInDropdown(item.items)
                         ? 'text-secondary font-medium bg-white/5 backdrop-blur-sm'
@@ -317,6 +308,8 @@ const Navbar: React.FC = () => {
                     <div
                       className="absolute left-0 mt-2 w-64 bg-white/95 backdrop-blur-md shadow-xl rounded-lg opacity-100 transition-opacity duration-200 z-50 border border-gray-100 overflow-hidden"
                       style={{ transform: 'translateY(8px)' }}
+                      onMouseEnter={() => setOpenDropdown(item.path)}
+                      onMouseLeave={() => setOpenDropdown(null)}
                     >
                       {item.items?.map((subItem) => (
                         <Link
@@ -336,7 +329,6 @@ const Navbar: React.FC = () => {
                           >
                             {subItem.name}
                           </span>
-                          {/* Removed active-indicator dot */}
                         </Link>
                       ))}
                     </div>
@@ -354,7 +346,6 @@ const Navbar: React.FC = () => {
                   {item.name}
                 </Link>
               )}
-              {/* Removed active-indicator dot for main navigation items */}
             </div>
           ))}
         </div>

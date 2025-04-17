@@ -11,39 +11,32 @@ import ErrorFallback from './components/ui/ErrorFallback';
 import LoadingScreen from './components/ui/LoadingScreen';
 import { reportWebVitalsToConsole } from './hooks/useWebVitals';
 import './index.css';
-import './styles/mcp-optimization.css'; // MCP server optimizations
 import './styles/navbar.css';
 import './styles/phone-input.css';
 import './styles/text-quality.css';
 import { initializePerformanceOptimizations, measureRenderTime } from './utils/performance';
 
-// Preload critical assets - optimized for MCP servers
-const preloadAssets = () => {
-  if (typeof document === 'undefined') return;
+// Preload the logo for the loader - used immediately
+const logoLink = document.createElement('link');
+logoLink.rel = 'preload';
+logoLink.as = 'image';
+logoLink.href = '/logo.svg';
+logoLink.fetchPriority = 'high';
+document.head.appendChild(logoLink);
 
-  // Preload the logo for the loader - used immediately
-  const logoLink = document.createElement('link');
-  logoLink.rel = 'preload';
-  logoLink.as = 'image';
-  logoLink.href = '/logo.svg';
-  logoLink.fetchPriority = 'high';
-  document.head.appendChild(logoLink);
+// Use prefetch for non-immediate resources to avoid warnings
+// Prefetch critical fonts - will be used soon but not immediately
+const fontLink = document.createElement('link');
+fontLink.rel = 'prefetch'; // Changed from preload to prefetch
+fontLink.href = '/fonts/inter-var.woff2';
+fontLink.type = 'font/woff2';
+fontLink.crossOrigin = 'anonymous';
+document.head.appendChild(fontLink);
 
-  // Use prefetch for non-immediate resources to avoid warnings
-  // Prefetch critical fonts - will be used soon but not immediately
-  const fontLink = document.createElement('link');
-  fontLink.rel = 'prefetch'; // Changed from preload to prefetch
-  fontLink.href = '/fonts/inter-var.woff2';
-  fontLink.type = 'font/woff2';
-  fontLink.crossOrigin = 'anonymous';
-  document.head.appendChild(fontLink);
-
-  // Use DNS prefetch for YouTube domain - better than preconnect for external resources
-  const ytDNS = document.createElement('link');
-  ytDNS.rel = 'dns-prefetch';
-  ytDNS.href = 'https://img.youtube.com';
-  document.head.appendChild(ytDNS);
-};
+// Use DNS prefetch for YouTube domain - better than preconnect for external resources
+const ytDNS = document.createElement('link');
+ytDNS.rel = 'dns-prefetch';
+ytDNS.href = 'https://img.youtube.com';
 
 // Use dynamic import for better code splitting
 const HomePage = lazy(() => import('./App'));
@@ -61,9 +54,6 @@ if (!rootElement) {
 
 // Initialize performance optimizations
 initializePerformanceOptimizations();
-
-// Preload critical assets
-preloadAssets();
 
 // Create root and render app
 const root = ReactDOM.createRoot(rootElement);

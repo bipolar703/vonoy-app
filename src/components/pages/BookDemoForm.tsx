@@ -1,14 +1,14 @@
 import React, { useRef, useState } from 'react';
 import PhoneInput from 'react-phone-input-2';
-import 'react-phone-input-2/lib/style.css';
 import { validateField, validateForm } from '../../utils/formValidation';
 import { shakeElement } from '../../utils/microInteractions';
+import FloatingLabelField from '../ui/FloatingLabelField.tsx';
 import styles from './BookDemo.module.css';
 
 const BookDemoForm: React.FC = () => {
   const formRef = useRef<HTMLFormElement>(null);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<Record<string, string>>({
     firstName: '',
     lastName: '',
     email: '',
@@ -18,6 +18,7 @@ const BookDemoForm: React.FC = () => {
     product: '',
     message: '',
     industry: '',
+    companyName: '',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -115,6 +116,7 @@ const BookDemoForm: React.FC = () => {
           product: '',
           message: '',
           industry: '',
+          companyName: '',
         });
         setIsSubmitting(false);
         setSubmitSuccess(false);
@@ -124,257 +126,274 @@ const BookDemoForm: React.FC = () => {
     }
   };
 
+  // Helper for select validation
+  const isSelectValid = (name: string) => {
+    return formData[name] && !errors[name];
+  };
+
+  // Helper for phone validation
+  const phoneError = errors.phone;
+  const phoneValid = formData.phone && !phoneError;
+
   return (
     <section
       id="book-demo-form"
-      className={`${styles.formSection} w-full max-w-xl relative overflow-visible`}
+      className={`${styles.formSection} w-full relative overflow-visible`}
     >
-      <div className={styles.glassReflection} aria-hidden="true" />
       <form
-        className={`${styles.form} space-y-6 relative z-10`}
+        className="bg-[#16232e] rounded shadow-lg p-4 px-4 md:p-8 mb-6 grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3"
         onSubmit={handleSubmit}
         ref={formRef}
         autoComplete="off"
         aria-label="Book a Demo Form"
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="relative">
-            <input
-              id="firstName"
-              name="firstName"
-              type="text"
-              placeholder=" "
-              className={`peer ${styles.input}`}
-              value={formData.firstName}
-              onChange={handleInputChange}
-              onBlur={handleBlur}
-              required
-              aria-label="First Name"
-            />
-            <label
-              htmlFor="firstName"
-              className={`${styles.label} ${formData.firstName ? styles.labelFloat : ''}`}
-            >
-              First Name*
-            </label>
-            {errors.firstName && <span className={styles.errorMsg}>{errors.firstName}</span>}
-          </div>
-          <div className="relative">
-            <input
-              id="lastName"
-              name="lastName"
-              type="text"
-              placeholder=" "
-              className={`peer ${styles.input}`}
-              value={formData.lastName}
-              onChange={handleInputChange}
-              onBlur={handleBlur}
-              required
-              aria-label="Last Name"
-            />
-            <label
-              htmlFor="lastName"
-              className={`${styles.label} ${formData.lastName ? styles.labelFloat : ''}`}
-            >
-              Last Name*
-            </label>
-            {errors.lastName && <span className={styles.errorMsg}>{errors.lastName}</span>}
-          </div>
+        <div className="text-white flex flex-col gap-2">
+          <p className="font-medium text-lg">Personal Details</p>
+          <p>Please fill out all the fields.</p>
         </div>
-        <div className="relative">
-          <input
-            id="email"
-            name="email"
-            type="email"
-            placeholder=" "
-            className={`peer ${styles.input}`}
-            value={formData.email}
-            onChange={handleInputChange}
-            onBlur={handleBlur}
-            required
-            aria-label="Email Address"
-          />
-          <label
-            htmlFor="email"
-            className={`${styles.label} ${formData.email ? styles.labelFloat : ''}`}
-          >
-            Email Address*
-          </label>
-          {errors.email && <span className={styles.errorMsg}>{errors.email}</span>}
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="relative">
-            <select
-              id="country"
-              name="country"
-              className={`peer ${styles.select}`}
-              value={formData.country}
-              onChange={handleInputChange}
-              onBlur={handleBlur}
-              required
-              aria-label="Country"
-            >
-              <option value="" disabled>
-                Select your country
-              </option>
-              <option value="ae">United Arab Emirates</option>
-              <option value="us">United States</option>
-              <option value="uk">United Kingdom</option>
-              <option value="sa">Saudi Arabia</option>
-              <option value="eg">Egypt</option>
-            </select>
-            <label
-              htmlFor="country"
-              className={`${styles.label} ${formData.country ? styles.labelFloat : ''}`}
-            >
-              Country*
-            </label>
-          </div>
-          <div className="relative">
-            <select
-              id="fleetSize"
-              name="fleetSize"
-              className={`peer ${styles.select}`}
-              value={formData.fleetSize}
-              onChange={handleInputChange}
-              onBlur={handleBlur}
-              required
-              aria-label="Fleet Size"
-            >
-              <option value="" disabled>
-                Select fleet size
-              </option>
-              <option value="1-10">1-10 vehicles</option>
-              <option value="11-50">11-50 vehicles</option>
-              <option value="51-100">51-100 vehicles</option>
-              <option value="101+">101+ vehicles</option>
-            </select>
-            <label
-              htmlFor="fleetSize"
-              className={`${styles.label} ${formData.fleetSize ? styles.labelFloat : ''}`}
-            >
-              Number of Fleet*
-            </label>
-          </div>
-        </div>
-        <div className="relative">
-          <PhoneInput
-            country={countryPhoneMap[formData.country] || 'ae'}
-            value={formData.phone}
-            onChange={handlePhoneChange}
-            enableSearch
-            inputStyle={{}}
-            buttonStyle={{}}
-            dropdownStyle={{}}
-            disableDropdown={false}
-            placeholder="Mobile number"
-            inputProps={{
-              name: 'phone',
-              required: true,
-              'aria-label': 'Mobile Number',
-            }}
-            containerClass={styles.phoneInputContainer}
-            searchStyle={{}}
-          />
-          <label
-            htmlFor="phone"
-            className={`${styles.label} ${formData.phone ? styles.labelFloat : ''}`}
-          >
-            Mobile Number*
-          </label>
-        </div>
-        <div className="relative">
-          <select
-            id="industry"
-            name="industry"
-            className={`peer ${styles.select}`}
-            value={formData.industry}
-            onChange={handleInputChange}
-            onBlur={handleBlur}
-            required
-            aria-label="Industry"
-          >
-            <option value="" disabled>
-              Select your industry
-            </option>
-            <option value="fmcg">FMCG Distribution</option>
-            <option value="lastmile">Last-Mile Delivery</option>
-            <option value="cashvan">Cash Van Delivery</option>
-            <option value="postal">Postal & Courier</option>
-            <option value="coldchain">Cold Chain & Pharma</option>
-            <option value="ev">EV Fleet Operations</option>
-            <option value="other">Other</option>
-          </select>
-          <label
-            htmlFor="industry"
-            className={`${styles.label} ${formData.industry ? styles.labelFloat : ''}`}
-          >
-            Industry*
-          </label>
-        </div>
-        <div className="relative">
-          <select
-            id="product"
-            name="product"
-            className={`peer ${styles.select}`}
-            value={formData.product}
-            onChange={handleInputChange}
-            onBlur={handleBlur}
-            aria-label="Product"
-          >
-            <option value="" disabled>
-              Select product
-            </option>
-            <option value="fleet-management">Fleet Management</option>
-            <option value="route-optimization">Route Optimization</option>
-            <option value="analytics">Analytics Platform</option>
-            <option value="carbon-reduction">Carbon Footprint Reduction</option>
-          </select>
-          <label
-            htmlFor="product"
-            className={`${styles.label} ${formData.product ? styles.labelFloat : ''}`}
-          >
-            Interested in a specific product?
-          </label>
-        </div>
-        <div className="relative">
-          <textarea
-            id="message"
-            name="message"
-            placeholder=" "
-            className={`peer ${styles.textarea}`}
-            rows={4}
-            value={formData.message}
-            onChange={handleInputChange}
-            onBlur={handleBlur}
-            aria-label="Message"
-          ></textarea>
-          <label
-            htmlFor="message"
-            className={`${styles.label} ${formData.message ? styles.labelFloat : ''}`}
-          >
-            Message
-          </label>
-        </div>
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className={styles.submitBtn + (isSubmitting ? ' ' + styles.btnDisabled : '')}
-            aria-busy={isSubmitting}
-          >
-            {isSubmitting ? (
-              <span>Processing...</span>
-            ) : submitSuccess ? (
-              <span>Request Sent!</span>
-            ) : (
-              <span>Book a Demo</span>
+        <div className="lg:col-span-2">
+          <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-2">
+            <div className="md:col-span-1">
+              <FloatingLabelField
+                id="firstName"
+                name="firstName"
+                type="text"
+                placeholder=" "
+                className={`peer ${styles.input}`}
+                value={formData.firstName}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+                required
+                aria-label="First Name"
+                error={errors.firstName}
+                success={!!formData.firstName && !errors.firstName}
+                label="First Name*"
+              />
+            </div>
+            <div className="md:col-span-1">
+              <FloatingLabelField
+                id="lastName"
+                name="lastName"
+                type="text"
+                placeholder=" "
+                className={`peer ${styles.input}`}
+                value={formData.lastName}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+                required
+                aria-label="Last Name"
+                error={errors.lastName}
+                success={!!formData.lastName && !errors.lastName}
+                label="Last Name*"
+              />
+            </div>
+            <div className="md:col-span-2">
+              <FloatingLabelField
+                id="companyName"
+                name="companyName"
+                type="text"
+                placeholder=" "
+                className={`peer ${styles.input}`}
+                value={formData.companyName || ''}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+                required
+                aria-label="Company Name"
+                error={errors.companyName}
+                success={!!formData.companyName && !errors.companyName}
+                label="Company Name*"
+              />
+            </div>
+            <div className="md:col-span-2">
+              <FloatingLabelField
+                id="email"
+                name="email"
+                type="email"
+                placeholder=" "
+                className={`peer ${styles.input}`}
+                value={formData.email}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+                required
+                aria-label="Email Address"
+                error={errors.email}
+                success={!!formData.email && !errors.email}
+                label="Email Address*"
+              />
+            </div>
+            <div className="md:col-span-1">
+              <FloatingLabelField
+                id="country"
+                name="country"
+                type="text"
+                placeholder=" "
+                className={`peer ${styles.input}`}
+                value={formData.country}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+                required
+                aria-label="Country"
+                error={errors.country}
+                success={!!formData.country && !errors.country}
+                label="Country* (type your country)"
+              />
+            </div>
+            <div className="md:col-span-1">
+              <label
+                htmlFor="fleetSize"
+                className={`${styles.label} ${styles.labelFloat} ${errors.fleetSize ? 'text-red-500' : isSelectValid('fleetSize') ? 'text-green-500' : 'text-white'}`}
+              >
+                Fleet Size*
+              </label>
+              <select
+                id="fleetSize"
+                name="fleetSize"
+                className={`peer ${styles.select}`}
+                value={formData.fleetSize}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+                required
+                aria-label="Fleet Size"
+              >
+                <option value="" disabled hidden>
+                  Select fleet size
+                </option>
+                <option value="0-25">0-25</option>
+                <option value="25-50">25-50</option>
+                <option value="51-100">51-100</option>
+                <option value="101-250">101-250</option>
+                <option value="251+">251+</option>
+              </select>
+              {errors.fleetSize && (
+                <span className="mt-1 text-xs text-red-500 block">{errors.fleetSize}</span>
+              )}
+            </div>
+            <div className="md:col-span-2">
+              <label
+                htmlFor="phone"
+                className={`${styles.label} ${phoneError ? 'text-red-500' : phoneValid ? 'text-green-500' : 'text-white'}`}
+                style={{
+                  top: '-1.1rem',
+                  left: '0.7rem',
+                  fontSize: '0.82rem',
+                  background: 'rgba(20,30,40,0.85)',
+                  padding: '0 0.25rem',
+                }}
+              >
+                Mobile Number*
+              </label>
+              <PhoneInput
+                country={countryPhoneMap[formData.country] || 'ae'}
+                value={formData.phone}
+                onChange={handlePhoneChange}
+                enableSearch
+                inputStyle={{
+                  color: '#111111',
+                  background: '#ffffff',
+                  border: phoneError
+                    ? '1.5px solid #ef4444'
+                    : phoneValid
+                      ? '1.5px solid #22c55e'
+                      : '1.5px solid #e5e7eb',
+                  borderRadius: 8,
+                  width: '100%',
+                  minHeight: 48,
+                  fontSize: 16,
+                }}
+                buttonStyle={{
+                  borderRadius: 8,
+                  height: 48,
+                  background: '#fff',
+                  border: '1.5px solid #e5e7eb',
+                  minWidth: 56,
+                }}
+                dropdownStyle={{ fontSize: 16, borderRadius: 8, zIndex: 50, minWidth: 220 }}
+                disableDropdown={false}
+                placeholder="Mobile number"
+                inputProps={{
+                  name: 'phone',
+                  required: true,
+                  'aria-label': 'Mobile Number',
+                  style: { color: '#111111' },
+                }}
+                containerClass={styles.phoneInputContainer}
+                searchStyle={{ fontSize: 16, borderRadius: 8 }}
+              />
+              {phoneError && <span className="mt-1 text-xs text-red-500 block">{phoneError}</span>}
+            </div>
+            <div className="md:col-span-1">
+              <label
+                htmlFor="industry"
+                className={`${styles.label} ${styles.labelFloat} ${errors.industry ? 'text-red-500' : isSelectValid('industry') ? 'text-green-500' : 'text-white'}`}
+              >
+                Industry*
+              </label>
+              <select
+                id="industry"
+                name="industry"
+                className={`peer ${styles.select}`}
+                value={formData.industry}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+                required
+                aria-label="Industry"
+              >
+                <option value="" disabled hidden>
+                  Select your industry
+                </option>
+                <option value="fmcg">FMCG Distribution</option>
+                <option value="lastmile">Last-Mile Delivery</option>
+                <option value="cashvan">Cash Van Delivery</option>
+                <option value="postal">Postal & Courier</option>
+                <option value="coldchain">Cold Chain & Pharma</option>
+                <option value="ev">EV Fleet Operations</option>
+                <option value="other">Other</option>
+              </select>
+              {errors.industry && (
+                <span className="mt-1 text-xs text-red-500 block">{errors.industry}</span>
+              )}
+            </div>
+            <div className="md:col-span-2">
+              <FloatingLabelField
+                id="message"
+                name="message"
+                placeholder=" "
+                className={`peer ${styles.textarea}`}
+                rows={4}
+                value={formData.message}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+                aria-label="Message"
+                error={errors.message}
+                success={!!formData.message && !errors.message}
+                textarea
+                label="Message"
+              />
+            </div>
+            <div className="md:col-span-2 flex justify-end">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className={styles.submitBtn + (isSubmitting ? ' ' + styles.btnDisabled : '') + ' transition-opacity duration-500'}
+                aria-busy={isSubmitting}
+                style={{ opacity: isSubmitting ? 0.6 : 1 }}
+              >
+                {isSubmitting ? (
+                  <span className="animate-pulse">Processing...</span>
+                ) : submitSuccess ? (
+                  <span>Request Sent!</span>
+                ) : (
+                  <span>Book a Demo</span>
+                )}
+              </button>
+            </div>
+            {submitSuccess && (
+              <div className={styles.successMsg + ' md:col-span-2 transition-opacity duration-700'}>
+                Thank you! We received your request.
+              </div>
             )}
-          </button>
+          </div>
         </div>
-        {submitSuccess && (
-          <div className={styles.successMsg}>Thank you! We received your request.</div>
-        )}
       </form>
     </section>
   );

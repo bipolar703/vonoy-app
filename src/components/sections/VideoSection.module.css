@@ -48,7 +48,7 @@
   overflow: hidden;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   /* Prevent layout shifts */
-  min-height: 300px;
+  min-height: 150px;
   contain: layout size style;
   will-change: transform;
 }
@@ -161,7 +161,7 @@
 }
 
 .gradientPlaceholder::before {
-  content: "";
+  content: '';
   position: absolute;
   top: -50%;
   left: -50%;
@@ -201,27 +201,18 @@
 
 .mockMap {
   flex: 3;
-  background: radial-gradient(
-      circle at 30% 40%,
-      rgba(61, 213, 152, 0.4) 0%,
-      rgba(61, 213, 152, 0) 20%
-    ),
-    radial-gradient(
-      circle at 70% 60%,
-      rgba(10, 109, 194, 0.4) 0%,
-      rgba(10, 109, 194, 0) 20%
-    );
+  background:
+    radial-gradient(circle at 30% 40%, rgba(61, 213, 152, 0.4) 0%, rgba(61, 213, 152, 0) 20%),
+    radial-gradient(circle at 70% 60%, rgba(10, 109, 194, 0.4) 0%, rgba(10, 109, 194, 0) 20%);
   position: relative;
 }
 
 .mockMap::after {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(
-      rgba(255, 255, 255, 0.1) 1px,
-      transparent 1px
-    ),
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
   background-size: 20px 20px;
   opacity: 0.3;
@@ -285,11 +276,7 @@
 .partnerLogoPlaceholder {
   height: 2rem;
   width: 8rem;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.1),
-    rgba(255, 255, 255, 0.2)
-  );
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.2));
   border-radius: 0.25rem;
   opacity: 0.6;
   transition: all 0.3s ease;
@@ -306,11 +293,7 @@
 .partnerLogoPlaceholder:hover {
   opacity: 0.9;
   transform: scale(1.05);
-  background: linear-gradient(
-    90deg,
-    rgba(61, 213, 152, 0.2),
-    rgba(10, 109, 194, 0.2)
-  );
+  background: linear-gradient(90deg, rgba(61, 213, 152, 0.2), rgba(10, 109, 194, 0.2));
 }
 
 /* Background decorations */
@@ -318,10 +301,7 @@
   position: absolute;
   inset: 0;
   opacity: 0.05;
-  background-image: radial-gradient(
-    rgba(255, 255, 255, 0.1) 1px,
-    transparent 1px
-  );
+  background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
   background-size: 20px 20px;
   z-index: 1;
 }
@@ -332,11 +312,7 @@
   right: -20%;
   width: 70%;
   height: 100%;
-  background: radial-gradient(
-    circle,
-    rgba(61, 213, 152, 0.08) 0%,
-    rgba(61, 213, 152, 0) 70%
-  );
+  background: radial-gradient(circle, rgba(61, 213, 152, 0.08) 0%, rgba(61, 213, 152, 0) 70%);
   filter: blur(50px);
   z-index: 1;
 }

@@ -65,16 +65,36 @@
   opacity: 0;
 }
 
-.stagger-item:nth-child(1) { animation-delay: 0ms; }
-.stagger-item:nth-child(2) { animation-delay: 50ms; }
-.stagger-item:nth-child(3) { animation-delay: 100ms; }
-.stagger-item:nth-child(4) { animation-delay: 150ms; }
-.stagger-item:nth-child(5) { animation-delay: 200ms; }
-.stagger-item:nth-child(6) { animation-delay: 250ms; }
-.stagger-item:nth-child(7) { animation-delay: 300ms; }
-.stagger-item:nth-child(8) { animation-delay: 350ms; }
-.stagger-item:nth-child(9) { animation-delay: 400ms; }
-.stagger-item:nth-child(10) { animation-delay: 450ms; }
+.stagger-item:nth-child(1) {
+  animation-delay: 0ms;
+}
+.stagger-item:nth-child(2) {
+  animation-delay: 50ms;
+}
+.stagger-item:nth-child(3) {
+  animation-delay: 100ms;
+}
+.stagger-item:nth-child(4) {
+  animation-delay: 150ms;
+}
+.stagger-item:nth-child(5) {
+  animation-delay: 200ms;
+}
+.stagger-item:nth-child(6) {
+  animation-delay: 250ms;
+}
+.stagger-item:nth-child(7) {
+  animation-delay: 300ms;
+}
+.stagger-item:nth-child(8) {
+  animation-delay: 350ms;
+}
+.stagger-item:nth-child(9) {
+  animation-delay: 400ms;
+}
+.stagger-item:nth-child(10) {
+  animation-delay: 450ms;
+}
 
 /* Hover effects */
 .hover-scale {
@@ -86,8 +106,9 @@
 }
 
 .hover-lift {
-  transition: transform var(--transition-fast) var(--transition-timing-out),
-              box-shadow var(--transition-fast) var(--transition-timing-out);
+  transition:
+    transform var(--transition-fast) var(--transition-timing-out),
+    box-shadow var(--transition-fast) var(--transition-timing-out);
 }
 
 .hover-lift:hover {
@@ -282,27 +303,8 @@
   .no-print {
     display: none !important;
   }
-  
+
   .page-break {
     page-break-before: always;
-  }
-}
-
-/* Reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  .animate-fade-in,
-  .animate-slide-up,
-  .animate-slide-down,
-  .animate-slide-left,
-  .animate-slide-right,
-  .animate-scale,
-  .animate-pulse,
-  .animate-spin,
-  .animate-bounce,
-  .hover-scale,
-  .hover-lift {
-    animation: none !important;
-    transition: none !important;
-    transform: none !important;
   }
 }

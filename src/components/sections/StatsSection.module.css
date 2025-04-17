@@ -514,7 +514,8 @@
   .statCardWrapper,
   .statCardWrapperMobile {
     padding: 0.25rem;
-    min-width: 100%;
+    min-width: 50%;
+    border-radius: 12px; /* --mobile-card-border-radius: Card corner roundness on mobile */
     margin-bottom: 2.5rem;
     max-width: 320px;
     margin-left: auto;
@@ -525,22 +526,22 @@
   .statCard,
   .statCardMobile {
     padding: 1.5rem; /* --mobile-card-padding: Inner padding of cards on mobile */
-    border-radius: 12px; /* --mobile-card-border-radius: Card corner roundness on mobile */
+    border-radius: 5px; /* --mobile-card-border-radius: Card corner roundness on mobile */
     box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.15); /* --mobile-card-shadow: Card shadow on mobile */
-    margin-top: 2rem; /* --mobile-card-top-margin: Space for icon on mobile */
+    margin-top: 3rem; /* --mobile-card-top-margin: Space for icon on mobile */
   }
 
   /* Mobile icon container styles */
   .iconContainer,
   .iconContainerMobile {
-    width: 3rem;
-    height: 3rem;
+    width: 5rem;
+    height: 5rem;
   }
 
   /* Mobile stat value styles */
   .statValue,
   .statValueMobile {
-    font-size: 2rem;
+    font-size: 3rem;
   }
 
   /* Mobile stat label styles */

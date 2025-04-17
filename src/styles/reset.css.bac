@@ -31,7 +31,7 @@ ol {
 body {
   min-height: 100vh;
   scroll-behavior: smooth;
-  text-rendering: optimizeSpeed;
+  text-rendering: auto;
   line-height: 1.5;
   font-family: var(--font-family-body, sans-serif);
   color: var(--color-text-primary, #212121);

@@ -61,7 +61,7 @@ const HeroSection: React.FC = () => {
             {/* Reserve space with min-height to prevent layout shift */}
             <div className="min-h-[120px] md:min-h-[160px] flex items-center">
               <h1 ref={headingRef} className={`${styles.heading} hero-title`}>
-                Transform Your Fleet Operations with AI-Powered Efficiency
+                Transform Your Logistics Operations with AI-Powered Efficiency
               </h1>
             </div>
             {/* Reserve space with min-height to prevent layout shift */}

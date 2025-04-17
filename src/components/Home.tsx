@@ -1,4 +1,7 @@
 import React from "react";
+import StatsSection from "./sections/StatsSection";
+import CustomizationSection from "./sections/CustomizationSection";
+import HowWeWorkSection from "./sections/HowWeWorkSection";
 
 // Navbar component
 const Navbar: React.FC = () => {
@@ -119,7 +122,7 @@ const HeroSection: React.FC = () => {
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-3xl">
           <h1 className="text-5xl md:text-6xl font-bold mb-6">
-            Transform Your Fleet Operations with AI-Powered Efficiency
+            Transform Your Logistics Operations with AI-Powered Efficiency
           </h1>
           <p className="text-xl mb-8">
             Vonoy helps businesses optimize fleet utilization, reduce costs, and
@@ -925,6 +928,9 @@ const Home: React.FC = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <HeroSection />
+      <StatsSection />
+      <HowWeWorkSection />
+      <CustomizationSection />
       <PlatformFeatures />
       <WhoBenefits />
       <DemoVideo />

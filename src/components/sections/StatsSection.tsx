@@ -82,8 +82,12 @@ const StatsSection: React.FC = () => {
       {/* Content container */}
       <div className={`${styles.container} stats-container`}>
         <div className={`${styles.sectionHeader} stats-header`}>
-          <h2 className={`${styles.headerTitle} ${styles.headerTitleMobile} stats-title`}>Vonoy in Numbers</h2>
-          <p className={`${styles.headerDescription} ${styles.headerDescriptionMobile} stats-description`}>
+          <h2 className={`${styles.headerTitle} ${styles.headerTitleMobile} stats-title`}>
+            Vonoy in Numbers
+          </h2>
+          <p
+            className={`${styles.headerDescription} ${styles.headerDescriptionMobile} stats-description`}
+          >
             We plan to intensify our efforts to become pioneers in local and regional markets in
             this field, through the innovation and creativity that we have led from the beginning.
           </p>
@@ -92,8 +96,12 @@ const StatsSection: React.FC = () => {
         <div className={`${styles.contentLayout} stats-content-layout`}>
           <div className={`${styles.statsGrid} ${styles.statsGridMobile} stats-grid`}>
             {/* Stat Card - Cost Reduction */}
-            <div className={`${styles.statCardWrapper} ${styles.statCardWrapperMobile} stat-card-item`}>
-              <div className={`${styles.iconContainer} ${styles.iconContainerMobile} stat-icon-container`}>
+            <div
+              className={`${styles.statCardWrapper} ${styles.statCardWrapperMobile} stat-card-item`}
+            >
+              <div
+                className={`${styles.iconContainer} ${styles.iconContainerMobile} stat-icon-container`}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className={`${styles.statIcon} stat-icon cost-icon`}
@@ -110,16 +118,25 @@ const StatsSection: React.FC = () => {
                 </svg>
               </div>
               <div className={`${styles.statCard} ${styles.statCardMobile} stat-card cost-card`}>
-                <h3 ref={costValueRef} className={`${styles.statValue} ${styles.statValueMobile} stat-value`}>
+                <h3
+                  ref={costValueRef}
+                  className={`${styles.statValue} ${styles.statValueMobile} stat-value`}
+                >
                   0%
                 </h3>
-                <p className={`${styles.statLabel} ${styles.statLabelMobile} stat-label`}>Cost Reduction</p>
+                <p className={`${styles.statLabel} ${styles.statLabelMobile} stat-label`}>
+                  Cost Reduction
+                </p>
               </div>
             </div>
 
             {/* Stat Card - Fewer Vehicles */}
-            <div className={`${styles.statCardWrapper} ${styles.statCardWrapperMobile} stat-card-item`}>
-              <div className={`${styles.iconContainer} ${styles.iconContainerMobile} stat-icon-container`}>
+            <div
+              className={`${styles.statCardWrapper} ${styles.statCardWrapperMobile} stat-card-item`}
+            >
+              <div
+                className={`${styles.iconContainer} ${styles.iconContainerMobile} stat-icon-container`}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className={`${styles.statIcon} stat-icon vehicles-icon`}
@@ -135,17 +152,28 @@ const StatsSection: React.FC = () => {
                   />
                 </svg>
               </div>
-              <div className={`${styles.statCard} ${styles.statCardMobile} stat-card vehicles-card`}>
-                <h3 ref={vehiclesValueRef} className={`${styles.statValue} ${styles.statValueMobile} stat-value`}>
+              <div
+                className={`${styles.statCard} ${styles.statCardMobile} stat-card vehicles-card`}
+              >
+                <h3
+                  ref={vehiclesValueRef}
+                  className={`${styles.statValue} ${styles.statValueMobile} stat-value`}
+                >
                   0%
                 </h3>
-                <p className={`${styles.statLabel} ${styles.statLabelMobile} stat-label`}>Fewer Vehicles Required</p>
+                <p className={`${styles.statLabel} ${styles.statLabelMobile} stat-label`}>
+                  Fewer Vehicles Required
+                </p>
               </div>
             </div>
 
             {/* Stat Card - Efficiency */}
-            <div className={`${styles.statCardWrapper} ${styles.statCardWrapperMobile} stat-card-item`}>
-              <div className={`${styles.iconContainer} ${styles.iconContainerMobile} stat-icon-container`}>
+            <div
+              className={`${styles.statCardWrapper} ${styles.statCardWrapperMobile} stat-card-item`}
+            >
+              <div
+                className={`${styles.iconContainer} ${styles.iconContainerMobile} stat-icon-container`}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className={`${styles.statIcon} stat-icon efficiency-icon`}
@@ -161,17 +189,26 @@ const StatsSection: React.FC = () => {
                   />
                 </svg>
               </div>
-              <div className={`${styles.statCard} ${styles.statCardMobile} stat-card efficiency-card`}>
-                <h3 ref={efficiencyValueRef} className={`${styles.statValue} ${styles.statValueMobile} stat-value`}>
+              <div
+                className={`${styles.statCard} ${styles.statCardMobile} stat-card efficiency-card`}
+              >
+                <h3
+                  ref={efficiencyValueRef}
+                  className={`${styles.statValue} ${styles.statValueMobile} stat-value`}
+                >
                   0%
                 </h3>
-                <p className={`${styles.statLabel} ${styles.statLabelMobile} stat-label`}>Increase in Fleet Efficiency</p>
+                <p className={`${styles.statLabel} ${styles.statLabelMobile} stat-label`}>
+                  Increase in Fleet Efficiency
+                </p>
               </div>
             </div>
           </div>
 
           {/* Animation container */}
-          <div className={`${styles.statsImageContainer} ${styles.statsImageContainerMobile} stats-image-container`}>
+          <div
+            className={`${styles.statsImageContainer} ${styles.statsImageContainerMobile} stats-image-container`}
+          >
             <StatsAnimation />
           </div>
         </div>

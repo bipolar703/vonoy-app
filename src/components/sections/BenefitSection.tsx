@@ -180,6 +180,22 @@ const BenefitSection: React.FC = () => {
               <h3 className={styles.benefitTitle}>{item.title}</h3>
             </div>
           ))}
+          {/* Industries We Serve - duplicated as requested */}
+          <div className={styles.benefitCard}>
+            <div className={styles.benefitIconContainer}>
+              <svg className={styles.benefitIcon} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 7h18M3 12h18M3 17h18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              <div className={styles.iconGlow}></div>
+            </div>
+            <h3 className={styles.benefitTitle}>Industries We Serve</h3>
+            <ul className={styles.industriesList}>
+              <li>FMCG Distribution</li>
+              <li>Last-Mile Delivery</li>
+              <li>Cash Van Delivery</li>
+              <li>Postal & Courier</li>
+              <li>Cold Chain & Pharma</li>
+              <li>EV Fleet Operations</li>
+            </ul>
+          </div>
         </div>
       </div>
 

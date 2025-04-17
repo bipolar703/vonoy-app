@@ -1,8 +1,6 @@
 @import 'tailwindcss';
 
 /* Import design system */
-@import './styles/reset.css';
-@import './styles/design-tokens.css';
 @import './styles/utilities.css';
 @import './styles/layout.css';
 
