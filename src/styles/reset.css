@@ -162,7 +162,6 @@ samp {
 
 /* Set default blockquote styles */
 blockquote {
-  border-left: 4px solid var(--color-gray-300, #e0e0e0);
   padding-left: 1rem;
   font-style: italic;
 }

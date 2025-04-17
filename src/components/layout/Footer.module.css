@@ -64,7 +64,7 @@
 .topBorder {
   height: 0.25rem;
   width: 100%;
-  background: linear-gradient(to right, #3dd598, #0a6dc2, #3dd598);
+  background: linear-gradient(90deg, #2c4f4b, #8cf9ed, #5ca49c, #2c4f4b);
 }
 
 .container {
@@ -175,7 +175,7 @@
 }
 
 .subscriptionTitle::before {
-  content: "";
+  content: '';
   display: inline-block;
   width: 0.5rem;
   height: 0.5rem;

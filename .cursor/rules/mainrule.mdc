@@ -1,6 +1,6 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: true
 ---
 ---
@@ -34,10 +34,10 @@ alwaysApply: true
 # TailwindCSS Specific Rules
 - Use TailwindCSS 4.1 utility classes exclusively for styling.
 - Avoid inline styles or CSS modules unless explicitly requested.
-- Follow Tailwind’s recommended responsive design patterns (sm, md, lg, xl, 2xl).
-- Use Tailwind’s JIT mode features for dynamic class generation.
+- Follow Tailwind's recommended responsive design patterns (sm, md, lg, xl, 2xl).
+- Use Tailwind's JIT mode features for dynamic class generation.
 - When creating custom Tailwind plugins or extending the config, update `tailwind.config.js` accordingly.
-- Ensure dark mode support is implemented using Tailwind’s class strategy.
+- Ensure dark mode support is implemented using Tailwind's class strategy.
 - Avoid conflicting utility classes in the same element.
 
 # Vite Specific Rules
@@ -45,7 +45,7 @@ alwaysApply: true
 - Keep `vite.config.ts` clean and modular; use plugins only when necessary.
 - Use environment variables with the `import.meta.env` syntax.
 - Optimize build output for production with code splitting and lazy loading.
-- Use Vite’s aliasing feature for cleaner imports (e.g., `@/components`).
+- Use Vite's aliasing feature for cleaner imports (e.g., `@/components`).
 - Avoid modifying Vite internals unless explicitly requested.
 
 # Code Quality and Style
@@ -69,6 +69,11 @@ alwaysApply: true
 - For bug fixes, prioritize minimal and targeted changes.
 - When multiple solutions exist, prefer the simplest and most maintainable one.
 - Always confirm with the user before making architectural changes.
+
+# Shrimp Task Manager & Web Search Rule
+
+- Always use the Shrimp Task Manager for all project task management, planning, and workflow automation.
+- When asked to search the web, always use the maximum search limit and prioritize the most relevant, high-quality sources (official docs, academic, teacher, LeetCode, contest, user submissions, etc.) for real-world code snippets and examples.
 
 ---
 

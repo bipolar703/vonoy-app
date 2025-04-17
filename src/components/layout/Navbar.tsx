@@ -67,17 +67,15 @@ const navigationItems = [
  */
 const Navbar: React.FC = () => {
   const location = useLocation();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
   const [language, setLanguage] = useState<'en' | 'ar'>('en');
   // Page loading is now handled by PageTransition component
   const [isLangLoading, setIsLangLoading] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const isInitialMount = React.useRef(true);
-  // Add state for open mobile menu index
+  // --- Mobile menu state ---
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openMobileMenuIndex, setOpenMobileMenuIndex] = useState<number | null>(null);
-  // Add swipe gesture state
   const touchStartY = React.useRef<number | null>(null);
   const touchStartX = React.useRef<number | null>(null);
 
@@ -106,37 +104,6 @@ const Navbar: React.FC = () => {
       (item) => location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
     );
   };
-
-  // Find the parent dropdown item for the current path
-  const findActiveDropdownParent = () => {
-    for (const item of navigationItems) {
-      if (
-        item.dropdown &&
-        item.items &&
-        item.items.some(
-          (subItem) =>
-            location.pathname === subItem.path || location.pathname.startsWith(`${subItem.path}/`)
-        )
-      ) {
-        return item.path;
-      }
-    }
-    return null;
-  };
-
-  // Handle window resize to close mobile menu
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        setIsMenuOpen(false);
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
 
   // Handle scroll to change navbar background and text contrast
   const [isDarkBackground, setIsDarkBackground] = useState(true);
@@ -184,11 +151,9 @@ const Navbar: React.FC = () => {
     // Update on mount, scroll, and window resize
     updateNavbarHeight();
     window.addEventListener('scroll', updateNavbarHeight);
-    window.addEventListener('resize', updateNavbarHeight);
 
     return () => {
       window.removeEventListener('scroll', updateNavbarHeight);
-      window.removeEventListener('resize', updateNavbarHeight);
     };
   }, [isScrolled]); // Re-run when scroll state changes
 
@@ -210,59 +175,7 @@ const Navbar: React.FC = () => {
     };
   }, []);
 
-  // Close mobile menu when clicking outside or scrolling
-  useEffect(() => {
-    const handleClickOutsideMobileMenu = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      // If the menu is open and the click is outside the menu and not on the toggle button
-      if (
-        isMenuOpen &&
-        !target.closest('.mobile-menu-container') &&
-        !target.closest('.mobile-menu-toggle')
-      ) {
-        setIsMenuOpen(false);
-      }
-    };
-
-    // Close menu when scrolling
-    const handleScroll = () => {
-      if (isMenuOpen) {
-        setIsMenuOpen(false);
-      }
-    };
-
-    document.addEventListener('click', handleClickOutsideMobileMenu);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-
-    return () => {
-      document.removeEventListener('click', handleClickOutsideMobileMenu);
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [isMenuOpen]);
-
-  // Initial mount tracking and set active dropdown
-  useEffect(() => {
-    // Just mark initial mount as complete after a short delay
-    const timer = setTimeout(() => {
-      isInitialMount.current = false;
-    }, 100);
-
-    // Set active dropdown based on current path
-    const activeParent = findActiveDropdownParent();
-    if (activeParent) {
-      setOpenDropdown(activeParent);
-    }
-
-    // Close all dropdowns and menus on route change for better UX
-    setOpenDropdown(null);
-    setIsLangMenuOpen(false);
-    setIsMenuOpen(false);
-
-    return () => clearTimeout(timer);
-  }, [location.pathname]);
-
   // Toggle functions
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleLangMenu = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsLangMenuOpen(!isLangMenuOpen);
@@ -304,15 +217,13 @@ const Navbar: React.FC = () => {
     };
   }, [isMenuOpen]);
 
-  // Handler for touch start
+  // Swipe gesture handlers
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    // Only trigger if the touch is on the overlay, not on a menu item
     if (e.target === e.currentTarget) {
       touchStartY.current = e.touches[0].clientY;
       touchStartX.current = e.touches[0].clientX;
     }
   };
-  // Handler for touch end
   const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
     if (
       e.target === e.currentTarget &&
@@ -323,7 +234,6 @@ const Navbar: React.FC = () => {
       const endX = e.changedTouches[0].clientX;
       const deltaY = touchStartY.current - endY;
       const deltaX = Math.abs(touchStartX.current - endX);
-      // If swipe up (vertical, not horizontal, and enough distance)
       if (deltaY > 60 && deltaX < 40) {
         setIsMenuOpen(false);
       }
@@ -510,12 +420,11 @@ const Navbar: React.FC = () => {
             <div className="absolute inset-0 bg-gradient-to-r from-[#58C0BE] to-[#4BAFAD] group-hover:scale-105 transition-transform duration-300"></div>
           </Link>
         </div>
-
-        {/* Mobile Menu Button with improved animation */}
+        {/* --- Mobile Menu Button --- */}
         <button
-          onClick={toggleMenu}
+          onClick={() => setIsMenuOpen(true)}
           className="md:hidden text-white hover:text-secondary transition-colors p-2 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 mobile-menu-toggle"
-          aria-label="Toggle menu"
+          aria-label="Open menu"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -528,60 +437,166 @@ const Navbar: React.FC = () => {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d={isMenuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
+              d="M4 6h16M4 12h16M4 18h16"
             />
           </svg>
         </button>
-
-        {/* Mobile Menu Panel - always fixed, outside .container */}
-        <div
-          className={`fixed inset-0 z-[10000] bg-[rgba(12,29,44,0.98)] backdrop-blur-2xl md:hidden overflow-y-auto transition-all duration-300 flex flex-col ${
-            isMenuOpen
-              ? 'opacity-100 pointer-events-auto scale-100'
-              : 'opacity-0 pointer-events-none scale-95'
-          }`}
-          role="dialog"
-          aria-modal="true"
-          style={{ WebkitBackdropFilter: 'blur(24px)', backdropFilter: 'blur(24px)' }}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
+      </div>
+      {/* --- Mobile Menu Panel --- */}
+      <div
+        className={`fixed inset-0 z-[10000] bg-[rgba(12,29,44,0.98)] backdrop-blur-2xl md:hidden overflow-y-auto transition-all duration-300 flex flex-col ${
+          isMenuOpen
+            ? 'opacity-100 pointer-events-auto scale-100'
+            : 'opacity-0 pointer-events-none scale-95'
+        }`}
+        role="dialog"
+        aria-modal="true"
+        style={{ WebkitBackdropFilter: 'blur(24px)', backdropFilter: 'blur(24px)' }}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
+        {/* Logo at the top, centered */}
+        <div className="flex justify-center items-center pt-7 pb-3">
+          <OptimizedImage
+            src="/logo.svg"
+            alt="Vonoy"
+            className="h-10 w-auto"
+            width={120}
+            height={40}
+            priority={true}
+            loading="eager"
+          />
+        </div>
+        {/* Close button */}
+        <button
+          className="absolute top-4 right-4 z-[10001] p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
+          onClick={() => setIsMenuOpen(false)}
+          aria-label="Close menu"
         >
-          {/* Logo at the top, centered */}
-          <div className="flex justify-center items-center pt-7 pb-3">
-            <OptimizedImage
-              src="/logo.svg"
-              alt="Vonoy"
-              className="h-10 w-auto"
-              width={120}
-              height={40}
-              priority={true}
-              loading="eager"
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
             />
+          </svg>
+        </button>
+        {/* Mobile menu content with dynamic accordions */}
+        <nav
+          className="mobile-menu-container flex flex-col mt-20 px-4 gap-2"
+          aria-label="Mobile Navigation"
+        >
+          {navigationItems.map((item, idx) => (
+            <div key={item.path} className="w-full">
+              {item.dropdown ? (
+                <>
+                  <button
+                    className={`mobileMenuItem flex items-center justify-between w-full text-left py-3 px-4 rounded-lg text-white text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-secondary min-h-[44px] transition-all duration-300 ${openMobileMenuIndex === idx ? 'bg-white/5' : ''}`}
+                    aria-expanded={openMobileMenuIndex === idx}
+                    aria-controls={`mobile-submenu-${idx}`}
+                    onClick={() => setOpenMobileMenuIndex(openMobileMenuIndex === idx ? null : idx)}
+                    style={{ fontSize: '1rem' }}
+                  >
+                    <span>{item.name}</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className={`h-5 w-5 ml-2 transition-transform duration-300 ${openMobileMenuIndex === idx ? 'rotate-180' : ''}`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+                  <div
+                    id={`mobile-submenu-${idx}`}
+                    className={`mobileSubmenu overflow-hidden transition-all duration-400 ease-in-out ${openMobileMenuIndex === idx ? 'max-h-96 opacity-100 scale-100' : 'max-h-0 opacity-0 scale-95'}`}
+                    aria-hidden={openMobileMenuIndex !== idx}
+                  >
+                    {item.items?.map((subItem) => (
+                      <Link
+                        key={subItem.path}
+                        to={subItem.path}
+                        className="mobileSubmenuItem block py-3 pl-8 pr-4 text-base text-white rounded-lg hover:bg-white/10 min-h-[44px] transition-all duration-300"
+                        style={{ fontSize: '1rem' }}
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {subItem.name}
+                      </Link>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <Link
+                  to={item.path}
+                  className="mobileMenuItem block py-3 px-4 text-lg text-white rounded-lg hover:bg-white/10 font-semibold min-h-[44px] transition-all duration-300"
+                  style={{ fontSize: '1rem' }}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              )}
+            </div>
+          ))}
+        </nav>
+        {/* Social & Contact section at the bottom */}
+        <div className="mt-10 mb-6 flex flex-col items-center gap-4">
+          <div className="flex gap-6 justify-center">
+            <a
+              href="https://www.youtube.com/@Vonoyplatform"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="YouTube"
+              className="bg-white/10 hover:bg-[#3dd598] text-white hover:text-[#0d1b2a] p-3 rounded-full transition-colors duration-200"
+            >
+              {/* YouTube SVG */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-6 h-6"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M23.498 6.186a2.994 2.994 0 0 0-2.107-2.117C19.379 3.5 12 3.5 12 3.5s-7.379 0-9.391.569A2.994 2.994 0 0 0 .502 6.186C0 8.2 0 12 0 12s0 3.8.502 5.814a2.994 2.994 0 0 0 2.107 2.117C4.621 20.5 12 20.5 12 20.5s7.379 0 9.391-.569a2.994 2.994 0 0 0 2.107-2.117C24 15.8 24 12 24 12s0-3.8-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+              </svg>
+            </a>
+            <a
+              href="https://www.linkedin.com/company/vonoy/about/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+              className="bg-white/10 hover:bg-[#3dd598] text-white hover:text-[#0d1b2a] p-3 rounded-full transition-colors duration-200"
+            >
+              {/* LinkedIn SVG */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-6 h-6"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+              </svg>
+            </a>
           </div>
-          {/* Animated gradient line at the top with breathing glow and moving gradient */}
-          <div className="relative w-full h-2">
-            <div
-              className="absolute top-0 left-0 w-full h-full animate-gradient-x"
-              style={{
-                background: 'linear-gradient(90deg, #3dd598, #00a79d, #34c087, #b2fce4, #3dd598)',
-                backgroundSize: '300% 100%',
-                animation: 'gradient-x 4s linear infinite',
-                filter: 'drop-shadow(0 0 16px #3dd59888) drop-shadow(0 0 32px #00a79d44)',
-                borderTopLeftRadius: '0.5rem',
-                borderTopRightRadius: '0.5rem',
-              }}
-            />
-            {/* TODO: Add CSS keyframes for breathing glow and moving gradient */}
-          </div>
-          {/* Close button */}
-          <button
-            className="absolute top-4 right-4 z-[10001] p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
-            onClick={() => setIsMenuOpen(false)}
-            aria-label="Close menu"
+          <a
+            href="mailto:support@vonoy.co"
+            className="flex items-center gap-2 text-white bg-white/10 hover:bg-[#3dd598] hover:text-[#0d1b2a] px-4 py-2 rounded-lg font-medium transition-colors duration-200"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 text-white"
+              className="w-5 h-5"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -590,150 +605,24 @@ const Navbar: React.FC = () => {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
+                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
               />
             </svg>
-          </button>
-          {/* Mobile menu content with dynamic accordions */}
-          <nav
-            className="mobile-menu-container flex flex-col mt-20 px-4 gap-2"
-            aria-label="Mobile Navigation"
+            support@vonoy.co
+          </a>
+        </div>
+        {/* Visual hint for swipe up to close */}
+        <div className="flex flex-col items-center mt-8 mb-4 opacity-60 select-none pointer-events-none">
+          <svg
+            className="w-6 h-6 mb-1"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
           >
-            {navigationItems.map((item, idx) => (
-              <div key={item.path} className="w-full">
-                {item.dropdown ? (
-                  <>
-                    <button
-                      className={`mobileMenuItem flex items-center justify-between w-full text-left py-3 px-4 rounded-lg text-white text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-secondary min-h-[44px] transition-all duration-300 ${openMobileMenuIndex === idx ? 'bg-white/5' : ''}`}
-                      aria-expanded={openMobileMenuIndex === idx}
-                      aria-controls={`mobile-submenu-${idx}`}
-                      onClick={() =>
-                        setOpenMobileMenuIndex(openMobileMenuIndex === idx ? null : idx)
-                      }
-                      style={{ fontSize: '1rem' }}
-                    >
-                      <span>{item.name}</span>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className={`h-5 w-5 ml-2 transition-transform duration-300 ${openMobileMenuIndex === idx ? 'rotate-180' : ''}`}
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        aria-hidden="true"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 9l-7 7-7-7"
-                        />
-                      </svg>
-                    </button>
-                    <div
-                      id={`mobile-submenu-${idx}`}
-                      className={`mobileSubmenu overflow-hidden transition-all duration-400 ease-in-out ${openMobileMenuIndex === idx ? 'max-h-96 opacity-100 scale-100' : 'max-h-0 opacity-0 scale-95'}`}
-                      aria-hidden={openMobileMenuIndex !== idx}
-                      // TODO: Ensure .mobileSubmenu has transition for max-height, opacity, and scale in CSS
-                    >
-                      {item.items?.map((subItem) => (
-                        <Link
-                          key={subItem.path}
-                          to={subItem.path}
-                          className="mobileSubmenuItem block py-3 pl-8 pr-4 text-base text-white rounded-lg hover:bg-white/10 min-h-[44px] transition-all duration-300"
-                          style={{ fontSize: '1rem' }}
-                          onClick={() => setIsMenuOpen(false)}
-                        >
-                          {subItem.name}
-                        </Link>
-                      ))}
-                    </div>
-                  </>
-                ) : (
-                  <Link
-                    to={item.path}
-                    className="mobileMenuItem block py-3 px-4 text-lg text-white rounded-lg hover:bg-white/10 font-semibold min-h-[44px] transition-all duration-300"
-                    style={{ fontSize: '1rem' }}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {item.name}
-                  </Link>
-                )}
-              </div>
-            ))}
-          </nav>
-          {/* Social & Contact section at the bottom */}
-          <div className="mt-10 mb-6 flex flex-col items-center gap-4">
-            <div className="flex gap-6 justify-center">
-              <a
-                href="https://www.youtube.com/@Vonoyplatform"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="YouTube"
-                className="bg-white/10 hover:bg-[#3dd598] text-white hover:text-[#0d1b2a] p-3 rounded-full transition-colors duration-200"
-              >
-                {/* YouTube SVG */}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-6 h-6"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M23.498 6.186a2.994 2.994 0 0 0-2.107-2.117C19.379 3.5 12 3.5 12 3.5s-7.379 0-9.391.569A2.994 2.994 0 0 0 .502 6.186C0 8.2 0 12 0 12s0 3.8.502 5.814a2.994 2.994 0 0 0 2.107 2.117C4.621 20.5 12 20.5 12 20.5s7.379 0 9.391-.569a2.994 2.994 0 0 0 2.107-2.117C24 15.8 24 12 24 12s0-3.8-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-                </svg>
-              </a>
-              <a
-                href="https://www.linkedin.com/company/vonoy/about/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn"
-                className="bg-white/10 hover:bg-[#3dd598] text-white hover:text-[#0d1b2a] p-3 rounded-full transition-colors duration-200"
-              >
-                {/* LinkedIn SVG */}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-6 h-6"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                </svg>
-              </a>
-            </div>
-            <a
-              href="mailto:support@vonoy.co"
-              className="flex items-center gap-2 text-white bg-white/10 hover:bg-[#3dd598] hover:text-[#0d1b2a] px-4 py-2 rounded-lg font-medium transition-colors duration-200"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-5 h-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                />
-              </svg>
-              support@vonoy.co
-            </a>
-          </div>
-          {/* Visual hint for swipe up to close */}
-          <div className="flex flex-col items-center mt-8 mb-4 opacity-60 select-none pointer-events-none">
-            <svg
-              className="w-6 h-6 mb-1"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 19V5m0 0l-7 7m7-7l7 7" />
-            </svg>
-            <span className="text-xs text-white">Swipe up to close</span>
-          </div>
-          {/* TODO: For more robust swipe detection, consider using a gesture library like use-gesture or Hammer.js */}
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 19V5m0 0l-7 7m7-7l7 7" />
+          </svg>
+          <span className="text-xs text-white">Swipe up to close</span>
         </div>
       </div>
     </nav>
