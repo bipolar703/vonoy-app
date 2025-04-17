@@ -1,7 +1,14 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
+    screens: {
+      sm: '320px', // Mobile
+      md: '481px', // Small tablets and larger mobile
+      lg: '769px', // Tablets and small laptops
+      xl: '1025px', // Large desktops
+      '2xl': '1440px', // Extra-large screens
+    },
     extend: {
       colors: {
         // Primary colors

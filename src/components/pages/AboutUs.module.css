@@ -12,17 +12,13 @@
 }
 
 .heroSection::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: linear-gradient(
-    to right,
-    rgba(6, 4, 31, 0.95),
-    rgba(6, 4, 31, 0.85)
-  );
+  background-image: linear-gradient(to right, rgba(6, 4, 31, 0.95), rgba(6, 4, 31, 0.85));
   z-index: 1;
 }
 
@@ -111,8 +107,14 @@
 }
 
 @keyframes drawLineOnce {
-  0% { stroke-dashoffset: 1000; opacity: 0; }
-  100% { stroke-dashoffset: 0; opacity: 0.2; }
+  0% {
+    stroke-dashoffset: 1000;
+    opacity: 0;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0.2;
+  }
 }
 
 .heroContent {
@@ -144,7 +146,7 @@
 }
 
 .pageTitle::after {
-  content: "";
+  content: '';
   position: absolute;
   bottom: -0.5rem;
   left: 0;
@@ -198,7 +200,7 @@
 }
 
 .contentTitle::after {
-  content: "";
+  content: '';
   position: absolute;
   bottom: -0.75rem;
   left: 0;
@@ -299,7 +301,7 @@
 .missionBox::before,
 .visionBox::before,
 .valuesBox::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
@@ -312,7 +314,7 @@
 .missionBox::after,
 .visionBox::after,
 .valuesBox::after {
-  content: "";
+  content: '';
   position: absolute;
   bottom: 0;
   right: 0;
@@ -354,14 +356,18 @@
 }
 
 .iconContainer::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   border-radius: 1rem;
   padding: 2px;
   background: linear-gradient(135deg, rgba(61, 213, 152, 0.5), rgba(10, 109, 194, 0.5));
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   opacity: 0;
@@ -404,7 +410,7 @@
 }
 
 .sectionTitle::after {
-  content: "";
+  content: '';
   position: absolute;
   left: 0;
   bottom: -0.5rem;
@@ -436,7 +442,7 @@
 }
 
 .ctaSection::before {
-  content: "";
+  content: '';
   position: absolute;
   top: -50%;
   left: -50%;
@@ -487,7 +493,7 @@
 }
 
 .ctaButton::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
@@ -520,7 +526,8 @@
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0) scale(1);
   }
   50% {

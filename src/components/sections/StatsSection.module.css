@@ -206,18 +206,17 @@
 }
 
 /* Icon styles */
-.statIcon {
-  width: 2rem; /* --icon-size: Size of the SVG icon */
-  height: 2rem;
-  stroke: #3dd598; /* --icon-color: Icon color */
-  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  filter: drop-shadow(0 0 2px rgba(61, 213, 152, 0.1)); /* --icon-filter: Icon glow effect */
+.statIcon,
+.statIconMobile {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
-/* Icon hover effect */
-.statCardWrapper:hover .statIcon {
-  transform: scale(1.1); /* --icon-hover-scale: Icon size increase on hover */
-  filter: drop-shadow(0 0 5px rgba(61, 213, 152, 0.5)); /* --icon-hover-filter: Hover glow effect */
+@media (min-width: 1024px) {
+  .statIcon {
+    width: 2rem;
+    height: 2rem;
+  }
 }
 
 /* ======================================
@@ -514,10 +513,12 @@
   /* Mobile card wrapper styles */
   .statCardWrapper,
   .statCardWrapperMobile {
-    padding: 0.25rem; /* --mobile-card-wrapper-padding: Padding around card on mobile */
-    min-width: 100%; /* --mobile-card-min-width: Full width on mobile */
-    margin-bottom: 2.5rem; /* --mobile-card-bottom-margin: Bottom margin between cards */
-    max-width: 100%; /* --mobile-card-max-width: Maximum width on mobile */
+    padding: 0.25rem;
+    min-width: 100%;
+    margin-bottom: 2.5rem;
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   /* Mobile card styles */
@@ -532,23 +533,20 @@
   /* Mobile icon container styles */
   .iconContainer,
   .iconContainerMobile {
-    width: 4rem; /* --mobile-icon-size: Icon container size on mobile */
-    height: 4rem;
-    top: 0;
-    transform: translateY(-50%); /* --mobile-icon-position-y: Vertical position on mobile */
+    width: 3rem;
+    height: 3rem;
   }
 
   /* Mobile stat value styles */
   .statValue,
   .statValueMobile {
-    font-size: 2.5rem; /* --mobile-value-font-size: Value size on mobile */
-    margin: 0.25rem 0; /* --mobile-value-margin: Margin around value on mobile */
+    font-size: 2rem;
   }
 
   /* Mobile stat label styles */
   .statLabel,
   .statLabelMobile {
-    font-size: 1.1rem; /* --mobile-label-font-size: Label size on mobile */
+    font-size: 1rem;
   }
 
   /* Mobile image container styles */

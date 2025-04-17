@@ -5,11 +5,13 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at 10% 20%, rgba(42, 157, 143, 0.05) 0%, transparent 40%),
-              radial-gradient(circle at 80% 70%, rgba(10, 147, 150, 0.08) 0%, transparent 50%);
+  background:
+    radial-gradient(circle at 10% 20%, rgba(42, 157, 143, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(10, 147, 150, 0.08) 0%, transparent 50%);
   animation: pulseGradient 15s ease-in-out infinite alternate;
   z-index: 0;
-  filter: blur(2px) brightness(1.05);
+  /* Removed blur for clarity and performance */
+  /* filter: blur(2px) brightness(1.05); */
   opacity: 0.95;
 }
 
@@ -39,11 +41,221 @@
   /* If you have a custom particles effect, keep it here */
 }
 
+/* --- FORM POLISH --- */
+.formSection {
+  background: rgba(20, 30, 40, 0.85);
+  border-radius: 1.25rem;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.18);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  padding: 2rem 1rem;
+  color: #fff;
+  position: relative;
+  overflow: visible;
+  margin-bottom: 2rem;
+}
+@media (min-width: 481px) {
+  .formSection {
+    padding: 2.5rem 2rem;
+  }
+}
+@media (min-width: 1025px) {
+  .formSection {
+    padding: 2.5rem 2.5rem;
+    margin-bottom: 0;
+  }
+}
+
+.form {
+  width: 100%;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  background: #1f2937;
+  border: 1.5px solid #374151;
+  border-radius: 0.5rem;
+  padding: 0.75em 0.75em;
+  color: #fff;
+  font-size: 1rem;
+  transition:
+    border 0.2s,
+    box-shadow 0.2s;
+  outline: none;
+  margin-bottom: 0;
+  min-height: 44px;
+}
+.input:focus,
+.textarea:focus {
+  border-color: #3dd598;
+  box-shadow: 0 0 0 2px #3dd59833;
+}
+@media (min-width: 1025px) {
+  .input,
+  .textarea {
+    font-size: 1.125rem;
+    padding: 1em 1em;
+  }
+}
+
+.select {
+  width: 100%;
+  background: #fff;
+  color: #102a43;
+  border: 1.5px solid #374151;
+  border-radius: 0.5rem;
+  padding: 0.75em 0.75em;
+  font-size: 1rem;
+  transition:
+    border 0.2s,
+    box-shadow 0.2s;
+  outline: none;
+  margin-bottom: 0;
+  min-height: 44px;
+}
+.select:focus {
+  border-color: #3dd598;
+  box-shadow: 0 0 0 2px #3dd59833;
+}
+@media (min-width: 1025px) {
+  .select {
+    font-size: 1.125rem;
+    padding: 1em 1em;
+  }
+}
+
+.label {
+  position: absolute;
+  left: 0.9rem;
+  top: 0.95rem;
+  color: #cbd5e1;
+  font-size: 1rem;
+  pointer-events: none;
+  background: transparent;
+  padding: 0 0.15rem;
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 2;
+}
+.labelFloat {
+  top: -1.1rem;
+  left: 0.7rem;
+  font-size: 0.82rem;
+  color: #3dd598;
+  background: rgba(20, 30, 40, 0.85);
+  padding: 0 0.25rem;
+}
+
+.errorMsg {
+  color: #ff6b6b;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  display: block;
+  font-weight: 500;
+}
+
+.successMsg {
+  margin-top: 1.2rem;
+  color: #3dd598;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+  animation: fadeInSuccess 0.7s;
+}
+@keyframes fadeInSuccess {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.submitBtn {
+  background: linear-gradient(90deg, #3dd598 0%, #58c0be 100%);
+  color: #fff;
+  font-weight: 700;
+  padding: 0.85rem 2.2rem;
+  border-radius: 0.5rem;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 16px 0 rgba(61, 213, 152, 0.13);
+  border: none;
+  outline: none;
+  transition:
+    background 0.2s,
+    opacity 0.2s,
+    box-shadow 0.2s;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+.submitBtn:hover:not(:disabled) {
+  opacity: 0.92;
+  box-shadow: 0 6px 24px 0 rgba(61, 213, 152, 0.18);
+}
+.btnDisabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+/* Phone input custom styles */
+.phoneInputContainer {
+  width: 100% !important;
+}
+.phoneInputContainer .form-control {
+  background: #1f2937 !important;
+  color: #fff !important;
+  border: 1.5px solid #374151 !important;
+  border-radius: 0.5rem !important;
+  height: 48px !important;
+  font-size: 1rem !important;
+  padding-left: 48px !important;
+}
+.phoneInputContainer .form-control:focus {
+  border-color: #3dd598 !important;
+  box-shadow: 0 0 0 2px #3dd59833 !important;
+}
+.phoneInputContainer .flag-dropdown {
+  background: #fff !important;
+  border-radius: 0.5rem 0 0 0.5rem !important;
+  border: 1.5px solid #e5e7eb !important;
+  height: 48px !important;
+}
+.phoneInputContainer .country-list {
+  background: #fff !important;
+  color: #1e293b !important;
+  border-radius: 0.5rem !important;
+  font-size: 1rem !important;
+}
+.phoneInputContainer .search-box {
+  color: #0a1a24 !important;
+  background: #fff !important;
+}
+
 .glassReflection {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 1;
+  border-radius: 1.25rem;
+}
+
+.frutigerButton {
+  min-height: 44px;
+  font-size: 1rem;
+  padding: 0;
+}
+@media (min-width: 1025px) {
+  .frutigerButton {
+    font-size: 1.125rem;
+  }
 }

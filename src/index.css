@@ -4,6 +4,7 @@
 @import './styles/reset.css';
 @import './styles/design-tokens.css';
 @import './styles/utilities.css';
+@import './styles/layout.css';
 
 /* Font Face Declarations */
 @font-face {
@@ -153,7 +154,8 @@ body {
 }
 
 @keyframes dotPulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(0.8);
     opacity: 0.5;
   }
@@ -315,7 +317,8 @@ body {
 }
 
 @keyframes pulse-subtle {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.8;
     box-shadow: 0 0 6px 1px rgba(255, 255, 255, 0.3);
   }
@@ -386,5 +389,19 @@ body {
     height: calc(100vh - var(--navbar-height));
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
+  }
+}
+
+:root {
+  --navbar-height: 6.5rem;
+  --footer-height: 5.5rem;
+}
+
+@keyframes gradient-x {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
   }
 }

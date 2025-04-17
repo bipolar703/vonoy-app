@@ -82,13 +82,24 @@
 }
 
 .sectionTitle {
-  font-size: 3rem;
+  font-size: 2.75rem;
   font-weight: 800;
-  line-height: 1.2;
+  line-height: 1.15;
   color: rgb(32 60 91);
   position: relative;
   display: inline-block;
   margin-bottom: 1.5rem;
+}
+
+@media (max-width: 1023px) {
+  .sectionTitle {
+    font-size: 2.25rem;
+  }
+}
+@media (max-width: 639px) {
+  .sectionTitle {
+    font-size: 1.75rem;
+  }
 }
 
 /* .sectionTitle::after {
@@ -114,30 +125,22 @@
 
 .featuresGrid {
   display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: 2rem; /* Increased gap to ensure cards aren't connected */
-  grid-auto-rows: auto; /* Auto height rows for independent sizing */
-  align-items: start; /* Align items to the start for independent heights */
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  align-items: start;
   position: relative;
   z-index: 2;
-  margin: 0 auto; /* Center the grid */
-  max-width: 1200px; /* Control the maximum width */
+  margin: 0 auto;
+  max-width: 1200px;
 }
-
 @media (min-width: 640px) {
   .featuresGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
-
 @media (min-width: 1024px) {
   .featuresGrid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Changed to 2 columns for better spacing */
-    gap: 2rem;
-    align-items: start;
-    max-width: 1200px;
-    margin: 0 auto;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -158,8 +161,6 @@
 
 .featureCard {
   margin-bottom: 0;
-  height: 100%;
-  min-height: 100%;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -209,10 +210,6 @@
 
   .featureCard {
     margin-bottom: 0.5rem;
-  }
-
-  .sectionTitle {
-    font-size: 2.25rem;
   }
 }
 

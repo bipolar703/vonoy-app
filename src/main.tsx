@@ -180,11 +180,3 @@ if (process.env.NODE_ENV === 'production') {
 if (import.meta.hot) {
   import.meta.hot.accept();
 }
-
-// 0. Add a comment about server config for SPA routing
-// NOTE: For production, ensure your server is configured to serve index.html for all unknown routes (see https://stackoverflow.com/questions/42972073/react-app-returning-500-internal-server-error and https://serverfault.com/questions/1054257/nginx-500-interal-server-error-with-react-app-1-rewrite-or-internal-redirectio)
-
-// 1. Use a single error boundary (ErrorBoundary) with ErrorFallback
-// 2. Remove any duplicate/unnecessary error boundaries from entry
-// 3. Ensure all routes are handled by RouterProvider with Suspense fallback
-// 4. Remove any unnecessary or duplicate imports

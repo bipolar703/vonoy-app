@@ -75,6 +75,11 @@ const Navbar: React.FC = () => {
   const [isLangLoading, setIsLangLoading] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const isInitialMount = React.useRef(true);
+  // Add state for open mobile menu index
+  const [openMobileMenuIndex, setOpenMobileMenuIndex] = useState<number | null>(null);
+  // Add swipe gesture state
+  const touchStartY = React.useRef<number | null>(null);
+  const touchStartX = React.useRef<number | null>(null);
 
   // Check if the current path matches the link
   const isActive = (path: string) => {
@@ -287,6 +292,46 @@ const Navbar: React.FC = () => {
     }, 1000);
   };
 
+  // Body scroll lock for mobile menu
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMenuOpen]);
+
+  // Handler for touch start
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    // Only trigger if the touch is on the overlay, not on a menu item
+    if (e.target === e.currentTarget) {
+      touchStartY.current = e.touches[0].clientY;
+      touchStartX.current = e.touches[0].clientX;
+    }
+  };
+  // Handler for touch end
+  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (
+      e.target === e.currentTarget &&
+      touchStartY.current !== null &&
+      touchStartX.current !== null
+    ) {
+      const endY = e.changedTouches[0].clientY;
+      const endX = e.changedTouches[0].clientX;
+      const deltaY = touchStartY.current - endY;
+      const deltaX = Math.abs(touchStartX.current - endX);
+      // If swipe up (vertical, not horizontal, and enough distance)
+      if (deltaY > 60 && deltaX < 40) {
+        setIsMenuOpen(false);
+      }
+      touchStartY.current = null;
+      touchStartX.current = null;
+    }
+  };
+
   return (
     <nav
       className={`fixed w-full z-50 transition-all duration-300 font-satoshi ${
@@ -488,41 +533,93 @@ const Navbar: React.FC = () => {
           </svg>
         </button>
 
-        {/* Mobile Menu with enhanced styling and animations */}
+        {/* Mobile Menu Panel - always fixed, outside .container */}
         <div
-          className={`absolute top-full left-0 right-0 bg-primary backdrop-blur-xl md:hidden max-h-[80vh] overflow-y-auto shadow-xl mobile-menu-container fixed-when-visible z-40 transition-all duration-300 ${isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}
+          className={`fixed inset-0 z-[10000] bg-[rgba(12,29,44,0.98)] backdrop-blur-2xl md:hidden overflow-y-auto transition-all duration-300 flex flex-col ${
+            isMenuOpen
+              ? 'opacity-100 pointer-events-auto scale-100'
+              : 'opacity-0 pointer-events-none scale-95'
+          }`}
+          role="dialog"
+          aria-modal="true"
+          style={{ WebkitBackdropFilter: 'blur(24px)', backdropFilter: 'blur(24px)' }}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
         >
-          <div className="mobile-menu-gradient-line" />
-          <div className="container mx-auto px-4 py-6 space-y-5">
-            {navigationItems.map((item) => (
-              <div key={item.path} className="relative">
+          {/* Logo at the top, centered */}
+          <div className="flex justify-center items-center pt-7 pb-3">
+            <OptimizedImage
+              src="/logo.svg"
+              alt="Vonoy"
+              className="h-10 w-auto"
+              width={120}
+              height={40}
+              priority={true}
+              loading="eager"
+            />
+          </div>
+          {/* Animated gradient line at the top with breathing glow and moving gradient */}
+          <div className="relative w-full h-2">
+            <div
+              className="absolute top-0 left-0 w-full h-full animate-gradient-x"
+              style={{
+                background: 'linear-gradient(90deg, #3dd598, #00a79d, #34c087, #b2fce4, #3dd598)',
+                backgroundSize: '300% 100%',
+                animation: 'gradient-x 4s linear infinite',
+                filter: 'drop-shadow(0 0 16px #3dd59888) drop-shadow(0 0 32px #00a79d44)',
+                borderTopLeftRadius: '0.5rem',
+                borderTopRightRadius: '0.5rem',
+              }}
+            />
+            {/* TODO: Add CSS keyframes for breathing glow and moving gradient */}
+          </div>
+          {/* Close button */}
+          <button
+            className="absolute top-4 right-4 z-[10001] p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
+            onClick={() => setIsMenuOpen(false)}
+            aria-label="Close menu"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6 text-white"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+          {/* Mobile menu content with dynamic accordions */}
+          <nav
+            className="mobile-menu-container flex flex-col mt-20 px-4 gap-2"
+            aria-label="Mobile Navigation"
+          >
+            {navigationItems.map((item, idx) => (
+              <div key={item.path} className="w-full">
                 {item.dropdown ? (
                   <>
-                    <div
-                      onClick={(e) => toggleDropdown(item.path, e)}
-                      className={`flex items-center justify-between w-full cursor-pointer py-3 px-4 rounded-lg dropdown-toggle ${
-                        isActive(item.path) || isInDropdown(item.items)
-                          ? 'text-secondary font-medium bg-white/10'
-                          : 'text-white hover:bg-white/10 bg-white/5'
-                      } transition-colors mobile-menu-toggle-dropdown`}
-                      role="button"
-                      aria-expanded={openDropdown === item.path}
-                      tabIndex={0}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          toggleDropdown(item.path, e as unknown as React.MouseEvent);
-                        }
-                      }}
+                    <button
+                      className={`mobileMenuItem flex items-center justify-between w-full text-left py-3 px-4 rounded-lg text-white text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-secondary min-h-[44px] transition-all duration-300 ${openMobileMenuIndex === idx ? 'bg-white/5' : ''}`}
+                      aria-expanded={openMobileMenuIndex === idx}
+                      aria-controls={`mobile-submenu-${idx}`}
+                      onClick={() =>
+                        setOpenMobileMenuIndex(openMobileMenuIndex === idx ? null : idx)
+                      }
+                      style={{ fontSize: '1rem' }}
                     >
                       <span>{item.name}</span>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className={`h-5 w-5 transition-transform ${
-                          openDropdown === item.path ? 'transform rotate-180' : ''
-                        }`}
+                        className={`h-5 w-5 ml-2 transition-transform duration-300 ${openMobileMenuIndex === idx ? 'rotate-180' : ''}`}
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
+                        aria-hidden="true"
                       >
                         <path
                           strokeLinecap="round"
@@ -531,39 +628,31 @@ const Navbar: React.FC = () => {
                           d="M19 9l-7 7-7-7"
                         />
                       </svg>
+                    </button>
+                    <div
+                      id={`mobile-submenu-${idx}`}
+                      className={`mobileSubmenu overflow-hidden transition-all duration-400 ease-in-out ${openMobileMenuIndex === idx ? 'max-h-96 opacity-100 scale-100' : 'max-h-0 opacity-0 scale-95'}`}
+                      aria-hidden={openMobileMenuIndex !== idx}
+                      // TODO: Ensure .mobileSubmenu has transition for max-height, opacity, and scale in CSS
+                    >
+                      {item.items?.map((subItem) => (
+                        <Link
+                          key={subItem.path}
+                          to={subItem.path}
+                          className="mobileSubmenuItem block py-3 pl-8 pr-4 text-base text-white rounded-lg hover:bg-white/10 min-h-[44px] transition-all duration-300"
+                          style={{ fontSize: '1rem' }}
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          {subItem.name}
+                        </Link>
+                      ))}
                     </div>
-                    {/* Mobile Dropdown menu */}
-                    {openDropdown === item.path && (
-                      <div className="pl-4 mt-3 space-y-2 border-l-2 border-secondary/30 ml-2 mobile-submenu">
-                        {item.items?.map((subItem) => (
-                          <Link
-                            key={subItem.path}
-                            to={subItem.path}
-                            className={`block py-2.5 px-4 rounded-lg relative pl-6 ${
-                              location.pathname === subItem.path
-                                ? 'text-secondary font-medium bg-white/10'
-                                : 'text-white hover:bg-white/10 bg-white/5'
-                            } transition-colors mobile-menu-item`}
-                            onClick={() => {
-                              setOpenDropdown(null);
-                              setIsMenuOpen(false);
-                            }}
-                          >
-                            {/* Removed active-indicator dot in mobile menu */}
-                            {subItem.name}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
                   </>
                 ) : (
                   <Link
                     to={item.path}
-                    className={`block py-3 px-4 rounded-lg ${
-                      isActive(item.path)
-                        ? 'text-secondary font-medium bg-white/10'
-                        : 'text-white hover:bg-white/10 bg-white/5'
-                    } transition-colors`}
+                    className="mobileMenuItem block py-3 px-4 text-lg text-white rounded-lg hover:bg-white/10 font-semibold min-h-[44px] transition-all duration-300"
+                    style={{ fontSize: '1rem' }}
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {item.name}
@@ -571,41 +660,80 @@ const Navbar: React.FC = () => {
                 )}
               </div>
             ))}
-
-            <div className="pt-4 border-t border-gray-700">
-              <button
-                onClick={() => switchLanguage(language === 'en' ? 'ar' : 'en')}
-                className="flex items-center text-white hover:text-secondary transition-colors py-3 px-4 rounded-lg w-full bg-primary/60 hover:bg-primary/80 backdrop-blur-sm border border-white/20 mb-4"
+          </nav>
+          {/* Social & Contact section at the bottom */}
+          <div className="mt-10 mb-6 flex flex-col items-center gap-4">
+            <div className="flex gap-6 justify-center">
+              <a
+                href="https://www.youtube.com/@Vonoyplatform"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="YouTube"
+                className="bg-white/10 hover:bg-[#3dd598] text-white hover:text-[#0d1b2a] p-3 rounded-full transition-colors duration-200"
               >
+                {/* YouTube SVG */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 mr-3"
-                  fill="none"
+                  className="w-6 h-6"
+                  fill="currentColor"
                   viewBox="0 0 24 24"
-                  stroke="currentColor"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9"
-                  />
+                  <path d="M23.498 6.186a2.994 2.994 0 0 0-2.107-2.117C19.379 3.5 12 3.5 12 3.5s-7.379 0-9.391.569A2.994 2.994 0 0 0 .502 6.186C0 8.2 0 12 0 12s0 3.8.502 5.814a2.994 2.994 0 0 0 2.107 2.117C4.621 20.5 12 20.5 12 20.5s7.379 0 9.391-.569a2.994 2.994 0 0 0 2.107-2.117C24 15.8 24 12 24 12s0-3.8-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                 </svg>
-                <span className="flex-1 text-left">
-                  {language === 'en' ? 'Switch to العربية' : 'Switch to English'}
-                </span>
-              </button>
-
-              <Link
-                to="/book-demo"
-                className="flex items-center justify-center w-full text-center bg-[#58C0BE] hover:bg-[#4BAFAD] px-6 py-3 rounded-lg font-medium transition-all duration-300 shadow-md relative overflow-hidden group"
-                onClick={() => setIsMenuOpen(false)}
+              </a>
+              <a
+                href="https://www.linkedin.com/company/vonoy/about/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                className="bg-white/10 hover:bg-[#3dd598] text-white hover:text-[#0d1b2a] p-3 rounded-full transition-colors duration-200"
               >
-                <span className="text-white relative z-10 font-medium">Book a Demo</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-[#58C0BE] to-[#4BAFAD] group-hover:scale-105 transition-transform duration-300"></div>
-              </Link>
+                {/* LinkedIn SVG */}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-6 h-6"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                </svg>
+              </a>
             </div>
+            <a
+              href="mailto:support@vonoy.co"
+              className="flex items-center gap-2 text-white bg-white/10 hover:bg-[#3dd598] hover:text-[#0d1b2a] px-4 py-2 rounded-lg font-medium transition-colors duration-200"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                />
+              </svg>
+              support@vonoy.co
+            </a>
           </div>
+          {/* Visual hint for swipe up to close */}
+          <div className="flex flex-col items-center mt-8 mb-4 opacity-60 select-none pointer-events-none">
+            <svg
+              className="w-6 h-6 mb-1"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 19V5m0 0l-7 7m7-7l7 7" />
+            </svg>
+            <span className="text-xs text-white">Swipe up to close</span>
+          </div>
+          {/* TODO: For more robust swipe detection, consider using a gesture library like use-gesture or Hammer.js */}
         </div>
       </div>
     </nav>

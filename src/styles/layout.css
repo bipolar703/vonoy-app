@@ -1,0 +1,96 @@
+/* Layout adjustments for responsive design */
+
+/* Ensure content does not overlap with navbar and footer */
+.book-demo-page {
+  padding-top: calc(var(--navbar-height) + 2rem);
+  padding-bottom: calc(var(--footer-height) + 2rem);
+  min-height: calc(100vh - var(--navbar-height) - var(--footer-height));
+  box-sizing: border-box;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.08); /* Subtle separation */
+}
+/* TODO: If you change Navbar or Footer height, update --navbar-height and --footer-height in :root and JS logic. */
+
+/* Strict margins for first and last content elements */
+.book-demo-page > *:first-child {
+  margin-top: 2rem;
+}
+
+.book-demo-page > *:last-child {
+  margin-bottom: 2rem;
+}
+
+/* Responsive padding and height adjustments */
+@media (min-width: 320px) {
+  :root {
+    --navbar-height: 4.5rem;
+    --footer-height: 3.5rem;
+  }
+}
+
+@media (min-width: 481px) {
+  :root {
+    --navbar-height: 5.5rem;
+    --footer-height: 4.5rem;
+  }
+}
+
+@media (min-width: 769px) {
+  :root {
+    --navbar-height: 6.5rem;
+    --footer-height: 5.5rem;
+  }
+}
+
+/* Form Input Field Styling with Validation */
+.form-group {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  position: absolute;
+  top: 0.75rem;
+  left: 1rem;
+  color: #999;
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.form-group input {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  width: 100%;
+}
+
+/* Hide label by default unless input is valid */
+.form-group label {
+  opacity: 0;
+}
+
+/* Show label above input when input is valid */
+.form-group input:valid + label {
+  opacity: 1;
+  top: -1.5rem;
+  color: #00a79d; /* Green color for valid input */
+}
+
+/* Style for invalid input */
+.form-group input:invalid {
+  border-color: #ff0000; /* Red border for invalid input */
+}
+
+.form-group input:invalid + label {
+  opacity: 0; /* Label remains hidden if input is invalid */
+}
+
+/* Focus state to ensure label behavior */
+.form-group input:focus + label {
+  opacity: 0; /* Keep label hidden on focus unless valid */
+}
+
+.form-group input:valid:focus + label {
+  opacity: 1;
+  top: -1.5rem;
+  color: #00a79d;
+}

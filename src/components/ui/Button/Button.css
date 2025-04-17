@@ -157,7 +157,6 @@
     transform: rotate(360deg);
   }
 }
-
 /* Button Icons */
 .btn-icon {
   display: flex;
@@ -175,7 +174,9 @@
 
 /* Focus State */
 .btn:focus-visible {
-  box-shadow: 0 0 0 2px var(--color-background), 0 0 0 4px var(--color-primary);
+  box-shadow:
+    0 0 0 2px var(--color-background),
+    0 0 0 4px var(--color-primary);
 }
 
 /* Button with Ripple Effect */
@@ -192,7 +193,9 @@
   background-position: 50%;
   transform: scale(10, 10);
   opacity: 0;
-  transition: transform 0.4s, opacity 0.8s;
+  transition:
+    transform 0.4s,
+    opacity 0.8s;
 }
 
 .btn:active::after {
@@ -207,23 +210,23 @@
     color: var(--color-primary-light);
     border-color: var(--color-primary-light);
   }
-  
+
   .btn-outline:hover:not(.btn-disabled) {
     background-color: rgba(0, 167, 157, 0.2);
   }
-  
+
   .btn-ghost {
     color: var(--color-text-primary);
   }
-  
+
   .btn-ghost:hover:not(.btn-disabled) {
     background-color: rgba(255, 255, 255, 0.1);
   }
-  
+
   .btn-ghost:active:not(.btn-disabled) {
     background-color: rgba(255, 255, 255, 0.2);
   }
-  
+
   .btn-link {
     color: var(--color-primary-light);
   }
@@ -234,16 +237,16 @@
   .btn {
     transition: none;
   }
-  
+
   .btn:hover:not(.btn-disabled),
   .btn:active:not(.btn-disabled) {
     transform: none;
   }
-  
+
   .spinner-circle {
     animation: none;
   }
-  
+
   .btn::after {
     display: none;
   }

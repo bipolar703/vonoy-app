@@ -1,13 +1,13 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import useAnimation from '../../../hooks/useAnimation';
 import './FadeIn.css';
 
 /**
  * FadeIn Component
- * 
+ *
  * A component that fades in its children when they enter the viewport.
- * 
+ *
  * @param {Object} props - Component props
  * @param {React.ReactNode} props.children - Content to fade in
  * @param {string} [props.direction='up'] - Direction to fade from (up, down, left, right, none)
@@ -33,8 +33,11 @@ const FadeIn = ({
   ...rest
 }) => {
   // Determine animation name based on direction
-  const animationName = direction === 'none' ? 'fadeIn' : `fadeIn${direction.charAt(0).toUpperCase() + direction.slice(1)}`;
-  
+  const animationName =
+    direction === 'none'
+      ? 'fadeIn'
+      : `fadeIn${direction.charAt(0).toUpperCase() + direction.slice(1)}`;
+
   // Use animation hook
   const { ref, style, isVisible } = useAnimation({
     animation: animationName,
@@ -52,18 +55,15 @@ const FadeIn = ({
     `fade-in-${direction}`,
     isVisible ? 'is-visible' : '',
     className,
-  ].filter(Boolean).join(' ');
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   // Render the component with the specified HTML element
   const Component = as;
 
   return (
-    <Component
-      ref={ref}
-      className={componentClasses}
-      style={style}
-      {...rest}
-    >
+    <Component ref={ref} className={componentClasses} style={style} {...rest}>
       {children}
     </Component>
   );

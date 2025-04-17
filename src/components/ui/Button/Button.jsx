@@ -1,12 +1,12 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import './Button.css';
 
 /**
  * Button Component
- * 
+ *
  * A versatile button component that supports different variants, sizes, and states.
- * 
+ *
  * @param {Object} props - Component props
  * @param {string} [props.variant='primary'] - Button variant (primary, secondary, outline, ghost, link)
  * @param {string} [props.size='md'] - Button size (sm, md, lg)
@@ -43,8 +43,10 @@ const Button = ({
     fullWidth ? 'btn-full-width' : '',
     disabled || loading ? 'btn-disabled' : '',
     loading ? 'btn-loading' : '',
-    className
-  ].filter(Boolean).join(' ');
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <button
@@ -59,20 +61,12 @@ const Button = ({
           <span className="spinner-circle"></span>
         </span>
       )}
-      
-      {leftIcon && !loading && (
-        <span className="btn-icon btn-icon-left">
-          {leftIcon}
-        </span>
-      )}
-      
+
+      {leftIcon && !loading && <span className="btn-icon btn-icon-left">{leftIcon}</span>}
+
       <span className="btn-text">{children}</span>
-      
-      {rightIcon && !loading && (
-        <span className="btn-icon btn-icon-right">
-          {rightIcon}
-        </span>
-      )}
+
+      {rightIcon && !loading && <span className="btn-icon btn-icon-right">{rightIcon}</span>}
     </button>
   );
 };
