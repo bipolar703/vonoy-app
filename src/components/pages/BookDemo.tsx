@@ -16,10 +16,6 @@ const BookDemo: React.FC = () => {
           className={`absolute inset-0 w-full h-full z-0 select-none pointer-events-none ${styles.gradientBackground}`}
           aria-hidden="true"
           role="presentation"
-          style={{
-            background: `radial-gradient(circle at 60% 60%, rgba(88, 164, 157, 0.10) 0%, transparent 70%), url('/book-demo-design.svg') no-repeat right -100px bottom -100px / auto 90%`,
-            opacity: 0.7,
-          }}
         ></div>
         {/* Left: Hero */}
         <div className="relative z-10 flex flex-col justify-start gap-4 w-full md:w-2/5 px-6 sm:px-8 md:px-12 pt-10 md:pt-16 min-h-[200px] md:min-h-0 md:h-auto mx-auto md:mx-0 book-demo-hero-title-container">

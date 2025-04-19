@@ -209,9 +209,11 @@ const WhyVonoySection: React.FC = () => {
             const cardId = `feature-${index}`;
             // Check if this card is in the set of expanded cards
             const isOpen = expandedCards.has(cardId);
+            // Add a unique class for grid-area assignment
+            const cardClass = `card${index + 1}`;
 
             return (
-              <div key={index} className="card-container">
+              <div key={index} className={`card-container ${cardClass}`}>
                 <ExpandableCard
                   title={feature.title}
                   description={feature.description}

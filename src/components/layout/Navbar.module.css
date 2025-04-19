@@ -19,7 +19,7 @@
 }
 
 .scrolled {
-  background-color: rgba(18, 31, 47, 0.9);
+  background-color: #111b2b;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -593,4 +593,12 @@
   color: #ffffff;
   margin-top: 0.5rem;
   height: 1.25rem;
+}
+
+@media (max-width: 767px) {
+  .mobile-menu-container.menu-open {
+    height: 100vh !important;
+    min-height: 100vh !important;
+    max-height: 100vh !important;
+  }
 }

@@ -42,6 +42,7 @@ const HomePage = lazy(() => import('./App'));
 const AboutUsPage = lazy(() => import('./components/pages/AboutUs'));
 const BookDemoPage = lazy(() => import('./components/pages/BookDemo'));
 const UnderDevelopmentPage = lazy(() => import('./components/pages/UnderDevelopment'));
+const SolutionsPage = lazy(() => import('./components/pages/Solutions'));
 
 // Get the root element
 const rootElement = document.getElementById('root');
@@ -74,7 +75,8 @@ startTransition(() => {
                   <Route path="/" element={<HomePage />} />
                   <Route path="/about" element={<AboutUsPage />} />
                   <Route path="/book-demo" element={<BookDemoPage />} />
-                  {/* Catch-all route for pages under development */}
+                  <Route path="/solutions/:type" element={<SolutionsPage />} />
+                  <Route path="/solutions" element={<SolutionsPage />} />
                   <Route path="/solutions/*" element={<UnderDevelopmentPage />} />
                   <Route path="/features/*" element={<UnderDevelopmentPage />} />
                   <Route path="/why-vonoy" element={<UnderDevelopmentPage />} />

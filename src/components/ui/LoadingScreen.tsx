@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import React, { useEffect, useState } from 'react';
 
 interface LoadingScreenProps {
   message?: string;
@@ -24,7 +24,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
   randomizeMessage = false,
   minLoadTime = 1.75,
   maxLoadTime = 4,
-  onLoadComplete
+  onLoadComplete,
 }) => {
   const [displayMessage, setDisplayMessage] = useState(message);
 
@@ -49,7 +49,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
 
   return (
     <motion.div
-      className="min-h-screen flex flex-col items-center justify-center bg-[#141f2e] backdrop-blur-md"
+      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#141f2e] backdrop-blur-md"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -61,9 +61,18 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
 
       {/* Loading dots animation */}
       <div className="loading-dots mt-4">
-        <div className="loading-dot" style={{ animation: 'dotPulse 1.5s infinite ease-in-out 0s' }}></div>
-        <div className="loading-dot" style={{ animation: 'dotPulse 1.5s infinite ease-in-out 0.2s' }}></div>
-        <div className="loading-dot" style={{ animation: 'dotPulse 1.5s infinite ease-in-out 0.4s' }}></div>
+        <div
+          className="loading-dot"
+          style={{ animation: 'dotPulse 1.5s infinite ease-in-out 0s' }}
+        ></div>
+        <div
+          className="loading-dot"
+          style={{ animation: 'dotPulse 1.5s infinite ease-in-out 0.2s' }}
+        ></div>
+        <div
+          className="loading-dot"
+          style={{ animation: 'dotPulse 1.5s infinite ease-in-out 0.4s' }}
+        ></div>
       </div>
 
       <motion.p

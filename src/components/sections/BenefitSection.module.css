@@ -113,16 +113,16 @@
 }
 
 .card-container:hover .benefitCard {
-  transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
-  border-color: rgba(61, 213, 152, 0.3);
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+  border-color: rgba(88, 164, 157, 0.4);
 }
 
 .benefitCard::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(61, 213, 152, 0.1), rgba(10, 109, 194, 0.1));
+  background: linear-gradient(135deg, rgba(88, 164, 157, 0.1), rgba(63, 124, 106, 0.1));
   opacity: 0;
   transition: opacity 0.4s ease-in-out;
 }
@@ -132,7 +132,7 @@
 }
 
 .benefitCard:hover .benefitIconContainer {
-  background-color: rgba(61, 213, 152, 0.25);
+  background-color: rgba(88, 164, 157, 0.25);
   transform: scale(1.1);
 }
 
@@ -145,7 +145,7 @@
 .benefitIconContainer {
   width: 4rem;
   height: 4rem;
-  background-color: rgba(61, 213, 152, 0.12);
+  background-color: rgba(88, 164, 157, 0.12);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -166,7 +166,7 @@
 .benefitIcon {
   width: 2rem;
   height: 2rem;
-  color: #3dd598;
+  color: #58a49d;
   position: relative;
   z-index: 2;
 }
@@ -184,8 +184,8 @@
   border-radius: 50%;
   background: radial-gradient(
     circle at center,
-    rgba(61, 213, 152, 0.4) 0%,
-    rgba(61, 213, 152, 0) 70%
+    rgba(88, 164, 157, 0.4) 0%,
+    rgba(88, 164, 157, 0) 70%
   );
   opacity: 0;
   transition: all 0.4s ease-in-out;
@@ -228,7 +228,7 @@
   content: '•';
   position: absolute;
   left: 0;
-  color: #3dd598;
+  color: #58a49d;
   font-weight: bold;
 }
 
@@ -236,9 +236,9 @@
   position: absolute;
   inset: 0;
   background-image:
-    radial-gradient(circle at 5% 5%, rgba(61, 213, 152, 0.05) 0%, rgba(61, 213, 152, 0) 30%),
-    radial-gradient(circle at 95% 95%, rgba(10, 109, 194, 0.05) 0%, rgba(10, 109, 194, 0) 30%),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(61, 213, 152, 0.03) 100%);
+    radial-gradient(circle at 5% 5%, rgba(88, 164, 157, 0.05) 0%, rgba(88, 164, 157, 0) 30%),
+    radial-gradient(circle at 95% 95%, rgba(63, 124, 106, 0.05) 0%, rgba(63, 124, 106, 0) 30%),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(88, 164, 157, 0.03) 100%);
   z-index: 1;
 }
 
@@ -260,9 +260,9 @@
 .industriesCard {
   cursor: pointer;
   color: white;
-  background: linear-gradient(135deg, #3dd598, #0a6dc2);
+  background: linear-gradient(135deg, #58a49d, #3f7c6a);
   background-size: 200% 200%;
-  animation: gradientAnimation 10s ease infinite alternate;
+  animation: gradientAnimation 15s ease infinite alternate;
   border-radius: 1rem;
   padding: 2rem;
   position: relative;
@@ -356,7 +356,7 @@
   font-size: 1rem;
   color: white;
   margin-bottom: 0.5rem;
-  padding-left: 0;
+  padding-left: 5rem;
   position: relative;
   display: flex;
   align-items: center;
