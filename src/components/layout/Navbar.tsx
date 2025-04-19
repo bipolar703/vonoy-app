@@ -38,11 +38,8 @@ const navigationItems = [
   {
     name: 'About Us',
     path: '/about',
-    dropdown: true,
-    items: [
-      { name: 'About Us', path: '/about' },
-      { name: 'Request Demo', path: '/book-demo' },
-    ],
+    dropdown: false,
+    items: [],
   },
 ];
 
@@ -67,6 +64,7 @@ const Navbar: React.FC = () => {
   const [openMobileMenuIndex, setOpenMobileMenuIndex] = useState<number | null>(null);
   const touchStartY = React.useRef<number | null>(null);
   const touchStartX = React.useRef<number | null>(null);
+  const [dropdownCloseTimeout, setDropdownCloseTimeout] = useState<NodeJS.Timeout | null>(null);
 
   // Check if the current path matches the link
   const isActive = (path: string) => {
@@ -231,6 +229,24 @@ const Navbar: React.FC = () => {
     }
   };
 
+  // Enhanced hover logic for dropdowns
+  const handleDropdownMouseEnter = (path: string) => {
+    if (dropdownCloseTimeout) {
+      clearTimeout(dropdownCloseTimeout);
+      setDropdownCloseTimeout(null);
+    }
+    setOpenDropdown(path);
+  };
+  const handleDropdownMouseLeave = () => {
+    if (dropdownCloseTimeout) {
+      clearTimeout(dropdownCloseTimeout);
+    }
+    const timeout = setTimeout(() => {
+      setOpenDropdown(null);
+    }, 120); // 120ms delay for premium feel
+    setDropdownCloseTimeout(timeout);
+  };
+
   return (
     <nav
       className={`fixed w-full z-50 transition-all duration-300 font-satoshi ${
@@ -275,8 +291,8 @@ const Navbar: React.FC = () => {
                 <>
                   <div
                     onClick={(e) => toggleDropdown(item.path, e)}
-                    onMouseEnter={() => setOpenDropdown(item.path)}
-                    onMouseLeave={() => setOpenDropdown(null)}
+                    onMouseEnter={() => handleDropdownMouseEnter(item.path)}
+                    onMouseLeave={handleDropdownMouseLeave}
                     className={`flex items-center cursor-pointer transition-colors py-2 px-3 rounded-lg dropdown-toggle ${
                       isActive(item.path) || isInDropdown(item.items)
                         ? 'text-secondary font-medium bg-white/5 backdrop-blur-sm'
@@ -308,8 +324,8 @@ const Navbar: React.FC = () => {
                     <div
                       className="absolute left-0 mt-2 w-64 bg-white/95 backdrop-blur-md shadow-xl rounded-lg opacity-100 transition-opacity duration-200 z-50 border border-gray-100 overflow-hidden"
                       style={{ transform: 'translateY(8px)' }}
-                      onMouseEnter={() => setOpenDropdown(item.path)}
-                      onMouseLeave={() => setOpenDropdown(null)}
+                      onMouseEnter={() => handleDropdownMouseEnter(item.path)}
+                      onMouseLeave={handleDropdownMouseLeave}
                     >
                       {item.items?.map((subItem) => (
                         <Link

@@ -1,5 +1,4 @@
 import React, { useRef, useState } from 'react';
-import PhoneInput from 'react-phone-input-2';
 import { validateField, validateForm } from '../../utils/formValidation';
 import { shakeElement } from '../../utils/microInteractions';
 import FloatingLabelField from '../ui/FloatingLabelField.tsx';
@@ -15,7 +14,6 @@ const BookDemoForm: React.FC = () => {
     country: '',
     fleetSize: '',
     phone: '',
-    product: '',
     message: '',
     industry: '',
     companyName: '',
@@ -25,14 +23,6 @@ const BookDemoForm: React.FC = () => {
   const [, setTouched] = useState<Record<string, boolean>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
-
-  const countryPhoneMap: Record<string, string> = {
-    ae: '971',
-    us: '1',
-    uk: '44',
-    sa: '966',
-    eg: '20',
-  };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -54,10 +44,6 @@ const BookDemoForm: React.FC = () => {
   ) => {
     const { name } = e.target;
     setTouched((prev) => ({ ...prev, [name]: true }));
-  };
-
-  const handlePhoneChange = (value: string) => {
-    setFormData((prev) => ({ ...prev, phone: value }));
   };
 
   const validateAllFields = () => {
@@ -113,7 +99,6 @@ const BookDemoForm: React.FC = () => {
           country: '',
           fleetSize: '',
           phone: '',
-          product: '',
           message: '',
           industry: '',
           companyName: '',
@@ -130,10 +115,6 @@ const BookDemoForm: React.FC = () => {
   const isSelectValid = (name: string) => {
     return formData[name] && !errors[name];
   };
-
-  // Helper for phone validation
-  const phoneError = errors.phone;
-  const phoneValid = formData.phone && !phoneError;
 
   return (
     <section
@@ -221,13 +202,13 @@ const BookDemoForm: React.FC = () => {
                 label="Email Address*"
               />
             </div>
-            <div className="md:col-span-1">
+            <div className="md:col-span-2">
               <FloatingLabelField
                 id="country"
                 name="country"
                 type="text"
                 placeholder=" "
-                className={`peer ${styles.input}`}
+                className={`peer ${styles.input} ${!!formData.country && !errors.country ? 'valid' : ''}`}
                 value={formData.country}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
@@ -235,123 +216,92 @@ const BookDemoForm: React.FC = () => {
                 aria-label="Country"
                 error={errors.country}
                 success={!!formData.country && !errors.country}
-                label="Country* (type your country)"
+                label="Country*"
               />
-            </div>
-            <div className="md:col-span-1">
-              <label
-                htmlFor="fleetSize"
-                className={`${styles.label} ${styles.labelFloat} ${errors.fleetSize ? 'text-red-500' : isSelectValid('fleetSize') ? 'text-green-500' : 'text-white'}`}
-              >
-                Fleet Size*
-              </label>
-              <select
-                id="fleetSize"
-                name="fleetSize"
-                className={`peer ${styles.select}`}
-                value={formData.fleetSize}
-                onChange={handleInputChange}
-                onBlur={handleBlur}
-                required
-                aria-label="Fleet Size"
-              >
-                <option value="" disabled hidden>
-                  Select fleet size
-                </option>
-                <option value="0-25">0-25</option>
-                <option value="25-50">25-50</option>
-                <option value="51-100">51-100</option>
-                <option value="101-250">101-250</option>
-                <option value="251+">251+</option>
-              </select>
-              {errors.fleetSize && (
-                <span className="mt-1 text-xs text-red-500 block">{errors.fleetSize}</span>
-              )}
             </div>
             <div className="md:col-span-2">
-              <label
-                htmlFor="phone"
-                className={`${styles.label} ${phoneError ? 'text-red-500' : phoneValid ? 'text-green-500' : 'text-white'}`}
-                style={{
-                  top: '-1.1rem',
-                  left: '0.7rem',
-                  fontSize: '0.82rem',
-                  background: 'rgba(20,30,40,0.85)',
-                  padding: '0 0.25rem',
-                }}
-              >
-                Mobile Number*
-              </label>
-              <PhoneInput
-                country={countryPhoneMap[formData.country] || 'ae'}
+              <FloatingLabelField
+                id="phone"
+                name="phone"
+                type="tel"
+                className={`peer ${styles.input} ${!!formData.phone && !errors.phone ? 'valid' : ''}`}
                 value={formData.phone}
-                onChange={handlePhoneChange}
-                enableSearch
-                inputStyle={{
-                  color: '#111111',
-                  background: '#ffffff',
-                  border: phoneError
-                    ? '1.5px solid #ef4444'
-                    : phoneValid
-                      ? '1.5px solid #22c55e'
-                      : '1.5px solid #e5e7eb',
-                  borderRadius: 8,
-                  width: '100%',
-                  minHeight: 48,
-                  fontSize: 16,
-                }}
-                buttonStyle={{
-                  borderRadius: 8,
-                  height: 48,
-                  background: '#fff',
-                  border: '1.5px solid #e5e7eb',
-                  minWidth: 56,
-                }}
-                dropdownStyle={{ fontSize: 16, borderRadius: 8, zIndex: 50, minWidth: 220 }}
-                disableDropdown={false}
-                placeholder="Mobile number"
-                inputProps={{
-                  name: 'phone',
-                  required: true,
-                  'aria-label': 'Mobile Number',
-                  style: { color: '#111111' },
-                }}
-                containerClass={styles.phoneInputContainer}
-                searchStyle={{ fontSize: 16, borderRadius: 8 }}
-              />
-              {phoneError && <span className="mt-1 text-xs text-red-500 block">{phoneError}</span>}
-            </div>
-            <div className="md:col-span-1">
-              <label
-                htmlFor="industry"
-                className={`${styles.label} ${styles.labelFloat} ${errors.industry ? 'text-red-500' : isSelectValid('industry') ? 'text-green-500' : 'text-white'}`}
-              >
-                Industry*
-              </label>
-              <select
-                id="industry"
-                name="industry"
-                className={`peer ${styles.select}`}
-                value={formData.industry}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
                 required
-                aria-label="Industry"
-              >
-                <option value="" disabled hidden>
-                  Select your industry
-                </option>
-                <option value="fmcg">FMCG Distribution</option>
-                <option value="lastmile">Last-Mile Delivery</option>
-                <option value="cashvan">Cash Van Delivery</option>
-                <option value="postal">Postal & Courier</option>
-                <option value="coldchain">Cold Chain & Pharma</option>
-                <option value="ev">EV Fleet Operations</option>
-                <option value="other">Other</option>
-              </select>
-              {errors.industry && (
-                <span className="mt-1 text-xs text-red-500 block">{errors.industry}</span>
+                aria-label="Phone number"
+                error={errors.phone}
+                success={!!formData.phone && !errors.phone}
+                label="Phone number*"
+                autoComplete="tel"
+              />
+              {errors.phone && (
+                <span className="mt-1 text-xs text-red-500 block">{errors.phone}</span>
               )}
+            </div>
+            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="md:col-span-1">
+                <label
+                  htmlFor="fleetSize"
+                  className={`${styles.label} ${styles.labelFloat} ${errors.fleetSize ? 'text-red-500' : isSelectValid('fleetSize') ? 'text-[#3dd598]' : 'text-white'}`}
+                >
+                  Fleet Size*
+                </label>
+                <select
+                  id="fleetSize"
+                  name="fleetSize"
+                  className={`peer ${styles.select} ${isSelectValid('fleetSize') ? 'valid' : ''}`}
+                  value={formData.fleetSize}
+                  onChange={handleInputChange}
+                  onBlur={handleBlur}
+                  required
+                  aria-label="Fleet Size"
+                >
+                  <option value="" disabled hidden>
+                    Select fleet size
+                  </option>
+                  <option value="0-25">0-25</option>
+                  <option value="25-50">25-50</option>
+                  <option value="51-100">51-100</option>
+                  <option value="101-250">101-250</option>
+                  <option value="251+">251+</option>
+                </select>
+                {errors.fleetSize && (
+                  <span className="mt-1 text-xs text-red-500 block">{errors.fleetSize}</span>
+                )}
+              </div>
+              <div className="md:col-span-1">
+                <label
+                  htmlFor="industry"
+                  className={`${styles.label} ${styles.labelFloat} ${errors.industry ? 'text-red-500' : isSelectValid('industry') ? 'text-green-500' : 'text-white'}`}
+                >
+                  Industry*
+                </label>
+                <select
+                  id="industry"
+                  name="industry"
+                  className={`peer ${styles.select}`}
+                  value={formData.industry}
+                  onChange={handleInputChange}
+                  onBlur={handleBlur}
+                  required
+                  aria-label="Industry"
+                >
+                  <option value="" disabled hidden>
+                    Select your industry
+                  </option>
+                  <option value="fmcg">FMCG Distribution</option>
+                  <option value="lastmile">Last-Mile Delivery</option>
+                  <option value="cashvan">Cash Van Delivery</option>
+                  <option value="postal">Postal & Courier</option>
+                  <option value="coldchain">Cold Chain & Pharma</option>
+                  <option value="ev">EV Fleet Operations</option>
+                  <option value="other">Other</option>
+                </select>
+                {errors.industry && (
+                  <span className="mt-1 text-xs text-red-500 block">{errors.industry}</span>
+                )}
+              </div>
             </div>
             <div className="md:col-span-2">
               <FloatingLabelField
@@ -374,12 +324,21 @@ const BookDemoForm: React.FC = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={styles.submitBtn + (isSubmitting ? ' ' + styles.btnDisabled : '') + ' transition-opacity duration-500'}
+                className={
+                  styles.submitBtn +
+                  (isSubmitting ? ' ' + styles.btnDisabled : '') +
+                  ' transition-opacity duration-500 relative'
+                }
                 aria-busy={isSubmitting}
                 style={{ opacity: isSubmitting ? 0.6 : 1 }}
               >
                 {isSubmitting ? (
-                  <span className="animate-pulse">Processing...</span>
+                  <>
+                    <span className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center pl-2">
+                      <span className="inline-block w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin mr-2"></span>
+                    </span>
+                    <span className="pl-6 animate-pulse">Processing...</span>
+                  </>
                 ) : submitSuccess ? (
                   <span>Request Sent!</span>
                 ) : (
@@ -388,7 +347,12 @@ const BookDemoForm: React.FC = () => {
               </button>
             </div>
             {submitSuccess && (
-              <div className={styles.successMsg + ' md:col-span-2 transition-opacity duration-700'}>
+              <div
+                className={
+                  styles.successMsg +
+                  ' md:col-span-2 transition-opacity duration-700 animate-fade-in'
+                }
+              >
                 Thank you! We received your request.
               </div>
             )}

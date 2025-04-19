@@ -11,7 +11,6 @@ import ErrorFallback from './components/ui/ErrorFallback';
 import LoadingScreen from './components/ui/LoadingScreen';
 import { reportWebVitalsToConsole } from './hooks/useWebVitals';
 import './index.css';
-import './styles/navbar.css';
 import './styles/phone-input.css';
 import './styles/text-quality.css';
 import { initializePerformanceOptimizations, measureRenderTime } from './utils/performance';

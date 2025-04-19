@@ -35,7 +35,7 @@ const FloatingLabelField: React.FC<FloatingLabelFieldProps> = ({
   // Determine label color
   let labelColor = 'text-gray-400';
   if (error) labelColor = 'text-red-500';
-  else if (success) labelColor = 'text-green-500';
+  else if (success) labelColor = 'text-[#3dd598]';
 
   // Determine border color
   let borderColor = 'border-white/20';

@@ -1,4 +1,5 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, ErrorInfo, ReactNode } from 'react';
+import { categorizeError } from '../../utils/errorCategorization';
 import ApplicationError from './ApplicationError';
 
 interface Props {
@@ -43,7 +44,7 @@ class EnhancedErrorBoundary extends Component<Props, State> {
         stack: '',
         componentStack: '',
         errorCode: '',
-      }
+      },
     };
     this.resetErrorBoundary = this.resetErrorBoundary.bind(this);
   }
@@ -52,18 +53,23 @@ class EnhancedErrorBoundary extends Component<Props, State> {
     // Update state so the next render will show the fallback UI
     return {
       hasError: true,
-      error
+      error,
     };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     // Process the error
-    const errorDetails = this.processError(error, errorInfo);
+    const errorCode = categorizeError(error);
 
     // Update state with error details
     this.setState({
       errorInfo,
-      errorDetails
+      errorDetails: {
+        message: error.message || 'An unknown error occurred',
+        stack: error.stack || '',
+        componentStack: errorInfo.componentStack || '',
+        errorCode: errorCode,
+      },
     });
 
     // Log the error to the console
@@ -76,34 +82,6 @@ class EnhancedErrorBoundary extends Component<Props, State> {
   }
 
   /**
-   * Process the error to extract useful information and categorize it
-   */
-  processError(error: Error, errorInfo: ErrorInfo) {
-    // Default error details
-    const errorDetails = {
-      message: error.message || 'An unknown error occurred',
-      stack: error.stack || '',
-      componentStack: errorInfo.componentStack || '',
-      errorCode: 'UNKNOWN_ERROR',
-    };
-
-    // Categorize common errors
-    if (error.message.includes('does not provide an export named')) {
-      errorDetails.errorCode = 'MODULE_EXPORT_ERROR';
-    } else if (error.message.includes('Cannot read properties of')) {
-      errorDetails.errorCode = 'NULL_REFERENCE_ERROR';
-    } else if (error.message.includes('Failed to fetch') || error.message.includes('Network Error')) {
-      errorDetails.errorCode = 'NETWORK_ERROR';
-    } else if (error.message.includes('Maximum update depth exceeded')) {
-      errorDetails.errorCode = 'INFINITE_LOOP_ERROR';
-    } else if (error.message.includes('Unexpected token')) {
-      errorDetails.errorCode = 'SYNTAX_ERROR';
-    }
-
-    return errorDetails;
-  }
-
-  /**
    * Get a user-friendly error message based on the error code
    */
   getUserFriendlyMessage() {
@@ -113,7 +91,7 @@ class EnhancedErrorBoundary extends Component<Props, State> {
       case 'MODULE_EXPORT_ERROR':
         return 'There was a problem loading a required component. This is likely a temporary issue.';
       case 'NULL_REFERENCE_ERROR':
-        return 'The application tried to access data that wasn\'t available yet.';
+        return "The application tried to access data that wasn't available yet.";
       case 'NETWORK_ERROR':
         return 'There was a problem connecting to the server. Please check your internet connection.';
       case 'INFINITE_LOOP_ERROR':
@@ -121,7 +99,7 @@ class EnhancedErrorBoundary extends Component<Props, State> {
       case 'SYNTAX_ERROR':
         return 'There was a problem with the application code.';
       default:
-        return 'Something went wrong. We\'re working to fix the issue.';
+        return "Something went wrong. We're working to fix the issue.";
     }
   }
 
@@ -131,10 +109,7 @@ class EnhancedErrorBoundary extends Component<Props, State> {
   getRecoverySuggestions() {
     const { errorCode } = this.state.errorDetails;
 
-    const suggestions = [
-      'Try refreshing the page',
-      'Clear your browser cache and cookies',
-    ];
+    const suggestions = ['Try refreshing the page', 'Clear your browser cache and cookies'];
 
     switch (errorCode) {
       case 'MODULE_EXPORT_ERROR':
@@ -164,7 +139,7 @@ class EnhancedErrorBoundary extends Component<Props, State> {
         stack: '',
         componentStack: '',
         errorCode: '',
-      }
+      },
     });
 
     // Call the onReset callback if provided

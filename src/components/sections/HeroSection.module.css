@@ -132,7 +132,7 @@
 
 /* Ensure hero CTA button font color is always white */
 .button,
-a[href="/book-demo"] {
+a[href='/book-demo'] {
   color: white !important;
 }
 

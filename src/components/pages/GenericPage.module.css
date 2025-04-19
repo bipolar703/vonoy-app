@@ -9,11 +9,8 @@
 .bgGrid {
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(
-      to right,
-      rgba(255, 255, 255, 0.05) 1px,
-      transparent 1px
-    ),
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
   background-size: 40px 40px;
   opacity: 0.3;
@@ -52,7 +49,8 @@
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0) rotate(0deg);
   }
   50% {
@@ -209,8 +207,12 @@
   background-color: white;
   border-radius: 1rem;
   padding: 2rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03), 0 1px 8px rgba(0, 0, 0, 0.06);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.03),
+    0 1px 8px rgba(0, 0, 0, 0.06);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   position: relative;
   z-index: 1;
   border: 1px solid rgba(0, 0, 0, 0.04);
@@ -235,7 +237,9 @@
 
 .featureCard:hover {
   transform: translateY(-5px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.08),
+    0 8px 16px rgba(0, 0, 0, 0.04);
 }
 
 .featureIconContainer {
@@ -285,7 +289,7 @@
 }
 
 .ctaContainer::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;

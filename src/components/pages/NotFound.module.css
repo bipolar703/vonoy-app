@@ -24,7 +24,8 @@
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0) translateX(0);
   }
   25% {
@@ -144,7 +145,7 @@
 }
 
 .suggestionsList li::before {
-  content: "•";
+  content: '•';
   color: #3dd598;
   font-weight: bold;
   display: inline-block;
@@ -262,19 +263,19 @@
   .glassCard {
     padding: 2rem;
   }
-  
+
   .errorCode {
     font-size: 6rem;
   }
-  
+
   .title {
     font-size: 2rem;
   }
-  
+
   .actions {
     flex-direction: column;
   }
-  
+
   .actionButton {
     width: 100%;
   }

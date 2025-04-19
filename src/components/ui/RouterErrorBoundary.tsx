@@ -1,6 +1,7 @@
-import React from 'react';
-import { useRouteError, isRouteErrorResponse, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import React from 'react';
+import { isRouteErrorResponse, Link, useRouteError } from 'react-router-dom';
+import { CategorizableError, categorizeError } from '../../utils/errorCategorization';
 
 /**
  * RouterErrorBoundary Component
@@ -23,9 +24,9 @@ const RouterErrorBoundary: React.FC = () => {
       opacity: 1,
       transition: {
         staggerChildren: 0.2,
-        delayChildren: 0.3
-      }
-    }
+        delayChildren: 0.3,
+      },
+    },
   };
 
   const itemVariants = {
@@ -35,45 +36,23 @@ const RouterErrorBoundary: React.FC = () => {
       y: 0,
       transition: {
         duration: 0.8,
-        ease: [0.25, 0.1, 0.25, 1]
-      }
-    }
+        ease: [0.25, 0.1, 0.25, 1],
+      },
+    },
   };
 
   // Get error details
   let errorMessage = 'Unknown error';
   let errorStatus = '';
-  let errorCode = 'UNKNOWN_ERROR';
+
+  const routeError = error as CategorizableError;
+  const errorCode = categorizeError(routeError);
 
   if (isRouteErrorResponse(error)) {
     errorMessage = error.data?.message || error.statusText;
     errorStatus = `${error.status}`;
-
-    // Categorize common route errors
-    if (error.status === 404) {
-      errorCode = 'NOT_FOUND';
-    } else if (error.status === 401) {
-      errorCode = 'UNAUTHORIZED';
-    } else if (error.status === 403) {
-      errorCode = 'FORBIDDEN';
-    } else if (error.status === 500) {
-      errorCode = 'SERVER_ERROR';
-    }
   } else if (error instanceof Error) {
     errorMessage = error.message;
-
-    // Categorize common errors
-    if (error.message.includes('does not provide an export named')) {
-      errorCode = 'MODULE_EXPORT_ERROR';
-    } else if (error.message.includes('Cannot read properties of')) {
-      errorCode = 'NULL_REFERENCE_ERROR';
-    } else if (error.message.includes('Failed to fetch') || error.message.includes('Network Error')) {
-      errorCode = 'NETWORK_ERROR';
-    } else if (error.message.includes('Maximum update depth exceeded')) {
-      errorCode = 'INFINITE_LOOP_ERROR';
-    } else if (error.message.includes('Unexpected token')) {
-      errorCode = 'SYNTAX_ERROR';
-    }
   } else if (typeof error === 'string') {
     errorMessage = error;
   }
@@ -92,7 +71,7 @@ const RouterErrorBoundary: React.FC = () => {
       case 'MODULE_EXPORT_ERROR':
         return 'There was a problem loading a required component. This is likely a temporary issue.';
       case 'NULL_REFERENCE_ERROR':
-        return 'The application tried to access data that wasn\'t available yet.';
+        return "The application tried to access data that wasn't available yet.";
       case 'NETWORK_ERROR':
         return 'There was a problem connecting to the server. Please check your internet connection.';
       case 'INFINITE_LOOP_ERROR':
@@ -100,7 +79,7 @@ const RouterErrorBoundary: React.FC = () => {
       case 'SYNTAX_ERROR':
         return 'There was a problem with the application code.';
       default:
-        return 'Something went wrong. We\'re working to fix the issue.';
+        return "Something went wrong. We're working to fix the issue.";
     }
   };
 
@@ -124,14 +103,18 @@ const RouterErrorBoundary: React.FC = () => {
               rotate: 360,
               transition: {
                 duration: 12,
-                ease: "linear",
-                repeat: Infinity
-              }
+                ease: 'linear',
+                repeat: Infinity,
+              },
             }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
-              <path fillRule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 010-1.113zM17.25 12a5.25 5.25 0 11-10.5 0 5.25 5.25 0 0110.5 0z" clipRule="evenodd" />
+              <path
+                fillRule="evenodd"
+                d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 010-1.113zM17.25 12a5.25 5.25 0 11-10.5 0 5.25 5.25 0 0110.5 0z"
+                clipRule="evenodd"
+              />
             </svg>
           </motion.div>
 
@@ -141,13 +124,17 @@ const RouterErrorBoundary: React.FC = () => {
               rotate: 360,
               transition: {
                 duration: 10,
-                ease: "linear",
-                repeat: Infinity
-              }
+                ease: 'linear',
+                repeat: Infinity,
+              },
             }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-              <path fillRule="evenodd" d="M14.615 1.595a.75.75 0 01.359.852L12.982 9.75h7.268a.75.75 0 01.548 1.262l-10.5 11.25a.75.75 0 01-1.272-.71l1.992-7.302H3.75a.75.75 0 01-.548-1.262l10.5-11.25a.75.75 0 01.913-.143z" clipRule="evenodd" />
+              <path
+                fillRule="evenodd"
+                d="M14.615 1.595a.75.75 0 01.359.852L12.982 9.75h7.268a.75.75 0 01.548 1.262l-10.5 11.25a.75.75 0 01-1.272-.71l1.992-7.302H3.75a.75.75 0 01-.548-1.262l10.5-11.25a.75.75 0 01.913-.143z"
+                clipRule="evenodd"
+              />
             </svg>
           </motion.div>
 
@@ -159,10 +146,10 @@ const RouterErrorBoundary: React.FC = () => {
               opacity: [0.4, 0.8],
               transition: {
                 duration: 2,
-                ease: "easeInOut",
+                ease: 'easeInOut',
                 repeat: Infinity,
-                repeatType: "reverse"
-              }
+                repeatType: 'reverse',
+              },
             }}
           ></motion.div>
           <motion.div
@@ -172,11 +159,11 @@ const RouterErrorBoundary: React.FC = () => {
               opacity: [0.4, 0.8],
               transition: {
                 duration: 2.5,
-                ease: "easeInOut",
+                ease: 'easeInOut',
                 repeat: Infinity,
-                repeatType: "reverse",
-                delay: 0.3
-              }
+                repeatType: 'reverse',
+                delay: 0.3,
+              },
             }}
           ></motion.div>
           <motion.div
@@ -186,11 +173,11 @@ const RouterErrorBoundary: React.FC = () => {
               opacity: [0.4, 0.8],
               transition: {
                 duration: 2.2,
-                ease: "easeInOut",
+                ease: 'easeInOut',
                 repeat: Infinity,
-                repeatType: "reverse",
-                delay: 0.6
-              }
+                repeatType: 'reverse',
+                delay: 0.6,
+              },
             }}
           ></motion.div>
 
@@ -237,8 +224,17 @@ const RouterErrorBoundary: React.FC = () => {
               onClick={() => window.location.reload()}
               className="px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-secondary hover:bg-secondary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition-all duration-300 flex items-center justify-center"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 mr-2"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                  clipRule="evenodd"
+                />
               </svg>
               Try Again
             </button>
@@ -247,7 +243,12 @@ const RouterErrorBoundary: React.FC = () => {
               to="/"
               className="px-6 py-3 border border-white/20 text-base font-medium rounded-md shadow-sm text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white/30 transition-all duration-300 flex items-center justify-center"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 mr-2"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
                 <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
               </svg>
               Return to Home

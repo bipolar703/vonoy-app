@@ -94,3 +94,11 @@
   top: -1.5rem;
   color: #00a79d;
 }
+
+/* Standardized Container */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.5rem; /* Adjust padding as needed for desired responsiveness */
+  width: 100%;
+}

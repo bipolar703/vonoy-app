@@ -17,16 +17,14 @@ const BookDemo: React.FC = () => {
           aria-hidden="true"
           role="presentation"
           style={{
-            background: `radial-gradient(circle at 60% 60%, rgba(88, 164, 157, 0.10) 0%, transparent 70%), url('/book-demo-design.svg') no-repeat left center/auto 90%`,
+            background: `radial-gradient(circle at 60% 60%, rgba(88, 164, 157, 0.10) 0%, transparent 70%), url('/book-demo-design.svg') no-repeat right -100px bottom -100px / auto 90%`,
             opacity: 0.7,
           }}
         ></div>
         {/* Left: Hero */}
         <div className="relative z-10 flex flex-col justify-start gap-4 w-full md:w-2/5 px-6 sm:px-8 md:px-12 pt-10 md:pt-16 min-h-[200px] md:min-h-0 md:h-auto mx-auto md:mx-0 book-demo-hero-title-container">
-          <h1
-            className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight drop-shadow-lg font-display text-center md:text-left book-demo-hero-title"
-          >
-            Transform Your Fleet Operations with <br className="hidden md:block" />
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight drop-shadow-lg font-display text-center md:text-left book-demo-hero-title">
+            Transform Your Logistics Operations with <br className="hidden md:block" />
             AI-Powered Efficiency
           </h1>
         </div>
@@ -35,7 +33,6 @@ const BookDemo: React.FC = () => {
           <div className="w-full bg-[#16232e]/80 rounded-2xl shadow-2xl border border-white/10 p-4 sm:p-6 md:p-8 flex flex-col gap-4">
             <BookDemoForm />
           </div>
-          {/* Removed Carousel Reviews Block for a cleaner form page */}
         </div>
       </main>
       <Footer />

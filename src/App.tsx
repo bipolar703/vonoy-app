@@ -7,6 +7,7 @@ import PageTransition from './components/layout/PageTransition';
 import BenefitSection from './components/sections/BenefitSection';
 import CustomizationSection from './components/sections/CustomizationSection';
 import HeroSection from './components/sections/HeroSection';
+import HowWeWorkSection from './components/sections/HowWeWorkSection';
 import StatsSection from './components/sections/StatsSection';
 import VideoSection from './components/sections/VideoSection';
 import WhyVonoySection from './components/sections/WhyVonoySection';
@@ -30,11 +31,14 @@ function App() {
         {/* Why Choose Vonoy? */}
         <WhyVonoySection />
 
-        {/* Customization */}
-        <CustomizationSection />
-
         {/* Vonoy in Numbers */}
         <StatsSection />
+
+        {/* How We Work */}
+        <HowWeWorkSection />
+
+        {/* Customization */}
+        <CustomizationSection />
 
         {/* Who Can Benefit */}
         <BenefitSection />
@@ -42,7 +46,6 @@ function App() {
         {/* See Vonoy In Action */}
         <VideoSection />
       </main>
-
 
       <Footer />
     </div>
